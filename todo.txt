@@ -1,0 +1,12 @@
+- viper init
+- echo config
+- friendly return
+- database close
+- use logger
+- use tracing
+- check zipkin + otel integration
+- migrations
+- unit tests
+- integration tests
+- dockerfile
+- open api + docs
