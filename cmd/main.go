@@ -5,21 +5,17 @@ import (
 	"log"
 
 	"github.com/dmarins/student-api/internal/infrastructure/db"
+	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
 	"github.com/labstack/echo/v4"
-	"github.com/spf13/viper"
 )
 
 func main() {
 	// Env vars
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
-	viper.AddConfigPath("./cmd")
-	viper.AutomaticEnv()
-
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("No .env file found: %v", err)
+	err := env.InitEnvVars()
+	if err != nil {
+		log.Fatalf("failed to initialize env vars: %v", err)
 	}
 
 	// Log

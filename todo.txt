@@ -1,10 +1,9 @@
-- viper init
 - echo config
-- friendly return
 - database close
 - use logger
 - use tracing
 - check zipkin + otel integration
+- friendly return
 - migrations
 - unit tests
 - integration tests
