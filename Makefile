@@ -12,10 +12,19 @@ down:
 	$(DOCKERCOMPOSECMD) down --remove-orphans
 
 restart:
-	up down
+	down up
 
 test:
 	go test ./...
 
 swagger:
 	swag init
+
+run:
+	go run ./cmd/main.go ./cmd/container.go
+
+db-init:
+	docker exec -it mysql mysql -uroot -proot students create table students (id varchar(36) not null, name varchar(200) not null, primary key (id) );
+
+db-query:
+	docker exec -it mysql mysql -uroot -proot students

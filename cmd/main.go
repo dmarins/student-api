@@ -15,7 +15,7 @@ func main() {
 	// Env vars
 	viper.SetConfigName(".env")
 	viper.SetConfigType("env")
-	viper.AddConfigPath("../")
+	viper.AddConfigPath("./cmd")
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
