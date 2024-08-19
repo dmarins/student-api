@@ -10,7 +10,8 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceRoot}/cmd",
-            "args": [""],
+            "args": [],
+            "cwd": "${workspaceRoot}",
             "showLog": true
         }
     ]

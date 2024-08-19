@@ -5,15 +5,12 @@ import (
 )
 
 func InitEnvVars() error {
-	viper.SetConfigName(".env")
-	viper.SetConfigType("env")
 
-	viper.AddConfigPath("./cmd")
+	viper.SetConfigFile("./.env")
 
 	viper.AutomaticEnv()
 
-	err := viper.ReadInConfig()
-	if err != nil {
+	if err := viper.ReadInConfig(); err != nil {
 		return err
 	}
 
