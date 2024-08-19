@@ -1,4 +1,3 @@
-- echo config
 - database close
 - use logger
 - use tracing

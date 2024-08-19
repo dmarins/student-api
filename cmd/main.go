@@ -8,7 +8,6 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
-	"github.com/labstack/echo/v4"
 )
 
 func main() {
@@ -45,7 +44,5 @@ func main() {
 	app := NewDependencyInjectionContainer(database, logger, tracer)
 
 	// Http Server
-	e := echo.New()
-	e.POST("/student", app.StudentHandler.CreateStudent)
-	e.Logger.Fatal(e.Start(":8080"))
+	app.HttpServer.Start()
 }

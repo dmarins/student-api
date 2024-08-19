@@ -24,7 +24,7 @@ run:
 	go run ./cmd/main.go ./cmd/container.go
 
 db-init:
-	docker exec -it mysql mysql -uroot -proot students create table students (id varchar(36) not null, name varchar(200) not null, primary key (id) );
+	docker exec -it mysql mysql -uroot -proot students -e "CREATE TABLE students (id VARCHAR(36) NOT NULL, name VARCHAR(200) NOT NULL, PRIMARY KEY (id));"
 
 db-query:
 	docker exec -it mysql mysql -uroot -proot students

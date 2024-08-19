@@ -16,3 +16,7 @@ func InitEnvVars() error {
 
 	return nil
 }
+
+func GetEnvVar(key string) string {
+	return viper.GetString(key)
+}
