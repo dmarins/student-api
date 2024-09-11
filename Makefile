@@ -1,6 +1,6 @@
 DOCKERCOMPOSECMD=docker-compose
 
-.PHONY: up down restart test
+.PHONY: up down restart run pgquery
 
 up:
 	$(DOCKERCOMPOSECMD) up -d --force-recreate
@@ -11,14 +11,10 @@ up:
 down:
 	$(DOCKERCOMPOSECMD) down --remove-orphans
 
-restart:
-	down up
+restart: down up
 
 run:
 	go run ./cmd/main.go ./cmd/container.go
 
-db-init:
-	docker exec -it db psql -U root -h localhost -d students -p 5432 -c "CREATE TABLE students (id VARCHAR(36) NOT NULL, name VARCHAR(200) NOT NULL, PRIMARY KEY (id));"
-
-db-query:
+pgquery:
 	docker exec -it db psql -U root -h localhost -d students -p 5432

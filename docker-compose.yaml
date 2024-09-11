@@ -10,8 +10,31 @@ services:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
     restart: always
+
+  migrator:
+    container_name: migrator
+    image: migrate/migrate:latest
+    env_file:
+      - './.env'
+    command: ["-path=/migrations", "-database=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable", "up"]
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./migrations:/migrations
+
+  otel-collector:
+    container_name: otel-collector
+    image: otel/opentelemetry-collector:latest
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    ports:
+      - "4317:4317"
+      - "55681:55681"
+      - "8888:8888"
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
 
   zipkin:
     container_name: zipkin
@@ -19,17 +42,4 @@ services:
     ports:
       - "9411:9411"
     depends_on:
-      - db
-
-  otel-collector:
-    container_name: otel-collector
-    image: otel/opentelemetry-collector:latest
-    command: ["--config=/etc/otel-collector-config.yaml"]
-    volumes:
-      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
-    ports:
-      - "4317:4317"
-      - "55681:55681"
-      - "8888:8888"
-    depends_on:
-      - zipkin
+      - otel-collector
