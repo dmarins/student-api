@@ -19,8 +19,7 @@ func NewStudentRepository(db *sql.DB) repositories.IStudentRepository {
 }
 
 func (r *StudentRepository) Save(ctx context.Context, student *entities.Student) error {
-	_, err := r.db.
-		ExecContext(ctx, "INSERT INTO students (id, name) VALUES (?, ?)", student.ID, student.Name)
+	_, err := r.db.ExecContext(ctx, "INSERT INTO students (id, name) VALUES ($1, $2)", student.ID, student.Name)
 
 	return err
 }
@@ -29,7 +28,7 @@ func (r *StudentRepository) ExistsByName(ctx context.Context, name string) (bool
 	var exists bool
 
 	err := r.db.
-		QueryRowContext(ctx, "SELECT EXISTS(SELECT 1 FROM students WHERE name = ?)", name).
+		QueryRowContext(ctx, "SELECT EXISTS(SELECT 1 FROM students WHERE name = $1)", name).
 		Scan(&exists)
 
 	return exists, err

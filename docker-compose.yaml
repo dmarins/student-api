@@ -1,19 +1,17 @@
 services:
-  mysql:
-    container_name: mysql
-    image: mysql/mysql-server:8.0.26
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-      MYSQL_DATABASE: students
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
-      retries: 5
+  db:
+    container_name: db
+    image: postgres:16.4-alpine3.20
+    env_file:
+      - './.env'
     ports:
-      - "3306:3306"
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
 
   zipkin:
     container_name: zipkin
@@ -21,7 +19,7 @@ services:
     ports:
       - "9411:9411"
     depends_on:
-      - mysql
+      - db
 
   otel-collector:
     container_name: otel-collector
