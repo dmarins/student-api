@@ -3,7 +3,7 @@ DOCKERCOMPOSECMD=docker-compose
 .PHONY: up down restart run pgquery
 
 up:
-	$(DOCKERCOMPOSECMD) up -d --force-recreate
+	$(DOCKERCOMPOSECMD) up -d --build
 	@echo "Waiting until Postgres be ready..."
 	@until docker ps | grep db | grep "(healthy)"; do sleep 1; done
 	@echo "Postgres is started."

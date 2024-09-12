@@ -4,5 +4,4 @@
 - friendly return
 - unit tests
 - integration tests
-- dockerfile
 - open api + docs
