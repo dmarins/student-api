@@ -3,7 +3,7 @@ services:
     container_name: db
     image: postgres:16.4-alpine3.20
     env_file:
-      - './.env'
+      - './.env.local'
     ports:
       - '5432:5432'
     healthcheck:
@@ -17,7 +17,7 @@ services:
     container_name: migrator
     image: migrate/migrate:latest
     env_file:
-      - './.env'
+      - './.env.local'
     command: ["-path=/migrations", "-database=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable", "up"]
     depends_on:
       db:
@@ -43,17 +43,3 @@ services:
       - "9411:9411"
     depends_on:
       - otel-collector
-
-  api:
-    container_name: api
-    image: students-api:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - './.env'
-    ports:
-      - "8080:8080"
-    depends_on:
-      db:
-        condition: service_healthy
