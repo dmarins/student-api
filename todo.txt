@@ -1,4 +1,3 @@
-- use logger
 - use tracing
 - check zipkin + otel integration
 - friendly return
