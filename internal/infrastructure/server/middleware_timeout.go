@@ -12,7 +12,7 @@ import (
 
 func ConfigRequestTimeout() echo.MiddlewareFunc {
 
-	duration, err := time.ParseDuration(env.GetEnvVar("REQUEST_TIMEOUT"))
+	duration, err := time.ParseDuration(env.GetEnvironmentVariable("REQUEST_TIMEOUT"))
 	if err != nil {
 		log.Fatalf("could not parse REQUEST_TIMEOUT: %s", err)
 

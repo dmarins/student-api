@@ -1,27 +1,42 @@
 package db
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 
 	"github.com/dmarins/student-api/internal/infrastructure/env"
+	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	_ "github.com/lib/pq"
 )
 
-func InitDatabase() (*sql.DB, error) {
-	dsn := fmt.Sprintf(
-		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		env.GetEnvVar("POSTGRES_HOST"),
-		env.GetEnvVar("POSTGRES_PORT"),
-		env.GetEnvVar("POSTGRES_USER"),
-		env.GetEnvVar("POSTGRES_PASSWORD"),
-		env.GetEnvVar("POSTGRES_DB"),
-	)
+type (
+	IDb interface{}
+
+	Db struct{}
+)
+
+func NewDatabase(ctx context.Context) *sql.DB {
+	dsn := fmt.
+		Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+			env.GetEnvironmentVariable("POSTGRES_HOST"),
+			env.GetEnvironmentVariable("POSTGRES_PORT"),
+			env.GetEnvironmentVariable("POSTGRES_USER"),
+			env.GetEnvironmentVariable("POSTGRES_PASSWORD"),
+			env.GetEnvironmentVariable("POSTGRES_DB"),
+		)
 
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		return nil, err
+		logger.Fatal(ctx, "failed to open database", err)
+		return nil
 	}
 
-	return db, err
+	err = db.PingContext(ctx)
+	if err != nil {
+		logger.Fatal(ctx, "failed to verify connection to database", err)
+		return nil
+	}
+
+	return db
 }

@@ -18,7 +18,7 @@ func ConfigRequestContext() echo.MiddlewareFunc {
 }
 
 func newRequestContext(next echo.HandlerFunc) echo.HandlerFunc {
-	headerCid := env.GetEnvVar("HEADER_CID")
+	headerCid := env.GetEnvironmentVariable("HEADER_CID")
 
 	return func(c echo.Context) error {
 		cid := c.Request().Header.Get(headerCid)
@@ -27,14 +27,14 @@ func newRequestContext(next echo.HandlerFunc) echo.HandlerFunc {
 			c.Request().Header.Set(headerCid, cid)
 		}
 
-		tenant := c.Request().Header.Get(env.GetEnvVar("HEADER_TENANT"))
+		tenant := c.Request().Header.Get(env.GetEnvironmentVariable("HEADER_TENANT"))
 
 		rctx := RequestContext{
 			TenantId: tenant,
 			Cid:      cid,
 		}
 
-		ctx := context.WithValue(c.Request().Context(), env.GetEnvVar("REQUEST_CONTEXT"), rctx)
+		ctx := context.WithValue(c.Request().Context(), env.GetEnvironmentVariable("REQUEST_CONTEXT"), rctx)
 
 		c.SetRequest(c.Request().WithContext(ctx))
 

@@ -6,13 +6,12 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceRoot}/cmd",
+            "program": "${workspaceRoot}/cmd/main.go",
             "cwd": "${workspaceRoot}",
             "env": {
                 "APP_ENV": "local"
             },
-            "preLaunchTask": "Make local-restart",
-            "showLog": true,
+            "showLog": true
         }
     ]
 }

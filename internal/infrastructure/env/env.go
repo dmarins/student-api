@@ -1,32 +1,40 @@
 package env
 
 import (
+	"context"
 	"log"
 	"os"
+	"sync"
 
 	"github.com/joho/godotenv"
 )
 
-func InitEnvVars() error {
+var (
+	once sync.Once
+)
 
+func LoadEnvironmentVariables(ctx context.Context) {
 	var envFile string
 
-	env := GetEnvVar("APP_ENV")
-	if env == "local" {
-		envFile = "./.env.local"
-	} else {
-		envFile = "./.env"
-	}
+	once.Do(func() {
+		env := ProvideAppEnv()
+		if env == "local" {
+			envFile = "./.env.local"
+		} else {
+			envFile = "./.env"
+		}
 
-	if err := godotenv.Load(envFile); err != nil {
-		return err
-	}
-
-	log.Printf("carregando as variáveis de ambiente com o arquivo %s", envFile)
-
-	return nil
+		err := godotenv.Load(envFile)
+		if err != nil {
+			log.Fatalf("failed to load environments variables, env: %s, env_file: %s", env, envFile)
+		}
+	})
 }
 
-func GetEnvVar(key string) string {
+func GetEnvironmentVariable(key string) string {
 	return os.Getenv(key)
+}
+
+func ProvideAppEnv() string {
+	return GetEnvironmentVariable("APP_ENV")
 }

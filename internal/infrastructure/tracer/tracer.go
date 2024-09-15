@@ -3,6 +3,7 @@ package tracer
 import (
 	"context"
 
+	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc"
 	"go.opentelemetry.io/otel/propagation"
@@ -11,24 +12,37 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 )
 
-func InitTracer() (*trace.TracerProvider, error) {
-	ctx := context.Background()
-
-	exporter, err := otlptracegrpc.New(ctx, otlptracegrpc.WithEndpoint("otel-collector:4317"), otlptracegrpc.WithInsecure())
-	if err != nil {
-		return nil, err
+type (
+	ITracer interface {
 	}
 
-	tp := trace.NewTracerProvider(
-		trace.WithBatcher(exporter),
-		trace.WithResource(resource.NewWithAttributes(
-			semconv.SchemaURL,
-			semconv.ServiceNameKey.String("student-api"),
-		)),
-	)
+	Tracer struct {
+	}
+)
+
+func NewTracer(ctx context.Context, appName string, appVersion string) ITracer {
+	exporter, err := otlptracegrpc.
+		New(
+			ctx,
+			otlptracegrpc.WithEndpoint("otel-collector:4317"),
+			otlptracegrpc.WithInsecure(),
+		)
+	if err != nil {
+		logger.Fatal(ctx, "failed to initialize tracer", err)
+	}
+
+	tp := trace.
+		NewTracerProvider(
+			trace.WithBatcher(exporter),
+			trace.WithResource(resource.NewWithAttributes(
+				semconv.SchemaURL,
+				semconv.ServiceNameKey.String(appName),
+				semconv.ServiceVersionKey.String(appVersion),
+			)),
+		)
 
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.TraceContext{})
 
-	return tp, nil
+	return &Tracer{}
 }

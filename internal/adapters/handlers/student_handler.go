@@ -14,18 +14,16 @@ type StudentHandler struct {
 	CreateStudentUseCase usecases.ICreateStudentUseCase
 }
 
-func NewStudentHandler(httpServer server.IHttpServer, createStudentUseCase usecases.ICreateStudentUseCase) *StudentHandler {
+func NewStudentHandler(createStudentUseCase usecases.ICreateStudentUseCase) *StudentHandler {
 	handler := &StudentHandler{
 		CreateStudentUseCase: createStudentUseCase,
 	}
 
-	handler.RegisterRoutes(httpServer)
-
 	return handler
 }
 
-func (h *StudentHandler) RegisterRoutes(httpServer server.IHttpServer) {
-	httpServer.GetEcho().POST("/student", h.CreateStudent)
+func RegisterStudentRoutes(s server.IServer, h *StudentHandler) {
+	s.GetEcho().POST("/student", h.CreateStudent)
 }
 
 func (h *StudentHandler) CreateStudent(c echo.Context) error {
