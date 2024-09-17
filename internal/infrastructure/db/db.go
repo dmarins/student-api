@@ -11,12 +11,17 @@ import (
 )
 
 type (
-	IDb interface{}
+	IDb interface {
+		ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
+		QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
+	}
 
-	Db struct{}
+	Db struct {
+		postgres *sql.DB
+	}
 )
 
-func NewDatabase(ctx context.Context) *sql.DB {
+func NewDatabase(ctx context.Context) IDb {
 	dsn := fmt.
 		Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 			env.GetEnvironmentVariable("POSTGRES_HOST"),
@@ -38,5 +43,15 @@ func NewDatabase(ctx context.Context) *sql.DB {
 		return nil
 	}
 
-	return db
+	return &Db{
+		postgres: db,
+	}
+}
+
+func (d *Db) ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error) {
+	return d.postgres.ExecContext(ctx, query, args...)
+}
+
+func (d *Db) QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row {
+	return d.postgres.QueryRowContext(ctx, query, args...)
 }
