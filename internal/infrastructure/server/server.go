@@ -25,10 +25,10 @@ type (
 	}
 )
 
-func NewServer(lc fx.Lifecycle) IServer {
+func NewServer(lc fx.Lifecycle, logger logger.ILogger) IServer {
 	e := setupEchoServer()
 
-	setupLifecycle(lc, e)
+	setupLifecycle(lc, e, logger)
 
 	return &Server{
 		echo: e,
@@ -57,22 +57,22 @@ func setupEchoServer() *echo.Echo {
 	return e
 }
 
-func setupLifecycle(lc fx.Lifecycle, e *echo.Echo) {
+func setupLifecycle(lc fx.Lifecycle, e *echo.Echo, logger logger.ILogger) {
 	lc.Append(
 		fx.Hook{
 			OnStart: func(ctx context.Context) error {
-				logger.Info(ctx, "starting HTTP server...")
+				logger.Info(ctx, "starting HTTP server...\n")
 				go e.Server.ListenAndServe()
 				return nil
 			},
 			OnStop: func(ctx context.Context) error {
-				return gracefulShutdownServer(ctx, e)
+				return gracefulShutdownServer(ctx, e, logger)
 			},
 		},
 	)
 }
 
-func gracefulShutdownServer(ctx context.Context, e *echo.Echo) error {
+func gracefulShutdownServer(ctx context.Context, e *echo.Echo, logger logger.ILogger) error {
 	duration, err := time.ParseDuration(env.GetEnvironmentVariable("APP_GRACEFUL_SHUTDOWN_TIMEOUT"))
 	if err != nil {
 		logger.Warn(ctx, "could not parse APP_GRACEFUL_SHUTDOWN_TIMEOUT", err)

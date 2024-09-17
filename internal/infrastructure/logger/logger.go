@@ -2,30 +2,44 @@ package logger
 
 import (
 	"context"
-	"sync"
 
-	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
-var (
-	singleton *zap.Logger
-	once      sync.Once
-)
-
-func NewLogger() {
-	var zapLogger *zap.Logger
-
-	if env.ProvideAppEnv() == "local" {
-		zapLogger, _ = zap.NewDevelopment()
-	} else {
-		zapLogger, _ = zap.NewProduction()
+type (
+	ILogger interface {
+		Info(ctx context.Context, msg string, fields ...map[string]interface{})
+		Error(ctx context.Context, msg string, err error, fields ...map[string]interface{})
+		Fatal(ctx context.Context, msg string, err error, fields ...map[string]interface{})
+		Warn(ctx context.Context, msg string, err error, fields ...map[string]interface{})
+		Sync() error
 	}
 
-	once.Do(func() {
-		singleton = zapLogger
-		zap.ReplaceGlobals(singleton)
-	})
+	Logger struct {
+		zapLogger *zap.Logger
+	}
+)
+
+func NewLogger() ILogger {
+	config := zap.NewProductionConfig()
+
+	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	config.EncoderConfig.TimeKey = "timestamp"
+	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+
+	config.Encoding = "console"
+	config.OutputPaths = []string{"stdout"}
+	config.ErrorOutputPaths = []string{"stdout"}
+
+	zapLogger, err := config.Build(zap.AddCallerSkip(1))
+	if err != nil {
+		panic("failed to initialize logger")
+	}
+
+	return &Logger{
+		zapLogger: zapLogger,
+	}
 }
 
 func convertToZapFields(fields map[string]interface{}) []zap.Field {
@@ -45,45 +59,45 @@ func addErrorFields(err error, fields map[string]interface{}) {
 	}
 }
 
-func Info(ctx context.Context, msg string, fields ...map[string]interface{}) {
+func (l *Logger) Info(ctx context.Context, msg string, fields ...map[string]interface{}) {
 	finalFields := make(map[string]interface{})
 	if len(fields) > 0 {
 		finalFields = fields[0]
 	}
 
-	zap.L().Info(msg, convertToZapFields(finalFields)...)
+	l.zapLogger.Info(msg, convertToZapFields(finalFields)...)
 }
 
-func Error(ctx context.Context, msg string, err error, fields ...map[string]interface{}) {
-	finalFields := make(map[string]interface{})
-	if len(fields) > 0 {
-		finalFields = fields[0]
-	}
-
-	addErrorFields(err, finalFields)
-	zap.L().Error(msg, convertToZapFields(finalFields)...)
-}
-
-func Fatal(ctx context.Context, msg string, err error, fields ...map[string]interface{}) {
+func (l *Logger) Error(ctx context.Context, msg string, err error, fields ...map[string]interface{}) {
 	finalFields := make(map[string]interface{})
 	if len(fields) > 0 {
 		finalFields = fields[0]
 	}
 
 	addErrorFields(err, finalFields)
-	zap.L().Fatal(msg, convertToZapFields(finalFields)...)
+	l.zapLogger.Error(msg, convertToZapFields(finalFields)...)
 }
 
-func Warn(ctx context.Context, msg string, err error, fields ...map[string]interface{}) {
+func (l *Logger) Fatal(ctx context.Context, msg string, err error, fields ...map[string]interface{}) {
 	finalFields := make(map[string]interface{})
 	if len(fields) > 0 {
 		finalFields = fields[0]
 	}
 
 	addErrorFields(err, finalFields)
-	zap.L().Warn(msg, convertToZapFields(finalFields)...)
+	l.zapLogger.Fatal(msg, convertToZapFields(finalFields)...)
 }
 
-func Sync() error {
-	return zap.L().Sync()
+func (l *Logger) Warn(ctx context.Context, msg string, err error, fields ...map[string]interface{}) {
+	finalFields := make(map[string]interface{})
+	if len(fields) > 0 {
+		finalFields = fields[0]
+	}
+
+	addErrorFields(err, finalFields)
+	l.zapLogger.Warn(msg, convertToZapFields(finalFields)...)
+}
+
+func (l *Logger) Sync() error {
+	return l.zapLogger.Sync()
 }

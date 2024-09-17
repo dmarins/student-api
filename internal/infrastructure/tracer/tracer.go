@@ -20,7 +20,7 @@ type (
 	}
 )
 
-func NewTracer(ctx context.Context, appName string, appVersion string) ITracer {
+func NewTracer(ctx context.Context, logger logger.ILogger, appName string, appVersion string) ITracer {
 	exporter, err := otlptracegrpc.
 		New(
 			ctx,

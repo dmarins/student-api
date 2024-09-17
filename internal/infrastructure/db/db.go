@@ -21,7 +21,7 @@ type (
 	}
 )
 
-func NewDatabase(ctx context.Context) IDb {
+func NewDatabase(ctx context.Context, logger logger.ILogger) IDb {
 	dsn := fmt.
 		Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 			env.GetEnvironmentVariable("POSTGRES_HOST"),
