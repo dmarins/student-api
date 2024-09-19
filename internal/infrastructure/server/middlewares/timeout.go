@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -14,16 +15,16 @@ import (
 func Timeout(logger logger.ILogger) echo.MiddlewareFunc {
 	duration, err := time.ParseDuration(env.GetEnvironmentVariable("REQUEST_TIMEOUT"))
 	if err != nil {
-		logger.Error(nil, "could not parse REQUEST_TIMEOUT, using default of 30s", err)
+		logger.Error(context.TODO(), "could not parse REQUEST_TIMEOUT", err)
 		duration = time.Second * 30
-		logger.Warn(nil, "using default REQUEST_TIMEOUT of 30s")
+		logger.Warn(context.TODO(), "using default REQUEST_TIMEOUT of 30s")
 	}
 
 	return middleware.TimeoutWithConfig(middleware.TimeoutConfig{
 		Skipper:      middleware.DefaultSkipper,
 		ErrorMessage: "request timeout",
 		OnTimeoutRouteErrorHandler: func(err error, c echo.Context) {
-			logger.Error(nil, "request timeout", err,
+			logger.Error(context.TODO(), "request timeout", err,
 				dtos.Field{
 					Key: "uri", Value: c.Request().RequestURI,
 				},
