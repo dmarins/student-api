@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/dmarins/student-api/internal/domain/dtos"
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	_ "github.com/lib/pq"
@@ -47,11 +46,7 @@ func NewDatabase(ctx context.Context, logger logger.ILogger) IDb {
 		return nil
 	}
 
-	logger.Info(ctx, "Db connected...",
-		dtos.Field{
-			Key: "address", Value: fmt.Sprintf("%s:%s", host, port),
-		},
-	)
+	logger.Info(ctx, "Db connected...", "address", fmt.Sprintf("%s:%s", host, port))
 
 	return &Db{
 		postgres: db,

@@ -8,7 +8,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/dmarins/student-api/internal/domain/dtos"
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	"github.com/dmarins/student-api/internal/infrastructure/server/middlewares"
@@ -64,10 +63,7 @@ func setupLifecycle(lc fx.Lifecycle, e *echo.Echo, logger logger.ILogger) {
 	lc.Append(
 		fx.Hook{
 			OnStart: func(ctx context.Context) error {
-				logger.Info(ctx, "starting HTTP server...",
-					dtos.Field{
-						Key: "address", Value: e.Server.Addr,
-					})
+				logger.Info(ctx, "starting HTTP server...", "address", e.Server.Addr)
 
 				go e.Server.ListenAndServe()
 

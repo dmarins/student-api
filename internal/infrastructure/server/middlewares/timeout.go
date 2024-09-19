@@ -3,9 +3,9 @@ package middlewares
 import (
 	"context"
 	"net/http"
+	"strconv"
 	"time"
 
-	"github.com/dmarins/student-api/internal/domain/dtos"
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	"github.com/labstack/echo/v4"
@@ -24,13 +24,10 @@ func Timeout(logger logger.ILogger) echo.MiddlewareFunc {
 		Skipper:      middleware.DefaultSkipper,
 		ErrorMessage: "request timeout",
 		OnTimeoutRouteErrorHandler: func(err error, c echo.Context) {
-			logger.Error(context.TODO(), "request timeout", err,
-				dtos.Field{
-					Key: "uri", Value: c.Request().RequestURI,
-				},
-				dtos.Field{
-					Key: "code", Value: http.StatusGatewayTimeout,
-				},
+			logger.Error(context.TODO(),
+				"request timeout", err,
+				"uri", c.Request().RequestURI,
+				"code", strconv.Itoa(http.StatusGatewayTimeout),
 			)
 		},
 		Timeout: duration,

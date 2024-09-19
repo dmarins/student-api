@@ -3,17 +3,16 @@ package logger
 import (
 	"context"
 
-	"github.com/dmarins/student-api/internal/domain/dtos"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 type (
 	ILogger interface {
-		Info(ctx context.Context, msg string, fields ...dtos.Field)
-		Error(ctx context.Context, msg string, err error, fields ...dtos.Field)
-		Fatal(ctx context.Context, msg string, err error, fields ...dtos.Field)
-		Warn(ctx context.Context, msg string, fields ...dtos.Field)
+		Info(ctx context.Context, msg string, fields ...string)
+		Error(ctx context.Context, msg string, err error, fields ...string)
+		Fatal(ctx context.Context, msg string, err error, fields ...string)
+		Warn(ctx context.Context, msg string, fields ...string)
 		Sync() error
 	}
 
@@ -40,41 +39,43 @@ func NewLogger() ILogger {
 	}
 }
 
-func convertToZapFields(fields []dtos.Field) []zap.Field {
-	zapFields := make([]zap.Field, 0, len(fields))
+func convertStringFields(extraFields []string) []zap.Field {
+	if len(extraFields)%2 != 0 {
+		return nil
+	}
 
-	for _, field := range fields {
-		zapFields = append(zapFields, zap.Any(field.Key, field.Value))
+	zapFields := make([]zap.Field, 0, len(extraFields)/2)
+	for i := 0; i < len(extraFields); i += 2 {
+		zapFields = append(zapFields, zap.String(extraFields[i], extraFields[i+1]))
 	}
 
 	return zapFields
 }
 
-func addErrorFields(err error, fields *[]dtos.Field) {
-	if err != nil {
-		*fields = append(*fields, dtos.Field{Key: "error", Value: err.Error()})
-		*fields = append(*fields, dtos.Field{Key: "cause", Value: err})
-	}
+func (l *Logger) Info(ctx context.Context, msg string, fields ...string) {
+	zapFields := convertStringFields(fields)
+
+	l.zapLogger.Info(msg, zapFields...)
 }
 
-func (l *Logger) Info(ctx context.Context, msg string, fields ...dtos.Field) {
-	l.zapLogger.Info(msg, convertToZapFields(fields)...)
+func (l *Logger) Error(ctx context.Context, msg string, err error, fields ...string) {
+	zapFields := convertStringFields(fields)
+	zapFields = append(zapFields, zap.Error(err))
+
+	l.zapLogger.Error(msg, zapFields...)
 }
 
-func (l *Logger) Error(ctx context.Context, msg string, err error, fields ...dtos.Field) {
-	finalFields := fields
-	addErrorFields(err, &finalFields)
-	l.zapLogger.Error(msg, convertToZapFields(finalFields)...)
+func (l *Logger) Fatal(ctx context.Context, msg string, err error, fields ...string) {
+	zapFields := convertStringFields(fields)
+	zapFields = append(zapFields, zap.Error(err))
+
+	l.zapLogger.Fatal(msg, zapFields...)
 }
 
-func (l *Logger) Fatal(ctx context.Context, msg string, err error, fields ...dtos.Field) {
-	finalFields := fields
-	addErrorFields(err, &finalFields)
-	l.zapLogger.Fatal(msg, convertToZapFields(finalFields)...)
-}
+func (l *Logger) Warn(ctx context.Context, msg string, fields ...string) {
+	zapFields := convertStringFields(fields)
 
-func (l *Logger) Warn(ctx context.Context, msg string, fields ...dtos.Field) {
-	l.zapLogger.Warn(msg, convertToZapFields(fields)...)
+	l.zapLogger.Warn(msg, zapFields...)
 }
 
 func (l *Logger) Sync() error {
