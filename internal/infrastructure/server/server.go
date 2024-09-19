@@ -11,6 +11,7 @@ import (
 	"github.com/dmarins/student-api/internal/domain/dtos"
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
+	"github.com/dmarins/student-api/internal/infrastructure/server/middlewares"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go.uber.org/fx"
@@ -27,7 +28,7 @@ type (
 )
 
 func NewServer(lc fx.Lifecycle, logger logger.ILogger) IServer {
-	e := setupEchoServer()
+	e := setupEchoServer(logger)
 
 	setupLifecycle(lc, e, logger)
 
@@ -40,20 +41,21 @@ func (s *Server) GetEcho() *echo.Echo {
 	return s.echo
 }
 
-func setupEchoServer() *echo.Echo {
+func setupEchoServer(logger logger.ILogger) *echo.Echo {
 	e := echo.New()
 
 	e.Use(middleware.Logger())
-	e.Use(ConfigRequestContext())
-	e.Use(ConfigRequestTimeout())
-	e.Use(ConfigCORS())
+	e.Use(middlewares.RequestContext(logger))
+	e.Use(middlewares.Timeout(logger))
+	e.Use(middlewares.CORS())
 
-	e.Server.Addr = fmt.Sprintf("%s:%s",
+	e.Server.Addr = fmt.Sprintf(
+		"%s:%s",
 		env.GetEnvironmentVariable("APP_HOST"),
 		env.GetEnvironmentVariable("APP_PORT"),
 	)
 
-	e.Validator = ConfigCustomValidator()
+	e.Validator = NewValidator()
 
 	return e
 }
@@ -81,17 +83,18 @@ func setupLifecycle(lc fx.Lifecycle, e *echo.Echo, logger logger.ILogger) {
 func gracefulShutdownServer(ctx context.Context, e *echo.Echo, logger logger.ILogger) error {
 	duration, err := time.ParseDuration(env.GetEnvironmentVariable("APP_GRACEFUL_SHUTDOWN_TIMEOUT"))
 	if err != nil {
-		logger.Warn(ctx, "could not parse APP_GRACEFUL_SHUTDOWN_TIMEOUT", err)
+		logger.Error(ctx, "could not parse APP_GRACEFUL_SHUTDOWN_TIMEOUT", err)
 		duration = time.Second * 5
-		logger.Warn(ctx, "using default APP_GRACEFUL_SHUTDOWN_TIMEOUT of 5s", err)
-	}
-
-	if err := logger.Sync(); err != nil {
-		logger.Error(ctx, "failed to synchronize logger", err)
+		logger.Warn(ctx, "using default APP_GRACEFUL_SHUTDOWN_TIMEOUT of 5s")
 	}
 
 	shutdownCtx, cancel := context.WithTimeout(ctx, duration)
 	defer cancel()
+
+	err = logger.Sync()
+	if err != nil {
+		logger.Error(ctx, "failed to synchronize logs", err)
+	}
 
 	err = e.Shutdown(shutdownCtx)
 	if err != nil {

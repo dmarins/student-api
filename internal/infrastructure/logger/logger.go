@@ -13,7 +13,7 @@ type (
 		Info(ctx context.Context, msg string, fields ...dtos.Field)
 		Error(ctx context.Context, msg string, err error, fields ...dtos.Field)
 		Fatal(ctx context.Context, msg string, err error, fields ...dtos.Field)
-		Warn(ctx context.Context, msg string, err error, fields ...dtos.Field)
+		Warn(ctx context.Context, msg string, fields ...dtos.Field)
 		Sync() error
 	}
 
@@ -73,10 +73,8 @@ func (l *Logger) Fatal(ctx context.Context, msg string, err error, fields ...dto
 	l.zapLogger.Fatal(msg, convertToZapFields(finalFields)...)
 }
 
-func (l *Logger) Warn(ctx context.Context, msg string, err error, fields ...dtos.Field) {
-	finalFields := fields
-	addErrorFields(err, &finalFields)
-	l.zapLogger.Warn(msg, convertToZapFields(finalFields)...)
+func (l *Logger) Warn(ctx context.Context, msg string, fields ...dtos.Field) {
+	l.zapLogger.Warn(msg, convertToZapFields(fields)...)
 }
 
 func (l *Logger) Sync() error {

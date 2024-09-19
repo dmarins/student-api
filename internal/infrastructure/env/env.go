@@ -1,7 +1,6 @@
 package env
 
 import (
-	"context"
 	"log"
 	"os"
 	"sync"
@@ -13,7 +12,7 @@ var (
 	once sync.Once
 )
 
-func LoadEnvironmentVariables(ctx context.Context) {
+func LoadEnvironmentVariables() {
 	var envFile string
 
 	once.Do(func() {
