@@ -1,5 +1,5 @@
 - use tracing
-- check zipkin + otel integration
+- use logger
 - friendly return
 - unit tests
 - integration tests

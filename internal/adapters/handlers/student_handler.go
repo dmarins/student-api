@@ -6,17 +6,23 @@ import (
 	"github.com/dmarins/student-api/internal/domain/dtos"
 	"github.com/dmarins/student-api/internal/domain/entities"
 	"github.com/dmarins/student-api/internal/domain/usecases"
+	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/infrastructure/server"
+	"github.com/dmarins/student-api/internal/infrastructure/tracer"
 	"github.com/labstack/echo/v4"
 )
 
 type StudentHandler struct {
 	CreateStudentUseCase usecases.ICreateStudentUseCase
+	Tracer               tracer.ITracer
 }
 
-func NewStudentHandler(createStudentUseCase usecases.ICreateStudentUseCase) *StudentHandler {
+func NewStudentHandler(
+	tracer tracer.ITracer,
+	createStudentUseCase usecases.ICreateStudentUseCase) *StudentHandler {
 	handler := &StudentHandler{
 		CreateStudentUseCase: createStudentUseCase,
+		Tracer:               tracer,
 	}
 
 	return handler
@@ -27,6 +33,14 @@ func RegisterStudentRoutes(s server.IServer, h *StudentHandler) {
 }
 
 func (h *StudentHandler) CreateStudent(c echo.Context) error {
+	span, ctx := h.Tracer.NewRootSpan(c.Request(), "StudentHandler")
+	defer span.End()
+
+	h.Tracer.AddEvent(span, "StudentHandler",
+		tracer.Attributes{
+			"Tenant": c.Request().Header.Get(env.GetEnvironmentVariable("HEADER_TENANT")),
+		})
+
 	var studentInput dtos.StudentInput
 	if err := c.Bind(&studentInput); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -36,7 +50,12 @@ func (h *StudentHandler) CreateStudent(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	result, err := h.CreateStudentUseCase.Execute(c.Request().Context(), entities.Student{Name: studentInput.Name})
+	h.Tracer.AddEvent(span, "StudentHandler",
+		tracer.Attributes{
+			"Payload": studentInput,
+		})
+
+	result, err := h.CreateStudentUseCase.Execute(ctx, entities.Student{Name: studentInput.Name})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
