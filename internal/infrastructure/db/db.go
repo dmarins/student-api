@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/dmarins/student-api/internal/domain/dtos"
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	_ "github.com/lib/pq"
@@ -22,10 +23,13 @@ type (
 )
 
 func NewDatabase(ctx context.Context, logger logger.ILogger) IDb {
+	host := env.GetEnvironmentVariable("POSTGRES_HOST")
+	port := env.GetEnvironmentVariable("POSTGRES_PORT")
+
 	dsn := fmt.
 		Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-			env.GetEnvironmentVariable("POSTGRES_HOST"),
-			env.GetEnvironmentVariable("POSTGRES_PORT"),
+			host,
+			port,
 			env.GetEnvironmentVariable("POSTGRES_USER"),
 			env.GetEnvironmentVariable("POSTGRES_PASSWORD"),
 			env.GetEnvironmentVariable("POSTGRES_DB"),
@@ -42,6 +46,12 @@ func NewDatabase(ctx context.Context, logger logger.ILogger) IDb {
 		logger.Fatal(ctx, "failed to verify connection to database", err)
 		return nil
 	}
+
+	logger.Info(ctx, "Db connected...",
+		dtos.Field{
+			Key: "address", Value: fmt.Sprintf("%s:%s", host, port),
+		},
+	)
 
 	return &Db{
 		postgres: db,
