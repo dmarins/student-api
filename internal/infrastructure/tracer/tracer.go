@@ -21,8 +21,8 @@ import (
 type (
 	ITracer interface {
 		NewRootSpan(request *http.Request, spanName string) (oteltrace.Span, context.Context)
-		NewSpanWithCtx(parentCtx context.Context, spanName string) (oteltrace.Span, context.Context)
-		AddEvent(span oteltrace.Span, name string, attributes Attributes)
+		NewSpanContext(ctx context.Context, spanName string) (oteltrace.Span, context.Context)
+		AddAttributes(span oteltrace.Span, name string, attributes Attributes)
 	}
 
 	Tracer struct {
@@ -99,14 +99,14 @@ func convertAttributes(attributes Attributes) []attribute.KeyValue {
 }
 
 func (t *Tracer) NewRootSpan(request *http.Request, spanName string) (oteltrace.Span, context.Context) {
-	parentContext := otel.
+	ctx := otel.
 		GetTextMapPropagator().
 		Extract(request.Context(), propagation.HeaderCarrier(request.Header))
 
-	return t.NewSpanWithCtx(parentContext, spanName)
+	return t.NewSpanContext(ctx, spanName)
 }
 
-func (t *Tracer) NewSpanWithCtx(parentCtx context.Context, spanName string) (oteltrace.Span, context.Context) {
+func (t *Tracer) NewSpanContext(ctx context.Context, spanName string) (oteltrace.Span, context.Context) {
 	appName := env.ProvideAppEnv()
 	tracer := otel.Tracer(appName)
 
@@ -115,7 +115,7 @@ func (t *Tracer) NewSpanWithCtx(parentCtx context.Context, spanName string) (ote
 	}
 
 	ctx, span := tracer.Start(
-		parentCtx,
+		ctx,
 		spanName,
 		oteltrace.WithAttributes(commonLabels...),
 	)
@@ -125,7 +125,7 @@ func (t *Tracer) NewSpanWithCtx(parentCtx context.Context, spanName string) (ote
 	return span, ctx
 }
 
-func (t *Tracer) AddEvent(span oteltrace.Span, name string, attributes Attributes) {
+func (t *Tracer) AddAttributes(span oteltrace.Span, name string, attributes Attributes) {
 	values := convertAttributes(attributes)
 
 	span.AddEvent(name, oteltrace.WithAttributes(values...))

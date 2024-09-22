@@ -29,14 +29,14 @@ func NewStudentHandler(
 }
 
 func RegisterStudentRoutes(s server.IServer, h *StudentHandler) {
-	s.GetEcho().POST("/student", h.CreateStudent)
+	s.GetEcho().POST("/student", h.Create)
 }
 
-func (h *StudentHandler) CreateStudent(c echo.Context) error {
-	span, ctx := h.Tracer.NewRootSpan(c.Request(), "StudentHandler")
+func (h *StudentHandler) Create(c echo.Context) error {
+	span, ctx := h.Tracer.NewRootSpan(c.Request(), tracer.StudentHandlerCreate)
 	defer span.End()
 
-	h.Tracer.AddEvent(span, "StudentHandler",
+	h.Tracer.AddAttributes(span, tracer.StudentHandlerCreate,
 		tracer.Attributes{
 			"Tenant": c.Request().Header.Get(env.GetEnvironmentVariable("HEADER_TENANT")),
 		})
@@ -50,7 +50,7 @@ func (h *StudentHandler) CreateStudent(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	h.Tracer.AddEvent(span, "StudentHandler",
+	h.Tracer.AddAttributes(span, tracer.StudentHandlerCreate,
 		tracer.Attributes{
 			"Payload": studentInput,
 		})

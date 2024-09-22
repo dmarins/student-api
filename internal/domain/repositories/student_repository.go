@@ -7,6 +7,6 @@ import (
 )
 
 type IStudentRepository interface {
-	Save(ctx context.Context, student *entities.Student) error
+	Add(ctx context.Context, student *entities.Student) error
 	ExistsByName(ctx context.Context, name string) (bool, error)
 }
