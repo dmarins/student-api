@@ -7,22 +7,26 @@ import (
 	"github.com/dmarins/student-api/internal/domain/entities"
 	"github.com/dmarins/student-api/internal/domain/usecases"
 	"github.com/dmarins/student-api/internal/infrastructure/env"
+	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	"github.com/dmarins/student-api/internal/infrastructure/server"
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
-	"github.com/labstack/echo/v4"
+	echo "github.com/labstack/echo/v4"
 )
 
 type StudentHandler struct {
 	CreateStudentUseCase usecases.ICreateStudentUseCase
 	Tracer               tracer.ITracer
+	Logger               logger.ILogger
 }
 
 func NewStudentHandler(
 	tracer tracer.ITracer,
+	logger logger.ILogger,
 	createStudentUseCase usecases.ICreateStudentUseCase) *StudentHandler {
 	handler := &StudentHandler{
 		CreateStudentUseCase: createStudentUseCase,
 		Tracer:               tracer,
+		Logger:               logger,
 	}
 
 	return handler
@@ -43,22 +47,26 @@ func (h *StudentHandler) Create(c echo.Context) error {
 
 	var studentInput dtos.StudentInput
 	if err := c.Bind(&studentInput); err != nil {
+		h.Logger.Warn(ctx, "invalid payload, chech the data sent")
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
+	h.Logger.Debug(ctx, "bind ok")
 
 	if err := c.Validate(&studentInput); err != nil {
+		h.Logger.Warn(ctx, "invalid field")
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	h.Tracer.AddAttributes(span, tracer.StudentHandlerCreate,
-		tracer.Attributes{
-			"Payload": studentInput,
-		})
+	h.Logger.Debug(ctx, "validate ok")
 
 	result, err := h.CreateStudentUseCase.Execute(ctx, entities.Student{Name: studentInput.Name})
 	if err != nil {
+		h.Logger.Error(ctx, "internal error processing the request", err)
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+
+	h.Logger.Debug(ctx, "usecase ok")
 
 	return c.JSON(http.StatusCreated, result)
 }

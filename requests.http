@@ -1,7 +1,48 @@
+### missing header
+
+POST http://localhost:8080/student
+Content-Type: application/json
+
+{
+    "name": "student {{$randomInt 1 100}}"
+}
+
+### success
+
 POST http://localhost:8080/student
 x-tenant: {{$guid}}
 Content-Type: application/json
 
 {
-    "name": "diogo {{$randomInt 1 100}}"
+    "name": "student {{$randomInt 1 100}}"
+}
+
+### invalid payload
+
+POST http://localhost:8080/student
+x-tenant: {{$guid}}
+Content-Type: application/json
+
+{
+    "name": 1
+}
+
+### required field
+
+POST http://localhost:8080/student
+x-tenant: {{$guid}}
+Content-Type: application/json
+
+{
+    "name": ""
+}
+
+### same name
+
+POST http://localhost:8080/student
+x-tenant: {{$guid}}
+Content-Type: application/json
+
+{
+    "name": "bob"
 }

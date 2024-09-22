@@ -24,6 +24,7 @@ docker-up:
 docker-restart: down docker-up
 
 run:
+	$(GOCMD) mod tidy
 	APP_ENV=local $(GOCMD) run ./cmd/main.go
 
 pgquery:

@@ -3,12 +3,14 @@ package logger
 import (
 	"context"
 
+	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 type (
 	ILogger interface {
+		Debug(ctx context.Context, msg string, fields ...string)
 		Info(ctx context.Context, msg string, fields ...string)
 		Error(ctx context.Context, msg string, err error, fields ...string)
 		Fatal(ctx context.Context, msg string, err error, fields ...string)
@@ -24,13 +26,17 @@ type (
 func NewLogger() ILogger {
 	config := zap.NewProductionConfig()
 
+	if env.ProvideAppEnv() == "local" {
+		config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
+	}
+
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	config.EncoderConfig.TimeKey = "timestamp"
 	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 
 	config.Encoding = "console"
-	config.OutputPaths = []string{"stdout"}
-	config.ErrorOutputPaths = []string{"stdout"}
+	config.OutputPaths = []string{"stderr"}
+	config.ErrorOutputPaths = []string{"stderr"}
 
 	zapLogger, _ := config.Build(zap.AddCallerSkip(1))
 
@@ -50,6 +56,12 @@ func convertStringFields(extraFields []string) []zap.Field {
 	}
 
 	return zapFields
+}
+
+func (l *Logger) Debug(ctx context.Context, msg string, fields ...string) {
+	zapFields := convertStringFields(fields)
+
+	l.zapLogger.Debug(msg, zapFields...)
 }
 
 func (l *Logger) Info(ctx context.Context, msg string, fields ...string) {
