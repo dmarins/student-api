@@ -12,7 +12,7 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	"github.com/dmarins/student-api/internal/infrastructure/server"
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
-	"github.com/dmarins/student-api/internal/usecases/student/create"
+	"github.com/dmarins/student-api/internal/usecases/student/creation"
 	"go.uber.org/fx"
 )
 
@@ -54,14 +54,26 @@ func createStudentUseCaseModule() fx.Option {
 	return fx.Module("createStudentUseCase",
 		fx.Provide(
 			fx.Annotate(repositories.NewStudentRepository, fx.As(new(domain_repositories.IStudentRepository))),
-			fx.Annotate(create.NewCreateStudentUseCase, fx.As(new(usecases.ICreateStudentUseCase))),
+			fx.Annotate(creation.NewStudentCreationUseCasePersistence,
+				fx.ResultTags(`name:"studentCreationUseCasePersistence"`),
+				fx.As(new(usecases.IStudentCreationUseCase)),
+			),
+			fx.Annotate(creation.NewStudentCreationUseCaseValidations,
+				fx.ParamTags(``, ``, ``, `name:"studentCreationUseCasePersistence"`),
+				fx.ResultTags(`name:"studentCreationUseCaseValidations"`),
+				fx.As(new(usecases.IStudentCreationUseCase)),
+			),
 		),
 	)
 }
 
+func provideStudentHandler(tracer tracer.ITracer, logger logger.ILogger, studentCreationUseCase usecases.IStudentCreationUseCase) *handlers.StudentHandler {
+	return handlers.NewStudentHandler(tracer, logger, studentCreationUseCase)
+}
+
 func studentHandlerModule() fx.Option {
 	return fx.Module("studentHandlers",
-		fx.Provide(handlers.NewStudentHandler),
+		fx.Provide(fx.Annotate(provideStudentHandler, fx.ParamTags(``, ``, `name:"studentCreationUseCaseValidations"`))),
 		fx.Invoke(handlers.RegisterStudentRoutes),
 	)
 }

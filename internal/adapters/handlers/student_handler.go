@@ -14,7 +14,7 @@ import (
 )
 
 type StudentHandler struct {
-	CreateStudentUseCase usecases.ICreateStudentUseCase
+	CreateStudentUseCase usecases.IStudentCreationUseCase
 	Tracer               tracer.ITracer
 	Logger               logger.ILogger
 }
@@ -22,7 +22,7 @@ type StudentHandler struct {
 func NewStudentHandler(
 	tracer tracer.ITracer,
 	logger logger.ILogger,
-	createStudentUseCase usecases.ICreateStudentUseCase) *StudentHandler {
+	createStudentUseCase usecases.IStudentCreationUseCase) *StudentHandler {
 	handler := &StudentHandler{
 		CreateStudentUseCase: createStudentUseCase,
 		Tracer:               tracer,
@@ -46,27 +46,33 @@ func (h *StudentHandler) Create(c echo.Context) error {
 		})
 
 	var studentInput dtos.StudentInput
+	var result *dtos.Result
+
 	if err := c.Bind(&studentInput); err != nil {
-		h.Logger.Warn(ctx, "invalid payload, chech the data sent")
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		h.Logger.Warn(ctx, "invalid payload, check the data sent", "error", err.Error())
+
+		result = dtos.NewHttpStatusBadRequestResult()
+		return echo.NewHTTPError(result.StatusCode, result.Message)
 	}
 
-	h.Logger.Debug(ctx, "bind ok")
+	h.Logger.Debug(ctx, "echo bind ok")
 
 	if err := c.Validate(&studentInput); err != nil {
-		h.Logger.Warn(ctx, "invalid field")
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		h.Logger.Warn(ctx, "invalid field", "error", err.Error())
+
+		result = dtos.NewHttpStatusBadRequestResult()
+		return echo.NewHTTPError(result.StatusCode, result.Message)
 	}
 
-	h.Logger.Debug(ctx, "validate ok")
+	h.Logger.Debug(ctx, "echo validate ok")
 
-	result, err := h.CreateStudentUseCase.Execute(ctx, entities.Student{Name: studentInput.Name})
-	if err != nil {
-		h.Logger.Error(ctx, "internal error processing the request", err)
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	output, result := h.CreateStudentUseCase.Execute(ctx, entities.Student{Name: studentInput.Name})
+	switch result.StatusCode {
+	case http.StatusCreated:
+		return c.JSON(result.StatusCode, dtos.NewHttpStatusCreatedResult(output))
+	case http.StatusInternalServerError:
+		return echo.NewHTTPError(result.StatusCode, result.Errors)
+	default:
+		return echo.NewHTTPError(result.StatusCode, result)
 	}
-
-	h.Logger.Debug(ctx, "usecase ok")
-
-	return c.JSON(http.StatusCreated, result)
 }

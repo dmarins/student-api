@@ -3,7 +3,8 @@ package tracer
 const (
 	StudentHandlerCreate = "StudentHandler:Create"
 
-	CreateStudentUseCaseExecute = "CreateStudentUseCase:Execute"
+	StudentCreationUseCasePersistenceExecute = "StudentCreationUseCase:Execute"
+	StudentCreationUseCaseValidationsExecute = "StudentCreationUseCaseValidations:Execute"
 
 	StudentRepositoryAdd          = "StudentRepository:Add"
 	StudentRepositoryExistsByName = "StudentRepository:ExistsByName"

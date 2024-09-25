@@ -1,4 +1,3 @@
-- friendly return
 - unit tests
 - integration tests
 - open api + docs

@@ -7,6 +7,6 @@ import (
 	"github.com/dmarins/student-api/internal/domain/entities"
 )
 
-type ICreateStudentUseCase interface {
-	Execute(ctx context.Context, student entities.Student) (*dtos.StudentOutput, error)
+type IStudentCreationUseCase interface {
+	Execute(ctx context.Context, student entities.Student) (*dtos.StudentOutput, *dtos.Result)
 }
