@@ -1,8 +1,9 @@
 DOCKERCOMPOSECMD=docker-compose
 GOCMD=go
 DOCKERCMD=docker
+GOBIN=$(shell $(GOCMD) env GOPATH)/bin
 
-.PHONY: down local-up local-restart docker-up docker-restart run pgquery
+.PHONY: down local-up local-restart docker-up docker-restart download run pgquery mockgen-download mocks-clean mocks-gen tests-clean tests tests-coverage
 
 down:
 	$(DOCKERCOMPOSECMD) down --remove-orphans
@@ -23,9 +24,32 @@ docker-up:
 
 docker-restart: down docker-up
 
-run:
-	$(GOCMD) mod tidy
+download:
+	$(GOCMD) mod download
+
+run: download
 	APP_ENV=local $(GOCMD) run ./cmd/main.go
 
 pgquery:
 	$(DOCKERCMD) exec -it db psql -U root -h localhost -d students -p 5432
+
+mockgen-download: download
+	$(GOCMD) install -mod=mod go.uber.org/mock/mockgen@latest
+
+mocks-clean:
+	@echo "CLEANING MOCKS START..."
+	rm -rf internal/domain/mocks/*
+	@echo "CLEAN MOCKS!"
+
+mocks-gen: mockgen-download mocks-clean
+	$(GOBIN)/mockgen -source=internal/domain/repositories/student_repository.go -destination=internal/domain/mocks/student_repository.go -typed=true -package=mocks
+
+tests-clean:
+	$(GOCMD) clean -testcache
+
+tests: tests-clean
+	$(GOCMD) test -cover -p=1 ./...
+
+tests-coverage: tests-clean
+	$(GOCMD) test -cover -p=1 -covermode=count -coverprofile=coverage.out ./...
+	$(GOCMD) tool cover -html=coverage.out
