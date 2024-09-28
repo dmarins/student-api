@@ -42,7 +42,7 @@ func (h *StudentHandler) Create(ectx echo.Context) error {
 
 	h.Tracer.AddAttributes(span, tracer.StudentHandlerCreate,
 		tracer.Attributes{
-			"Tenant": ectx.Request().Header.Get(env.GetEnvironmentVariable("HEADER_TENANT")),
+			"Tenant": ectx.Request().Header.Get(env.ProvideTenantHeaderName()),
 		})
 
 	var studentInput dtos.StudentInput

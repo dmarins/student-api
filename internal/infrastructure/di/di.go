@@ -21,12 +21,12 @@ func StartCompositionRoot(ctx context.Context) *fx.App {
 		fx.Provide(
 			func() context.Context { return ctx },
 			fx.Annotate(
-				func() string { return env.ProvideAppEnv() },
+				func() string { return env.ProvideAppName() },
 				fx.ResultTags(`name:"appName"`),
 			),
 			fx.Annotate(
-				func() string { return env.GetEnvironmentVariable("APP_ENV") },
-				fx.ResultTags(`name:"env"`),
+				func() string { return env.ProvideAppEnv() },
+				fx.ResultTags(`name:"appEnv"`),
 			),
 		),
 		infrastructureModule(),
@@ -43,7 +43,7 @@ func infrastructureModule() fx.Option {
 	return fx.Module("infrastructure",
 		fx.Provide(
 			fx.Annotate(logger.NewLogger, fx.As(new(logger.ILogger))),
-			fx.Annotate(provideTracer, fx.ParamTags(``, ``, `name:"appName"`, `name:"env"`)),
+			fx.Annotate(provideTracer, fx.ParamTags(``, ``, `name:"appName"`, `name:"appEnv"`)),
 			fx.Annotate(db.NewDatabase, fx.As(new(db.IDb))),
 			fx.Annotate(server.NewServer, fx.As(new(server.IServer))),
 		),

@@ -48,11 +48,7 @@ func setupEchoServer(logger logger.ILogger) *echo.Echo {
 	e.Use(middlewares.Timeout(logger))
 	e.Use(middlewares.CORS())
 
-	e.Server.Addr = fmt.Sprintf(
-		"%s:%s",
-		env.GetEnvironmentVariable("APP_HOST"),
-		env.GetEnvironmentVariable("APP_PORT"),
-	)
+	e.Server.Addr = fmt.Sprintf("%s:%s", env.ProvideAppHost(), env.ProvideAppPort())
 
 	e.Validator = NewValidator()
 
@@ -63,7 +59,7 @@ func setupLifecycle(lc fx.Lifecycle, e *echo.Echo, logger logger.ILogger) {
 	lc.Append(
 		fx.Hook{
 			OnStart: func(ctx context.Context) error {
-				logger.Info(ctx, "starting HTTP server...", "address", e.Server.Addr)
+				logger.Info(ctx, "HTTP server started...", "address", e.Server.Addr)
 
 				go e.Server.ListenAndServe()
 
@@ -77,9 +73,10 @@ func setupLifecycle(lc fx.Lifecycle, e *echo.Echo, logger logger.ILogger) {
 }
 
 func gracefulShutdownServer(ctx context.Context, e *echo.Echo, logger logger.ILogger) error {
-	duration, err := time.ParseDuration(env.GetEnvironmentVariable("APP_GRACEFUL_SHUTDOWN_TIMEOUT"))
+	duration, err := time.ParseDuration(env.ProvideAppGracefulShutdownTimeoutInSeconds())
 	if err != nil {
 		logger.Error(ctx, "could not parse APP_GRACEFUL_SHUTDOWN_TIMEOUT", err)
+
 		duration = time.Second * 5
 		logger.Warn(ctx, "using default APP_GRACEFUL_SHUTDOWN_TIMEOUT of 5s")
 	}
@@ -89,7 +86,7 @@ func gracefulShutdownServer(ctx context.Context, e *echo.Echo, logger logger.ILo
 
 	err = logger.Sync()
 	if err != nil {
-		logger.Error(ctx, "failed to synchronize logs", err)
+		logger.Error(ctx, "failed to synchronize logs in graceful shutdown", err)
 	}
 
 	err = e.Shutdown(shutdownCtx)

@@ -22,16 +22,16 @@ type (
 )
 
 func NewDatabase(ctx context.Context, logger logger.ILogger) IDb {
-	host := env.GetEnvironmentVariable("POSTGRES_HOST")
-	port := env.GetEnvironmentVariable("POSTGRES_PORT")
+	host := env.ProvideDbHost()
+	port := env.ProvideDbPort()
 
 	dsn := fmt.
 		Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 			host,
 			port,
-			env.GetEnvironmentVariable("POSTGRES_USER"),
-			env.GetEnvironmentVariable("POSTGRES_PASSWORD"),
-			env.GetEnvironmentVariable("POSTGRES_DB"),
+			env.ProvideDbUser(),
+			env.ProvideDbPassword(),
+			env.ProvideDbName(),
 		)
 
 	db, err := sql.Open("postgres", dsn)

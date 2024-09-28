@@ -12,9 +12,10 @@ import (
 )
 
 func RequestContext(logger logger.ILogger) echo.MiddlewareFunc {
-	headerCidKey := env.GetEnvironmentVariable("HEADER_CID")
-	headerTenantKey := env.GetEnvironmentVariable("HEADER_TENANT")
-	requestContextKey := env.GetEnvironmentVariable("REQUEST_CONTEXT")
+	headerCidKey := env.ProvideCidHeaderName()
+	headerTenantKey := env.ProvideTenantHeaderName()
+	requestContextKey := env.ProvideRequestContextName()
+
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			ctx := c.Request().Context()
@@ -27,10 +28,7 @@ func RequestContext(logger logger.ILogger) echo.MiddlewareFunc {
 			tenant := c.Request().Header.Get(headerTenantKey)
 			if tenant == "" {
 				logger.Warn(ctx, "the x-tenant header was not provided", "cid", cid)
-
-				return c.JSON(http.StatusBadRequest, map[string]string{
-					"error": "the x-tenant header was not provided",
-				})
+				return c.JSON(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
 			}
 
 			rctx := dtos.RequestContext{
