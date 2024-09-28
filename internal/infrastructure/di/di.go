@@ -54,13 +54,13 @@ func createStudentUseCaseModule() fx.Option {
 	return fx.Module("createStudentUseCase",
 		fx.Provide(
 			fx.Annotate(repositories.NewStudentRepository, fx.As(new(domain_repositories.IStudentRepository))),
-			fx.Annotate(creation.NewStudentCreationUseCasePersistence,
-				fx.ResultTags(`name:"studentCreationUseCasePersistence"`),
+			fx.Annotate(creation.NewStudentCreationWithPersistence,
+				fx.ResultTags(`name:"studentCreationWithPersistence"`),
 				fx.As(new(usecases.IStudentCreationUseCase)),
 			),
-			fx.Annotate(creation.NewStudentCreationUseCaseValidations,
-				fx.ParamTags(``, ``, ``, `name:"studentCreationUseCasePersistence"`),
-				fx.ResultTags(`name:"studentCreationUseCaseValidations"`),
+			fx.Annotate(creation.NewStudentCreationWithValidations,
+				fx.ParamTags(``, ``, ``, `name:"studentCreationWithPersistence"`),
+				fx.ResultTags(`name:"studentCreationWithValidations"`),
 				fx.As(new(usecases.IStudentCreationUseCase)),
 			),
 		),
@@ -73,7 +73,7 @@ func provideStudentHandler(tracer tracer.ITracer, logger logger.ILogger, student
 
 func studentHandlerModule() fx.Option {
 	return fx.Module("studentHandlers",
-		fx.Provide(fx.Annotate(provideStudentHandler, fx.ParamTags(``, ``, `name:"studentCreationUseCaseValidations"`))),
+		fx.Provide(fx.Annotate(provideStudentHandler, fx.ParamTags(``, ``, `name:"studentCreationWithValidations"`))),
 		fx.Invoke(handlers.RegisterStudentRoutes),
 	)
 }

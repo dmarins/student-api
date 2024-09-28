@@ -12,21 +12,21 @@ import (
 	"github.com/google/uuid"
 )
 
-type StudentCreationUseCasePersistence struct {
+type StudentCreationWithPersistence struct {
 	StudentRepository repositories.IStudentRepository
 	Tracer            tracer.ITracer
 	Logger            logger.ILogger
 }
 
-func NewStudentCreationUseCasePersistence(tracer tracer.ITracer, logger logger.ILogger, studentRepository repositories.IStudentRepository) usecases.IStudentCreationUseCase {
-	return &StudentCreationUseCasePersistence{
+func NewStudentCreationWithPersistence(tracer tracer.ITracer, logger logger.ILogger, studentRepository repositories.IStudentRepository) usecases.IStudentCreationUseCase {
+	return &StudentCreationWithPersistence{
 		StudentRepository: studentRepository,
 		Tracer:            tracer,
 		Logger:            logger,
 	}
 }
 
-func (uc *StudentCreationUseCasePersistence) Execute(ctx context.Context, student entities.Student) (*dtos.StudentOutput, *dtos.Result) {
+func (uc *StudentCreationWithPersistence) Execute(ctx context.Context, student entities.Student) *dtos.Result {
 	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentCreationUseCasePersistenceExecute)
 	defer span.End()
 
@@ -37,20 +37,21 @@ func (uc *StudentCreationUseCasePersistence) Execute(ctx context.Context, studen
 
 	student.ID = uuid.New().String()
 
-	uc.Logger.Debug(ctx, "new student", "id", student.ID, "name", student.Name)
+	uc.Logger.Debug(ctx, "new student", "id", student.ID)
 
 	err := uc.StudentRepository.Add(ctx, &student)
 	if err != nil {
 		uc.Logger.Error(ctx, "error adding a new student", err)
-		return nil, dtos.NewHttpStatusInternalServerErrorResult(err)
+
+		return dtos.NewInternalServerErrorResult()
 	}
 
-	uc.Logger.Debug(ctx, "stored")
+	uc.Logger.Debug(ctx, "student stored")
 
 	output := &dtos.StudentOutput{
 		ID:   student.ID,
 		Name: student.Name,
 	}
 
-	return output, dtos.NewHttpStatusCreatedResult(output)
+	return dtos.NewCreatedResult(output)
 }

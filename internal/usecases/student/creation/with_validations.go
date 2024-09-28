@@ -11,15 +11,15 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
 )
 
-type StudentCreationUseCaseValidations struct {
+type StudentCreationWithValidations struct {
 	StudentRepository repositories.IStudentRepository
 	Tracer            tracer.ITracer
 	Logger            logger.ILogger
 	Next              usecases.IStudentCreationUseCase
 }
 
-func NewStudentCreationUseCaseValidations(tracer tracer.ITracer, logger logger.ILogger, studentRepository repositories.IStudentRepository, next usecases.IStudentCreationUseCase) usecases.IStudentCreationUseCase {
-	return &StudentCreationUseCaseValidations{
+func NewStudentCreationWithValidations(tracer tracer.ITracer, logger logger.ILogger, studentRepository repositories.IStudentRepository, next usecases.IStudentCreationUseCase) usecases.IStudentCreationUseCase {
+	return &StudentCreationWithValidations{
 		StudentRepository: studentRepository,
 		Tracer:            tracer,
 		Logger:            logger,
@@ -27,7 +27,7 @@ func NewStudentCreationUseCaseValidations(tracer tracer.ITracer, logger logger.I
 	}
 }
 
-func (uc *StudentCreationUseCaseValidations) Execute(ctx context.Context, student entities.Student) (*dtos.StudentOutput, *dtos.Result) {
+func (uc *StudentCreationWithValidations) Execute(ctx context.Context, student entities.Student) *dtos.Result {
 	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentCreationUseCaseValidationsExecute)
 	defer span.End()
 
@@ -39,12 +39,14 @@ func (uc *StudentCreationUseCaseValidations) Execute(ctx context.Context, studen
 	exists, err := uc.StudentRepository.ExistsByName(ctx, student.Name)
 	if err != nil {
 		uc.Logger.Error(ctx, "error checking if student exists", err, "name", student.Name)
-		return nil, dtos.NewHttpStatusInternalServerErrorResult(err)
+
+		return dtos.NewInternalServerErrorResult()
 	}
 
 	if exists {
 		uc.Logger.Warn(ctx, "there is already a student with the same name", "name", student.Name)
-		return nil, dtos.NewHttpStatusConflictResult()
+
+		return dtos.NewConflictResult()
 	}
 
 	return uc.Next.Execute(ctx, student)

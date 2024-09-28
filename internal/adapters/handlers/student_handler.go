@@ -36,43 +36,35 @@ func RegisterStudentRoutes(s server.IServer, h *StudentHandler) {
 	s.GetEcho().POST("/student", h.Create)
 }
 
-func (h *StudentHandler) Create(c echo.Context) error {
-	span, ctx := h.Tracer.NewRootSpan(c.Request(), tracer.StudentHandlerCreate)
+func (h *StudentHandler) Create(ectx echo.Context) error {
+	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerCreate)
 	defer span.End()
 
 	h.Tracer.AddAttributes(span, tracer.StudentHandlerCreate,
 		tracer.Attributes{
-			"Tenant": c.Request().Header.Get(env.GetEnvironmentVariable("HEADER_TENANT")),
+			"Tenant": ectx.Request().Header.Get(env.GetEnvironmentVariable("HEADER_TENANT")),
 		})
 
 	var studentInput dtos.StudentInput
-	var result *dtos.Result
-
-	if err := c.Bind(&studentInput); err != nil {
+	if err := ectx.Bind(&studentInput); err != nil {
 		h.Logger.Warn(ctx, "invalid payload, check the data sent", "error", err.Error())
 
-		result = dtos.NewHttpStatusBadRequestResult()
-		return echo.NewHTTPError(result.StatusCode, result.Message)
+		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
 	}
 
 	h.Logger.Debug(ctx, "echo bind ok")
 
-	if err := c.Validate(&studentInput); err != nil {
+	if err := ectx.Validate(&studentInput); err != nil {
 		h.Logger.Warn(ctx, "invalid field", "error", err.Error())
 
-		result = dtos.NewHttpStatusBadRequestResult()
-		return echo.NewHTTPError(result.StatusCode, result.Message)
+		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
 	}
 
 	h.Logger.Debug(ctx, "echo validate ok")
 
-	output, result := h.CreateStudentUseCase.Execute(ctx, entities.Student{Name: studentInput.Name})
-	switch result.StatusCode {
-	case http.StatusCreated:
-		return c.JSON(result.StatusCode, dtos.NewHttpStatusCreatedResult(output))
-	case http.StatusInternalServerError:
-		return echo.NewHTTPError(result.StatusCode, result.Errors)
-	default:
-		return echo.NewHTTPError(result.StatusCode, result)
+	student := entities.Student{
+		Name: studentInput.Name,
 	}
+
+	return ReturnResult(ectx, h.CreateStudentUseCase.Execute(ctx, student))
 }

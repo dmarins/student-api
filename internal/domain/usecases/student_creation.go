@@ -8,5 +8,5 @@ import (
 )
 
 type IStudentCreationUseCase interface {
-	Execute(ctx context.Context, student entities.Student) (*dtos.StudentOutput, *dtos.Result)
+	Execute(ctx context.Context, student entities.Student) *dtos.Result
 }
