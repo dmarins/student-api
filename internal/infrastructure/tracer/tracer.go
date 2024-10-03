@@ -18,11 +18,23 @@ import (
 	oteltrace "go.opentelemetry.io/otel/trace"
 )
 
+type OtelSpanWrapper struct {
+	oteltrace.Span
+}
+
+func (s OtelSpanWrapper) End() {
+	s.Span.End()
+}
+
+func (s OtelSpanWrapper) AddEvent(name string, opts ...interface{}) {
+	s.Span.AddEvent(name)
+}
+
 type (
 	ITracer interface {
-		NewRootSpan(request *http.Request, spanName string) (oteltrace.Span, context.Context)
-		NewSpanContext(ctx context.Context, spanName string) (oteltrace.Span, context.Context)
-		AddAttributes(span oteltrace.Span, name string, attributes Attributes)
+		NewRootSpan(request *http.Request, spanName string) (ISpan, context.Context)
+		NewSpanContext(ctx context.Context, spanName string) (ISpan, context.Context)
+		AddAttributes(span ISpan, name string, attributes Attributes)
 	}
 
 	Tracer struct {
@@ -98,7 +110,7 @@ func convertAttributes(attributes Attributes) []attribute.KeyValue {
 	return values
 }
 
-func (t *Tracer) NewRootSpan(request *http.Request, spanName string) (oteltrace.Span, context.Context) {
+func (t *Tracer) NewRootSpan(request *http.Request, spanName string) (ISpan, context.Context) {
 	ctx := otel.
 		GetTextMapPropagator().
 		Extract(request.Context(), propagation.HeaderCarrier(request.Header))
@@ -106,7 +118,7 @@ func (t *Tracer) NewRootSpan(request *http.Request, spanName string) (oteltrace.
 	return t.NewSpanContext(ctx, spanName)
 }
 
-func (t *Tracer) NewSpanContext(ctx context.Context, spanName string) (oteltrace.Span, context.Context) {
+func (t *Tracer) NewSpanContext(ctx context.Context, spanName string) (ISpan, context.Context) {
 	appName := env.ProvideAppEnv()
 	tracer := otel.Tracer(appName)
 
@@ -122,10 +134,10 @@ func (t *Tracer) NewSpanContext(ctx context.Context, spanName string) (oteltrace
 
 	span.SetStatus(codes.Ok, spanName)
 
-	return span, ctx
+	return OtelSpanWrapper{span}, ctx
 }
 
-func (t *Tracer) AddAttributes(span oteltrace.Span, name string, attributes Attributes) {
+func (t *Tracer) AddAttributes(span ISpan, name string, attributes Attributes) {
 	values := convertAttributes(attributes)
 
 	span.AddEvent(name, oteltrace.WithAttributes(values...))

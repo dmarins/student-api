@@ -42,7 +42,11 @@ mocks-clean:
 	@echo "CLEAN MOCKS!"
 
 mocks-gen: mockgen-download mocks-clean
+	$(GOBIN)/mockgen -source=internal/infrastructure/logger/logger.go -destination=internal/domain/mocks/logger.go -typed=true -package=mocks	
+	$(GOBIN)/mockgen -source=internal/infrastructure/tracer/tracer.go -destination=internal/domain/mocks/tracer.go -typed=true -package=mocks
+	$(GOBIN)/mockgen -source=internal/infrastructure/tracer/types.go -destination=internal/domain/mocks/types.go -typed=true -package=mocks 
 	$(GOBIN)/mockgen -source=internal/domain/repositories/student_repository.go -destination=internal/domain/mocks/student_repository.go -typed=true -package=mocks
+	$(GOBIN)/mockgen -source=internal/domain/usecases/student_creation.go -destination=internal/domain/mocks/student_creation.go -typed=true -package=mocks
 
 tests-clean:
 	$(GOCMD) clean -testcache
