@@ -1,3 +1,2 @@
-- integration tests
 - e2e tests
 - open api + docs
