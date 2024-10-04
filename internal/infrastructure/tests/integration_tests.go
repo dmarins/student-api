@@ -27,6 +27,15 @@ type IntegrationTestsBuilder struct {
 	tracer      tracer.ITracer
 }
 
+func (b *IntegrationTestsBuilder) TearDown() {
+	b.dbConn.Close()
+	b.pgContainer.Terminate(b.ctx)
+}
+
+func (b *IntegrationTestsBuilder) GetCtx() context.Context {
+	return b.ctx
+}
+
 func NewIntegrationTestsBuilder() *IntegrationTestsBuilder {
 	ctx := context.Background()
 
@@ -87,13 +96,4 @@ func (b *IntegrationTestsBuilder) WithTracer() *IntegrationTestsBuilder {
 
 func (b *IntegrationTestsBuilder) BuildStudentRepository() domain_repositories.IStudentRepository {
 	return repositories.NewStudentRepository(b.tracer, b.postgresDb)
-}
-
-func (b *IntegrationTestsBuilder) TearDown() {
-	b.dbConn.Close()
-	b.pgContainer.Terminate(b.ctx)
-}
-
-func (b *IntegrationTestsBuilder) GetCtx() context.Context {
-	return b.ctx
 }
