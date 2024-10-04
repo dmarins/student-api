@@ -28,7 +28,7 @@ type studentCreationWithValidationsTestBuilder struct {
 	fakeError             error
 }
 
-func newstudentCreationWithValidationsTestBuilder(t *testing.T) *studentCreationWithValidationsTestBuilder {
+func newStudentCreationWithValidationsTestBuilder(t *testing.T) *studentCreationWithValidationsTestBuilder {
 	ctx, ctrl, tracerMock, loggerMock := tests.SetupTest(t)
 	spanMock := mocks.NewMockISpan(ctrl)
 	studentRepositoryMock := mocks.NewMockIStudentRepository(ctrl)
@@ -136,7 +136,7 @@ func (b *studentCreationWithValidationsTestBuilder) build() usecases.IStudentCre
 }
 
 func TestStudentCreationWithValidations_Execute_WhenExistsByNameFails(t *testing.T) {
-	builder := newstudentCreationWithValidationsTestBuilder(t).
+	builder := newStudentCreationWithValidationsTestBuilder(t).
 		withTracerMock().
 		whereExistsByNameFails().
 		withLoggerError()
@@ -149,7 +149,7 @@ func TestStudentCreationWithValidations_Execute_WhenExistsByNameFails(t *testing
 }
 
 func TestStudentCreationWithValidations_Execute_WhenStudentAlreadyExists(t *testing.T) {
-	builder := newstudentCreationWithValidationsTestBuilder(t).
+	builder := newStudentCreationWithValidationsTestBuilder(t).
 		withTracerMock().
 		whereExistsByNameReturnsTrue().
 		withLoggerWarn()
@@ -162,7 +162,7 @@ func TestStudentCreationWithValidations_Execute_WhenStudentAlreadyExists(t *test
 }
 
 func TestStudentCreationWithValidations_Execute_WhenNextStepFails(t *testing.T) {
-	builder := newstudentCreationWithValidationsTestBuilder(t).
+	builder := newStudentCreationWithValidationsTestBuilder(t).
 		withTracerMock().
 		whereExistsByNameReturnsFalse().
 		withNextStepFails()
@@ -175,7 +175,7 @@ func TestStudentCreationWithValidations_Execute_WhenNextStepFails(t *testing.T) 
 }
 
 func TestStudentCreationWithValidations_Execute_Success(t *testing.T) {
-	builder := newstudentCreationWithValidationsTestBuilder(t).
+	builder := newStudentCreationWithValidationsTestBuilder(t).
 		withTracerMock().
 		whereExistsByNameReturnsFalse().
 		withNextStepReturnSuccess()

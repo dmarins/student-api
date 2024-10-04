@@ -53,6 +53,12 @@ func NewDatabase(ctx context.Context, logger logger.ILogger) IDb {
 	}
 }
 
+func NewIntegrationTestDatabase(db *sql.DB) IDb {
+	return &Db{
+		postgres: db,
+	}
+}
+
 func (d *Db) ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error) {
 	return d.postgres.ExecContext(ctx, query, args...)
 }
