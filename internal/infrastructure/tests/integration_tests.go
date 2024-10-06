@@ -19,21 +19,12 @@ import (
 )
 
 type IntegrationTestsBuilder struct {
-	ctx         context.Context
-	pgContainer *postgres.PostgresContainer
-	dbConn      *sql.DB
+	Ctx         context.Context
+	PgContainer *postgres.PostgresContainer
+	DbConn      *sql.DB
 	postgresDb  db.IDb
 	logger      logger.ILogger
 	tracer      tracer.ITracer
-}
-
-func (b *IntegrationTestsBuilder) TearDown() {
-	b.dbConn.Close()
-	b.pgContainer.Terminate(b.ctx)
-}
-
-func (b *IntegrationTestsBuilder) GetCtx() context.Context {
-	return b.ctx
 }
 
 func NewIntegrationTestsBuilder() *IntegrationTestsBuilder {
@@ -75,9 +66,9 @@ func NewIntegrationTestsBuilder() *IntegrationTestsBuilder {
 	postgresDb := db.NewIntegrationTestDatabase(dbConn)
 
 	return &IntegrationTestsBuilder{
-		ctx:         ctx,
-		pgContainer: pgContainer,
-		dbConn:      dbConn,
+		Ctx:         ctx,
+		PgContainer: pgContainer,
+		DbConn:      dbConn,
 		postgresDb:  postgresDb,
 	}
 }
@@ -89,7 +80,7 @@ func (b *IntegrationTestsBuilder) WithLogger() *IntegrationTestsBuilder {
 }
 
 func (b *IntegrationTestsBuilder) WithTracer() *IntegrationTestsBuilder {
-	b.tracer = tracer.NewTracer(b.ctx, b.logger, env.ProvideAppName(), env.ProvideAppEnv())
+	b.tracer = tracer.NewTracer(b.Ctx, b.logger, env.ProvideAppName(), env.ProvideAppEnv())
 
 	return b
 }

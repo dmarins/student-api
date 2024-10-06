@@ -67,7 +67,7 @@ func TestStudentCreationWithValidations_Execute_WhenAnErrorIsReturnedByTheNextDe
 	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
 
-func TestStudentCreationWithValidations_Execute_WhenTheNextDecoratorReturnsSuccess(t *testing.T) {
+func TestStudentCreationWithValidations_Execute_WhenTheStudentDoesNotExist(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
 		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute, 1, f.fakeTracerAttributes)
