@@ -1,2 +1,5 @@
-- e2e tests
+- recover middleware
+- health check
+- shutdown logger (sync) and tracer
+- others use cases
 - open api + docs

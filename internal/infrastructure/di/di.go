@@ -16,8 +16,8 @@ import (
 	"go.uber.org/fx"
 )
 
-func StartCompositionRoot(ctx context.Context) *fx.App {
-	return fx.New(
+func StartCompositionRoot(ctx context.Context, options ...fx.Option) *fx.App {
+	baseOptions := []fx.Option{
 		fx.Provide(
 			func() context.Context { return ctx },
 			fx.Annotate(
@@ -32,7 +32,11 @@ func StartCompositionRoot(ctx context.Context) *fx.App {
 		infrastructureModule(),
 		createStudentUseCaseModule(),
 		studentHandlerModule(),
-	)
+	}
+
+	allOptions := append(baseOptions, options...)
+
+	return fx.New(allOptions...)
 }
 
 func provideTracer(ctx context.Context, logger logger.ILogger, appName string, env string) tracer.ITracer {

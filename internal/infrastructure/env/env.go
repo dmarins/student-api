@@ -3,6 +3,7 @@ package env
 import (
 	"log"
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/joho/godotenv"
@@ -15,12 +16,17 @@ var (
 func LoadEnvironmentVariables() {
 	var envFile string
 
+	rootDir, err := findRootDir()
+	if err != nil {
+		log.Fatalf("failed to find the root directory: %v", err)
+	}
+
 	once.Do(func() {
 		env := ProvideAppEnv()
-		if env == "local" {
-			envFile = "./.env.local"
+		if env == "local" || env == "test" {
+			envFile = filepath.Join(rootDir, ".env.local")
 		} else {
-			envFile = "./.env"
+			envFile = filepath.Join(rootDir, ".env")
 		}
 
 		err := godotenv.Load(envFile)
@@ -28,6 +34,28 @@ func LoadEnvironmentVariables() {
 			log.Fatalf("failed to load environments variables, env: %s, env_file: %s", env, envFile)
 		}
 	})
+}
+
+func findRootDir() (string, error) {
+	dir, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
+	for {
+		if _, err := os.Stat(filepath.Join(dir, ".env")); err == nil {
+			return dir, nil
+		}
+
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+
+		dir = parent
+	}
+
+	return "", os.ErrNotExist
 }
 
 func getEnvironmentVariable(key string) string {

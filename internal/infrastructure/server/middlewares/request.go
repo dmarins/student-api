@@ -28,7 +28,7 @@ func RequestContext(logger logger.ILogger) echo.MiddlewareFunc {
 			tenant := c.Request().Header.Get(headerTenantKey)
 			if tenant == "" {
 				logger.Warn(ctx, "the x-tenant header was not provided", "cid", cid)
-				return c.JSON(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
+				return c.JSON(http.StatusBadRequest, dtos.NewBadRequestResult())
 			}
 
 			rctx := dtos.RequestContext{

@@ -13,21 +13,15 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-var requestContextEnvVarName = contextKey(env.ProvideRequestContextName())
-
-type (
-	contextKey string
-
-	UnitTestsBuilder struct {
-		Ctx                   context.Context
-		Ctrl                  *gomock.Controller
-		TracerMock            *mocks.MockITracer
-		SpanMock              *mocks.MockISpan
-		LoggerMock            *mocks.MockILogger
-		StudentRepositoryMock *mocks.MockIStudentRepository
-		Next                  *mocks.MockIStudentCreationUseCase
-	}
-)
+type UnitTestsBuilder struct {
+	Ctx                   context.Context
+	Ctrl                  *gomock.Controller
+	TracerMock            *mocks.MockITracer
+	SpanMock              *mocks.MockISpan
+	LoggerMock            *mocks.MockILogger
+	StudentRepositoryMock *mocks.MockIStudentRepository
+	Next                  *mocks.MockIStudentCreationUseCase
+}
 
 func NewUnitTestsBuilder(t *testing.T) *UnitTestsBuilder {
 	ctrl := gomock.NewController(t)
@@ -55,7 +49,7 @@ func (b *UnitTestsBuilder) WithValidCtx() *UnitTestsBuilder {
 
 	b.Ctx = context.WithValue(
 		context.Background(),
-		requestContextEnvVarName,
+		env.ProvideRequestContextName(),
 		requestContext,
 	)
 

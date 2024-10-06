@@ -73,6 +73,10 @@ func setupLifecycle(lc fx.Lifecycle, e *echo.Echo, logger logger.ILogger) {
 }
 
 func gracefulShutdownServer(ctx context.Context, e *echo.Echo, logger logger.ILogger) error {
+	if env.ProvideAppEnv() == "test" {
+		return nil
+	}
+
 	duration, err := time.ParseDuration(env.ProvideAppGracefulShutdownTimeoutInSeconds())
 	if err != nil {
 		logger.Error(ctx, "could not parse APP_GRACEFUL_SHUTDOWN_TIMEOUT", err)

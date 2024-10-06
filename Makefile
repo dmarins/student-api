@@ -51,7 +51,7 @@ mocks-gen: mockgen-download mocks-clean
 tests-clean:
 	$(GOCMD) clean -testcache
 
-tests: tests-clean
+tests: tests-clean local-restart
 	$(GOCMD) test -cover -p=1 ./...
 
 tests-coverage: tests-clean
