@@ -43,10 +43,11 @@ func (s *Server) GetEcho() *echo.Echo {
 func setupEchoServer(logger logger.ILogger) *echo.Echo {
 	e := echo.New()
 
+	e.Use(middlewares.CORS())
 	e.Use(middleware.Logger())
 	e.Use(middlewares.RequestContext(logger))
 	e.Use(middlewares.Timeout(logger))
-	e.Use(middlewares.CORS())
+	e.Use(middlewares.Recover(logger))
 
 	e.Server.Addr = fmt.Sprintf("%s:%s", env.ProvideAppHost(), env.ProvideAppPort())
 

@@ -73,3 +73,10 @@ func NewInternalServerErrorResult() *Result {
 		"Sorry, something went wrong in our system. Please try again later.",
 	)
 }
+
+func NewGatewayTimeoutErrorResult() *Result {
+	return newErrorResult(
+		504,
+		"The server took too long to respond. Please try again later.",
+	)
+}
