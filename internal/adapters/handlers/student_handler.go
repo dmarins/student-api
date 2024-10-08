@@ -14,29 +14,29 @@ import (
 )
 
 type StudentHandler struct {
-	CreateStudentUseCase usecases.IStudentCreationUseCase
-	Tracer               tracer.ITracer
-	Logger               logger.ILogger
+	StudentCreationUseCase usecases.IStudentCreationUseCase
+	Tracer                 tracer.ITracer
+	Logger                 logger.ILogger
 }
 
 func NewStudentHandler(
 	tracer tracer.ITracer,
 	logger logger.ILogger,
-	createStudentUseCase usecases.IStudentCreationUseCase) *StudentHandler {
+	studentCreationUseCase usecases.IStudentCreationUseCase) *StudentHandler {
 	handler := &StudentHandler{
-		CreateStudentUseCase: createStudentUseCase,
-		Tracer:               tracer,
-		Logger:               logger,
+		StudentCreationUseCase: studentCreationUseCase,
+		Tracer:                 tracer,
+		Logger:                 logger,
 	}
 
 	return handler
 }
 
 func RegisterStudentRoutes(s server.IServer, h *StudentHandler) {
-	s.GetEcho().POST("/student", h.Create)
+	s.GetEcho().POST("/student", h.Post)
 }
 
-func (h *StudentHandler) Create(ectx echo.Context) error {
+func (h *StudentHandler) Post(ectx echo.Context) error {
 	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerCreate)
 	defer span.End()
 
@@ -66,5 +66,5 @@ func (h *StudentHandler) Create(ectx echo.Context) error {
 		Name: studentInput.Name,
 	}
 
-	return ReturnResult(ectx, h.CreateStudentUseCase.Execute(ctx, student))
+	return ReturnResult(ectx, h.StudentCreationUseCase.Execute(ctx, student))
 }

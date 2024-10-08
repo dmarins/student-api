@@ -7,7 +7,7 @@ import (
 	"github.com/dmarins/student-api/internal/domain/dtos"
 )
 
-func TestStudentHandler_Create_WithWrongMethod(t *testing.T) {
+func TestStudentHandler_Post_WithWrongMethod(t *testing.T) {
 	e := builder.Build(t)
 
 	e.PATCH("/student").
@@ -16,7 +16,7 @@ func TestStudentHandler_Create_WithWrongMethod(t *testing.T) {
 		Status(http.StatusMethodNotAllowed)
 }
 
-func TestStudentHandler_Create_WithWrongPath(t *testing.T) {
+func TestStudentHandler_Post_WithWrongPath(t *testing.T) {
 	e := builder.Build(t)
 
 	e.POST("/studentttt").
@@ -25,7 +25,7 @@ func TestStudentHandler_Create_WithWrongPath(t *testing.T) {
 		Status(http.StatusNotFound)
 }
 
-func TestStudentHandler_Create_WhenTenantIsNotSent(t *testing.T) {
+func TestStudentHandler_Post_WhenTenantIsNotSent(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.POST("/student").
@@ -37,7 +37,7 @@ func TestStudentHandler_Create_WhenTenantIsNotSent(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
 }
 
-func TestStudentHandler_Create_WithErrorBind(t *testing.T) {
+func TestStudentHandler_Post_WithErrorBind(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.POST("/student").
@@ -51,7 +51,7 @@ func TestStudentHandler_Create_WithErrorBind(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
 }
 
-func TestStudentHandler_Create_WithErrorValidation(t *testing.T) {
+func TestStudentHandler_Post_WithErrorValidation(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.POST("/student").
@@ -65,7 +65,7 @@ func TestStudentHandler_Create_WithErrorValidation(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
 }
 
-func TestStudentHandler_Create_WithStudentAlreadyExists(t *testing.T) {
+func TestStudentHandler_Post_WithStudentAlreadyExists(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.POST("/student").
@@ -79,7 +79,7 @@ func TestStudentHandler_Create_WithStudentAlreadyExists(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewConflictResult().Message)
 }
 
-func TestStudentHandler_Create_WhenTheStudentsIsCreated(t *testing.T) {
+func TestStudentHandler_Post_WhenTheStudentsIsCreated(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.POST("/student").
