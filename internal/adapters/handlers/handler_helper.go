@@ -9,8 +9,8 @@ import (
 
 func ReturnResult(ectx echo.Context, result *dtos.Result) error {
 	switch result.Code {
-	// case http.StatusOK:
-	// 	return ectx.JSON(http.StatusOK, result)
+	case http.StatusOK:
+		return ectx.JSON(http.StatusOK, result)
 	case http.StatusCreated:
 		return ectx.JSON(http.StatusCreated, result)
 	// case http.StatusBadRequest:

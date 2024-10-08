@@ -9,18 +9,20 @@ import (
 	"github.com/dmarins/student-api/internal/domain/usecases"
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
+	"github.com/dmarins/student-api/internal/usecases/healthcheck"
 	"github.com/dmarins/student-api/internal/usecases/student/creation"
 	"go.uber.org/mock/gomock"
 )
 
 type UnitTestsBuilder struct {
-	Ctx                   context.Context
-	Ctrl                  *gomock.Controller
-	TracerMock            *mocks.MockITracer
-	SpanMock              *mocks.MockISpan
-	LoggerMock            *mocks.MockILogger
-	StudentRepositoryMock *mocks.MockIStudentRepository
-	Next                  *mocks.MockIStudentCreationUseCase
+	Ctx                       context.Context
+	Ctrl                      *gomock.Controller
+	TracerMock                *mocks.MockITracer
+	SpanMock                  *mocks.MockISpan
+	LoggerMock                *mocks.MockILogger
+	StudentRepositoryMock     *mocks.MockIStudentRepository
+	HealthCheckRepositoryMock *mocks.MockIHealthCheckRepository
+	Next                      *mocks.MockIStudentCreationUseCase
 }
 
 func NewUnitTestsBuilder(t *testing.T) *UnitTestsBuilder {
@@ -29,15 +31,17 @@ func NewUnitTestsBuilder(t *testing.T) *UnitTestsBuilder {
 	tracerMock := mocks.NewMockITracer(ctrl)
 	spanMock := mocks.NewMockISpan(ctrl)
 	studentRepositoryMock := mocks.NewMockIStudentRepository(ctrl)
+	healthCheckRepositoryMock := mocks.NewMockIHealthCheckRepository(ctrl)
 	next := mocks.NewMockIStudentCreationUseCase(ctrl)
 
 	return &UnitTestsBuilder{
-		Ctrl:                  ctrl,
-		LoggerMock:            loggerMock,
-		TracerMock:            tracerMock,
-		SpanMock:              spanMock,
-		StudentRepositoryMock: studentRepositoryMock,
-		Next:                  next,
+		Ctrl:                      ctrl,
+		LoggerMock:                loggerMock,
+		TracerMock:                tracerMock,
+		SpanMock:                  spanMock,
+		StudentRepositoryMock:     studentRepositoryMock,
+		HealthCheckRepositoryMock: healthCheckRepositoryMock,
+		Next:                      next,
 	}
 }
 
@@ -98,6 +102,10 @@ func (b *UnitTestsBuilder) SettingLoggerErrorBehavior(debugMessage string, err e
 		Error(b.Ctx, debugMessage, err, fields...)
 
 	return b
+}
+
+func (b *UnitTestsBuilder) BuildHealthCheckUseCase() usecases.IHealthCheckUseCase {
+	return healthcheck.NewHealthCheck(b.TracerMock, b.LoggerMock, b.HealthCheckRepositoryMock)
 }
 
 func (b *UnitTestsBuilder) BuildStudentCreationWithValidations() usecases.IStudentCreationUseCase {

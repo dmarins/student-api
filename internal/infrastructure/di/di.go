@@ -12,6 +12,7 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	"github.com/dmarins/student-api/internal/infrastructure/server"
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
+	"github.com/dmarins/student-api/internal/usecases/healthcheck"
 	"github.com/dmarins/student-api/internal/usecases/student/creation"
 	"go.uber.org/fx"
 )
@@ -30,7 +31,9 @@ func StartCompositionRoot(ctx context.Context, options ...fx.Option) *fx.App {
 			),
 		),
 		infrastructureModule(),
+		healthCheckUseCaseModule(),
 		createStudentUseCaseModule(),
+		healthCheckHandlerModule(),
 		studentHandlerModule(),
 	}
 
@@ -50,6 +53,15 @@ func infrastructureModule() fx.Option {
 			fx.Annotate(provideTracer, fx.ParamTags(``, ``, `name:"appName"`, `name:"appEnv"`)),
 			fx.Annotate(db.NewDatabase, fx.As(new(db.IDb))),
 			fx.Annotate(server.NewServer, fx.As(new(server.IServer))),
+		),
+	)
+}
+
+func healthCheckUseCaseModule() fx.Option {
+	return fx.Module("healthCheckUseCase",
+		fx.Provide(
+			fx.Annotate(repositories.NewHealthCheckRepository, fx.As(new(domain_repositories.IHealthCheckRepository))),
+			fx.Annotate(healthcheck.NewHealthCheck, fx.As(new(usecases.IHealthCheckUseCase))),
 		),
 	)
 }
@@ -79,5 +91,12 @@ func studentHandlerModule() fx.Option {
 	return fx.Module("studentHandlers",
 		fx.Provide(fx.Annotate(provideStudentHandler, fx.ParamTags(``, ``, `name:"studentCreationWithValidations"`))),
 		fx.Invoke(handlers.RegisterStudentRoutes),
+	)
+}
+
+func healthCheckHandlerModule() fx.Option {
+	return fx.Module("healthCheckHandlers",
+		fx.Provide(handlers.NewHealthCheckHandler),
+		fx.Invoke(handlers.RegisterHealthCheckRoute),
 	)
 }

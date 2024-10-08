@@ -88,3 +88,7 @@ func (b *IntegrationTestsBuilder) WithTracer() *IntegrationTestsBuilder {
 func (b *IntegrationTestsBuilder) BuildStudentRepository() domain_repositories.IStudentRepository {
 	return repositories.NewStudentRepository(b.tracer, b.postgresDb)
 }
+
+func (b *IntegrationTestsBuilder) BuildHealthCheckRepository() domain_repositories.IHealthCheckRepository {
+	return repositories.NewHealthCheckRepository(b.tracer, b.postgresDb)
+}
