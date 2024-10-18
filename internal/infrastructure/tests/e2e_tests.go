@@ -31,7 +31,7 @@ func NewE2eTestsBuilder() *E2eTestsBuilder {
 }
 
 func (b *E2eTestsBuilder) StartCompositionRoot() *E2eTestsBuilder {
-	app := di.StartCompositionRoot(b.Ctx, fx.Populate(&b.AppServer))
+	app := di.StartCompositionRoot(fx.Populate(&b.AppServer))
 
 	if err := app.Start(b.Ctx); err != nil {
 		log.Fatalf("failed to initialize FX: %v", err)

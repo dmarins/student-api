@@ -10,7 +10,6 @@ import (
 	"github.com/dmarins/student-api/internal/adapters/repositories"
 	domain_repositories "github.com/dmarins/student-api/internal/domain/repositories"
 	"github.com/dmarins/student-api/internal/infrastructure/db"
-	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
 	"github.com/testcontainers/testcontainers-go"
@@ -80,7 +79,7 @@ func (b *IntegrationTestsBuilder) WithLogger() *IntegrationTestsBuilder {
 }
 
 func (b *IntegrationTestsBuilder) WithTracer() *IntegrationTestsBuilder {
-	b.tracer = tracer.NewTracer(b.Ctx, b.logger, env.ProvideAppName(), env.ProvideAppEnv())
+	b.tracer = tracer.NewTracer(b.Ctx, b.logger)
 
 	return b
 }

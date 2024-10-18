@@ -46,9 +46,10 @@ type (
 	}
 )
 
-func NewTracer(ctx context.Context, logger logger.ILogger, appName, env string) ITracer {
-
+func NewTracer(ctx context.Context, logger logger.ILogger) ITracer {
 	var endpointOption otlptracegrpc.Option
+	appName := env.ProvideAppName()
+	env := env.ProvideAppEnv()
 	if env == "local" {
 		endpointOption = otlptracegrpc.WithEndpoint("localhost:4317")
 	} else {
