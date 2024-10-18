@@ -71,11 +71,6 @@ func (s *Server) GracefulShutdownServer(ctx context.Context, logger logger.ILogg
 	shutdownCtx, cancel := context.WithTimeout(ctx, duration)
 	defer cancel()
 
-	// err = logger.Sync()
-	// if err != nil {
-	// 	logger.Error(ctx, "failed to synchronize logs in graceful shutdown", err)
-	// }
-
 	err = s.echo.Shutdown(shutdownCtx)
 	if err != nil {
 		logger.Error(shutdownCtx, "failed to gracefull server shutdown", err)

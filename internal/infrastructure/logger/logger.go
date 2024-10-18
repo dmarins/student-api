@@ -16,7 +16,7 @@ type (
 		Error(ctx context.Context, msg string, err error, fields ...string)
 		Fatal(ctx context.Context, msg string, err error, fields ...string)
 		Warn(ctx context.Context, msg string, fields ...string)
-		Sync() error
+		Sync(ctx context.Context)
 	}
 
 	Logger struct {
@@ -95,6 +95,14 @@ func (l *Logger) Warn(ctx context.Context, msg string, fields ...string) {
 	l.zapLogger.Warn(messagePattern(msg), zapFields...)
 }
 
-func (l *Logger) Sync() error {
-	return l.zapLogger.Sync()
+func (l *Logger) Sync(ctx context.Context) {
+	if l.zapLogger != nil {
+		err := l.zapLogger.Sync()
+		if err != nil {
+			l.Error(ctx, "failed to sync logger", err)
+			return
+		}
+	}
+
+	l.Info(ctx, "Logger sync completed successfully")
 }

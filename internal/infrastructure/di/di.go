@@ -48,12 +48,11 @@ func registerHooks() fx.Option {
 		lc.Append(fx.Hook{
 			OnStart: func(ctx context.Context) error {
 				go server.ListenAndServe(ctx, logger)
-
 				return nil
 			},
 			OnStop: func(ctx context.Context) error {
+				logger.Sync(ctx)
 				tracer.Shutdown(ctx, logger)
-
 				return server.GracefulShutdownServer(ctx, logger)
 			},
 		})

@@ -205,17 +205,15 @@ func (c *MockILoggerInfoCall) DoAndReturn(f func(context.Context, string, ...str
 }
 
 // Sync mocks base method.
-func (m *MockILogger) Sync() error {
+func (m *MockILogger) Sync(ctx context.Context) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Sync")
-	ret0, _ := ret[0].(error)
-	return ret0
+	m.ctrl.Call(m, "Sync", ctx)
 }
 
 // Sync indicates an expected call of Sync.
-func (mr *MockILoggerMockRecorder) Sync() *MockILoggerSyncCall {
+func (mr *MockILoggerMockRecorder) Sync(ctx any) *MockILoggerSyncCall {
 	mr.mock.ctrl.T.Helper()
-	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Sync", reflect.TypeOf((*MockILogger)(nil).Sync))
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Sync", reflect.TypeOf((*MockILogger)(nil).Sync), ctx)
 	return &MockILoggerSyncCall{Call: call}
 }
 
@@ -225,19 +223,19 @@ type MockILoggerSyncCall struct {
 }
 
 // Return rewrite *gomock.Call.Return
-func (c *MockILoggerSyncCall) Return(arg0 error) *MockILoggerSyncCall {
-	c.Call = c.Call.Return(arg0)
+func (c *MockILoggerSyncCall) Return() *MockILoggerSyncCall {
+	c.Call = c.Call.Return()
 	return c
 }
 
 // Do rewrite *gomock.Call.Do
-func (c *MockILoggerSyncCall) Do(f func() error) *MockILoggerSyncCall {
+func (c *MockILoggerSyncCall) Do(f func(context.Context)) *MockILoggerSyncCall {
 	c.Call = c.Call.Do(f)
 	return c
 }
 
 // DoAndReturn rewrite *gomock.Call.DoAndReturn
-func (c *MockILoggerSyncCall) DoAndReturn(f func() error) *MockILoggerSyncCall {
+func (c *MockILoggerSyncCall) DoAndReturn(f func(context.Context)) *MockILoggerSyncCall {
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }
