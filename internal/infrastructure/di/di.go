@@ -35,11 +35,27 @@ func StartCompositionRoot(ctx context.Context, options ...fx.Option) *fx.App {
 		createStudentUseCaseModule(),
 		healthCheckHandlerModule(),
 		studentHandlerModule(),
+		registerHooks(),
 	}
 
 	allOptions := append(baseOptions, options...)
 
 	return fx.New(allOptions...)
+}
+
+func registerHooks() fx.Option {
+	return fx.Invoke(func(lc fx.Lifecycle, server server.IServer, logger logger.ILogger) {
+		lc.Append(fx.Hook{
+			OnStart: func(ctx context.Context) error {
+				go server.ListenAndServe(ctx, logger)
+
+				return nil
+			},
+			OnStop: func(ctx context.Context) error {
+				return server.GracefulShutdownServer(ctx, logger)
+			},
+		})
+	})
 }
 
 func provideTracer(ctx context.Context, logger logger.ILogger, appName string, env string) tracer.ITracer {

@@ -13,12 +13,13 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/server/middlewares"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"go.uber.org/fx"
 )
 
 type (
 	IServer interface {
 		GetEcho() *echo.Echo
+		ListenAndServe(ctx context.Context, logger logger.ILogger)
+		GracefulShutdownServer(ctx context.Context, logger logger.ILogger) error
 	}
 
 	Server struct {
@@ -26,21 +27,7 @@ type (
 	}
 )
 
-func NewServer(lc fx.Lifecycle, logger logger.ILogger) IServer {
-	e := setupEchoServer(logger)
-
-	setupLifecycle(lc, e, logger)
-
-	return &Server{
-		echo: e,
-	}
-}
-
-func (s *Server) GetEcho() *echo.Echo {
-	return s.echo
-}
-
-func setupEchoServer(logger logger.ILogger) *echo.Echo {
+func NewServer(logger logger.ILogger) IServer {
 	e := echo.New()
 
 	e.Use(middlewares.CORS())
@@ -53,27 +40,22 @@ func setupEchoServer(logger logger.ILogger) *echo.Echo {
 
 	e.Validator = NewValidator()
 
-	return e
+	return &Server{
+		echo: e,
+	}
 }
 
-func setupLifecycle(lc fx.Lifecycle, e *echo.Echo, logger logger.ILogger) {
-	lc.Append(
-		fx.Hook{
-			OnStart: func(ctx context.Context) error {
-				logger.Info(ctx, "HTTP server started...", "address", e.Server.Addr)
-
-				go e.Server.ListenAndServe()
-
-				return nil
-			},
-			OnStop: func(ctx context.Context) error {
-				return gracefulShutdownServer(ctx, e, logger)
-			},
-		},
-	)
+func (s *Server) GetEcho() *echo.Echo {
+	return s.echo
 }
 
-func gracefulShutdownServer(ctx context.Context, e *echo.Echo, logger logger.ILogger) error {
+func (s *Server) ListenAndServe(ctx context.Context, logger logger.ILogger) {
+	logger.Info(ctx, "HTTP server started...", "address", s.echo.Server.Addr)
+
+	s.echo.Server.ListenAndServe()
+}
+
+func (s *Server) GracefulShutdownServer(ctx context.Context, logger logger.ILogger) error {
 	if env.ProvideAppEnv() == "test" {
 		return nil
 	}
@@ -89,12 +71,12 @@ func gracefulShutdownServer(ctx context.Context, e *echo.Echo, logger logger.ILo
 	shutdownCtx, cancel := context.WithTimeout(ctx, duration)
 	defer cancel()
 
-	err = logger.Sync()
-	if err != nil {
-		logger.Error(ctx, "failed to synchronize logs in graceful shutdown", err)
-	}
+	// err = logger.Sync()
+	// if err != nil {
+	// 	logger.Error(ctx, "failed to synchronize logs in graceful shutdown", err)
+	// }
 
-	err = e.Shutdown(shutdownCtx)
+	err = s.echo.Shutdown(shutdownCtx)
 	if err != nil {
 		logger.Error(shutdownCtx, "failed to gracefully shutdown server", err)
 		return err
