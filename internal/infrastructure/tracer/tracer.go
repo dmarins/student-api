@@ -35,9 +35,11 @@ type (
 		NewRootSpan(request *http.Request, spanName string) (ISpan, context.Context)
 		NewSpanContext(ctx context.Context, spanName string) (ISpan, context.Context)
 		AddAttributes(span ISpan, name string, attributes Attributes)
+		Shutdown(ctx context.Context, logger logger.ILogger)
 	}
 
 	Tracer struct {
+		provider *trace.TracerProvider
 	}
 
 	Attributes map[string]interface {
@@ -75,7 +77,9 @@ func NewTracer(ctx context.Context, logger logger.ILogger, appName, env string) 
 	otel.SetTracerProvider(tp)
 	otel.SetTextMapPropagator(propagation.TraceContext{})
 
-	return &Tracer{}
+	return &Tracer{
+		provider: tp,
+	}
 }
 
 func convertAttributes(attributes Attributes) []attribute.KeyValue {
@@ -141,4 +145,16 @@ func (t *Tracer) AddAttributes(span ISpan, name string, attributes Attributes) {
 	values := convertAttributes(attributes)
 
 	span.AddEvent(name, oteltrace.WithAttributes(values...))
+}
+
+func (t *Tracer) Shutdown(ctx context.Context, logger logger.ILogger) {
+	if t.provider != nil {
+		err := t.provider.Shutdown(ctx)
+		if err != nil {
+			logger.Error(ctx, "failed to shutdown tracer", err)
+			return
+		}
+	}
+
+	logger.Info(ctx, "Tracer shutdown completed successfully")
 }

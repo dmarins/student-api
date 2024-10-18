@@ -22,6 +22,7 @@ import (
 type MockIStudentCreationUseCase struct {
 	ctrl     *gomock.Controller
 	recorder *MockIStudentCreationUseCaseMockRecorder
+	isgomock struct{}
 }
 
 // MockIStudentCreationUseCaseMockRecorder is the mock recorder for MockIStudentCreationUseCase.

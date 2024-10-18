@@ -2,6 +2,7 @@ package logger
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"go.uber.org/zap"
@@ -45,6 +46,10 @@ func NewLogger() ILogger {
 	}
 }
 
+func messagePattern(msg string) string {
+	return fmt.Sprintf("%s.", msg)
+}
+
 func convertStringFields(extraFields []string) []zap.Field {
 	if len(extraFields)%2 != 0 {
 		return nil
@@ -61,33 +66,33 @@ func convertStringFields(extraFields []string) []zap.Field {
 func (l *Logger) Debug(ctx context.Context, msg string, fields ...string) {
 	zapFields := convertStringFields(fields)
 
-	l.zapLogger.Debug(msg, zapFields...)
+	l.zapLogger.Debug(messagePattern(msg), zapFields...)
 }
 
 func (l *Logger) Info(ctx context.Context, msg string, fields ...string) {
 	zapFields := convertStringFields(fields)
 
-	l.zapLogger.Info(msg, zapFields...)
+	l.zapLogger.Info(messagePattern(msg), zapFields...)
 }
 
 func (l *Logger) Error(ctx context.Context, msg string, err error, fields ...string) {
 	zapFields := convertStringFields(fields)
 	zapFields = append(zapFields, zap.Error(err))
 
-	l.zapLogger.Error(msg, zapFields...)
+	l.zapLogger.Error(messagePattern(msg), zapFields...)
 }
 
 func (l *Logger) Fatal(ctx context.Context, msg string, err error, fields ...string) {
 	zapFields := convertStringFields(fields)
 	zapFields = append(zapFields, zap.Error(err))
 
-	l.zapLogger.Fatal(msg, zapFields...)
+	l.zapLogger.Fatal(messagePattern(msg), zapFields...)
 }
 
 func (l *Logger) Warn(ctx context.Context, msg string, fields ...string) {
 	zapFields := convertStringFields(fields)
 
-	l.zapLogger.Warn(msg, zapFields...)
+	l.zapLogger.Warn(messagePattern(msg), zapFields...)
 }
 
 func (l *Logger) Sync() error {

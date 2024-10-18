@@ -50,7 +50,7 @@ func (s *Server) GetEcho() *echo.Echo {
 }
 
 func (s *Server) ListenAndServe(ctx context.Context, logger logger.ILogger) {
-	logger.Info(ctx, "HTTP server started...", "address", s.echo.Server.Addr)
+	logger.Info(ctx, "HTTP server started", "address", s.echo.Server.Addr)
 
 	s.echo.Server.ListenAndServe()
 }
@@ -78,13 +78,15 @@ func (s *Server) GracefulShutdownServer(ctx context.Context, logger logger.ILogg
 
 	err = s.echo.Shutdown(shutdownCtx)
 	if err != nil {
-		logger.Error(shutdownCtx, "failed to gracefully shutdown server", err)
+		logger.Error(shutdownCtx, "failed to gracefull server shutdown", err)
 		return err
 	}
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
+
+	logger.Info(ctx, "Graceful server shutdown completed successfully")
 
 	return nil
 }

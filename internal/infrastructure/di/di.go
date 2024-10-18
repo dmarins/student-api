@@ -44,7 +44,7 @@ func StartCompositionRoot(ctx context.Context, options ...fx.Option) *fx.App {
 }
 
 func registerHooks() fx.Option {
-	return fx.Invoke(func(lc fx.Lifecycle, server server.IServer, logger logger.ILogger) {
+	return fx.Invoke(func(lc fx.Lifecycle, server server.IServer, tracer tracer.ITracer, logger logger.ILogger) {
 		lc.Append(fx.Hook{
 			OnStart: func(ctx context.Context) error {
 				go server.ListenAndServe(ctx, logger)
@@ -52,6 +52,8 @@ func registerHooks() fx.Option {
 				return nil
 			},
 			OnStop: func(ctx context.Context) error {
+				tracer.Shutdown(ctx, logger)
+
 				return server.GracefulShutdownServer(ctx, logger)
 			},
 		})

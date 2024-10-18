@@ -14,6 +14,7 @@ import (
 	http "net/http"
 	reflect "reflect"
 
+	logger "github.com/dmarins/student-api/internal/infrastructure/logger"
 	tracer "github.com/dmarins/student-api/internal/infrastructure/tracer"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -22,6 +23,7 @@ import (
 type MockITracer struct {
 	ctrl     *gomock.Controller
 	recorder *MockITracerMockRecorder
+	isgomock struct{}
 }
 
 // MockITracerMockRecorder is the mock recorder for MockITracer.
@@ -151,6 +153,42 @@ func (c *MockITracerNewSpanContextCall) Do(f func(context.Context, string) (trac
 
 // DoAndReturn rewrite *gomock.Call.DoAndReturn
 func (c *MockITracerNewSpanContextCall) DoAndReturn(f func(context.Context, string) (tracer.ISpan, context.Context)) *MockITracerNewSpanContextCall {
+	c.Call = c.Call.DoAndReturn(f)
+	return c
+}
+
+// Shutdown mocks base method.
+func (m *MockITracer) Shutdown(ctx context.Context, logger logger.ILogger) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Shutdown", ctx, logger)
+}
+
+// Shutdown indicates an expected call of Shutdown.
+func (mr *MockITracerMockRecorder) Shutdown(ctx, logger any) *MockITracerShutdownCall {
+	mr.mock.ctrl.T.Helper()
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Shutdown", reflect.TypeOf((*MockITracer)(nil).Shutdown), ctx, logger)
+	return &MockITracerShutdownCall{Call: call}
+}
+
+// MockITracerShutdownCall wrap *gomock.Call
+type MockITracerShutdownCall struct {
+	*gomock.Call
+}
+
+// Return rewrite *gomock.Call.Return
+func (c *MockITracerShutdownCall) Return() *MockITracerShutdownCall {
+	c.Call = c.Call.Return()
+	return c
+}
+
+// Do rewrite *gomock.Call.Do
+func (c *MockITracerShutdownCall) Do(f func(context.Context, logger.ILogger)) *MockITracerShutdownCall {
+	c.Call = c.Call.Do(f)
+	return c
+}
+
+// DoAndReturn rewrite *gomock.Call.DoAndReturn
+func (c *MockITracerShutdownCall) DoAndReturn(f func(context.Context, logger.ILogger)) *MockITracerShutdownCall {
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }

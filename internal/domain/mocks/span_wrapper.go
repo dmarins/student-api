@@ -19,6 +19,7 @@ import (
 type MockISpan struct {
 	ctrl     *gomock.Controller
 	recorder *MockISpanMockRecorder
+	isgomock struct{}
 }
 
 // MockISpanMockRecorder is the mock recorder for MockISpan.

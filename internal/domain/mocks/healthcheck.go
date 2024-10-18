@@ -21,6 +21,7 @@ import (
 type MockIHealthCheckUseCase struct {
 	ctrl     *gomock.Controller
 	recorder *MockIHealthCheckUseCaseMockRecorder
+	isgomock struct{}
 }
 
 // MockIHealthCheckUseCaseMockRecorder is the mock recorder for MockIHealthCheckUseCase.
