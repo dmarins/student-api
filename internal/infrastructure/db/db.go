@@ -46,7 +46,7 @@ func NewDatabase(ctx context.Context, logger logger.ILogger) IDb {
 		return nil
 	}
 
-	logger.Info(ctx, "Db connected...", "address", fmt.Sprintf("%s:%s", host, port))
+	logger.Info(ctx, "Db connected", "address", fmt.Sprintf("%s:%s", host, port))
 
 	return &Db{
 		postgres: db,
