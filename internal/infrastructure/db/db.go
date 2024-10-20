@@ -12,6 +12,7 @@ import (
 
 type (
 	IDb interface {
+		Close(ctx context.Context, logger logger.ILogger)
 		ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
 		QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
 	}
@@ -46,7 +47,7 @@ func NewDatabase(ctx context.Context, logger logger.ILogger) IDb {
 		return nil
 	}
 
-	logger.Info(ctx, "Db connected", "address", fmt.Sprintf("%s:%s", host, port))
+	logger.Info(ctx, "db connected", "address", fmt.Sprintf("%s:%s", host, port))
 
 	return &Db{
 		postgres: db,
@@ -57,6 +58,18 @@ func NewIntegrationTestDatabase(db *sql.DB) IDb {
 	return &Db{
 		postgres: db,
 	}
+}
+
+func (d *Db) Close(ctx context.Context, logger logger.ILogger) {
+	if d.postgres != nil {
+		err := d.postgres.Close()
+		if err != nil {
+			logger.Error(ctx, "failed to close database connection", err)
+			return
+		}
+	}
+
+	logger.Info(ctx, "database connection closed successfully")
 }
 
 func (d *Db) ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error) {

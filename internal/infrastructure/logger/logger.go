@@ -3,6 +3,7 @@ package logger
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"go.uber.org/zap"
@@ -47,7 +48,7 @@ func NewLogger() ILogger {
 }
 
 func messagePattern(msg string) string {
-	return fmt.Sprintf("%s.", msg)
+	return fmt.Sprintf("%s.", strings.ToLower(msg))
 }
 
 func convertStringFields(extraFields []string) []zap.Field {

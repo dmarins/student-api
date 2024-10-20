@@ -157,5 +157,5 @@ func (t *Tracer) Shutdown(ctx context.Context, logger logger.ILogger) {
 		}
 	}
 
-	logger.Info(ctx, "Tracer shutdown completed successfully")
+	logger.Info(ctx, "tracer shutdown completed successfully")
 }
