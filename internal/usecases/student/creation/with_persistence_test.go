@@ -13,8 +13,8 @@ import (
 func TestStudentCreationWithPersistence_Execute_WhenRepositoryFailsToAddStudent(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.StudentCreationUseCasePersistenceExecute, 1, f.fakeTracerAttributes).
 		SettingLoggerDebugBehavior("new student", "id", gomock.Any()).
+		SettingTracerBehavior(tracer.StudentCreationUseCasePersistenceExecute).
 		SettingLoggerErrorBehavior("error adding a new student", f.fakeError)
 
 	builder.StudentRepositoryMock.
@@ -24,7 +24,7 @@ func TestStudentCreationWithPersistence_Execute_WhenRepositoryFailsToAddStudent(
 
 	sut := builder.BuildStudentCreationWithPersistence()
 
-	result := sut.Execute(builder.Ctx, f.fakeStudent)
+	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
 	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
@@ -32,7 +32,7 @@ func TestStudentCreationWithPersistence_Execute_WhenRepositoryFailsToAddStudent(
 func TestStudentCreationWithPersistence_Execute_WhenRepositoryAddsTheStudent(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.StudentCreationUseCasePersistenceExecute, 1, f.fakeTracerAttributes).
+		SettingTracerBehavior(tracer.StudentCreationUseCasePersistenceExecute).
 		SettingLoggerDebugBehavior("new student", "id", gomock.Any()).
 		SettingLoggerDebugBehavior("student stored")
 
@@ -43,7 +43,7 @@ func TestStudentCreationWithPersistence_Execute_WhenRepositoryAddsTheStudent(t *
 
 	sut := builder.BuildStudentCreationWithPersistence()
 
-	result := sut.Execute(builder.Ctx, f.fakeStudent)
+	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
 	assert.EqualValues(t, dtos.NewCreatedResult(result.Data), result)
 }

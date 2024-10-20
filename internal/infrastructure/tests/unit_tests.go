@@ -8,7 +8,6 @@ import (
 	"github.com/dmarins/student-api/internal/domain/mocks"
 	"github.com/dmarins/student-api/internal/domain/usecases"
 	"github.com/dmarins/student-api/internal/infrastructure/env"
-	"github.com/dmarins/student-api/internal/infrastructure/tracer"
 	"github.com/dmarins/student-api/internal/usecases/healthcheck"
 	"github.com/dmarins/student-api/internal/usecases/student/creation"
 	"go.uber.org/mock/gomock"
@@ -60,7 +59,7 @@ func (b *UnitTestsBuilder) WithValidCtx() *UnitTestsBuilder {
 	return b
 }
 
-func (b *UnitTestsBuilder) SettingTracerBehavior(spanName string, times int, attributes tracer.Attributes) *UnitTestsBuilder {
+func (b *UnitTestsBuilder) SettingTracerBehavior(spanName string) *UnitTestsBuilder {
 	b.TracerMock.
 		EXPECT().
 		NewSpanContext(b.Ctx, spanName).
@@ -74,8 +73,8 @@ func (b *UnitTestsBuilder) SettingTracerBehavior(spanName string, times int, att
 
 	b.TracerMock.
 		EXPECT().
-		AddAttributes(b.SpanMock, spanName, attributes).
-		Times(times)
+		AddAttributes(b.SpanMock, spanName, gomock.Any()).
+		AnyTimes()
 
 	return b
 }

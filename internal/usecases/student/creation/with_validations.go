@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/dmarins/student-api/internal/domain/dtos"
-	"github.com/dmarins/student-api/internal/domain/entities"
 	"github.com/dmarins/student-api/internal/domain/repositories"
 	"github.com/dmarins/student-api/internal/domain/usecases"
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
@@ -27,27 +26,27 @@ func NewStudentCreationWithValidations(tracer tracer.ITracer, logger logger.ILog
 	}
 }
 
-func (uc *StudentCreationWithValidations) Execute(ctx context.Context, student entities.Student) *dtos.Result {
+func (uc *StudentCreationWithValidations) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
 	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentCreationUseCaseValidationsExecute)
 	defer span.End()
 
 	uc.Tracer.AddAttributes(span, tracer.StudentCreationUseCaseValidationsExecute,
 		tracer.Attributes{
-			"Entity": student,
+			"Payload": studentInput,
 		})
 
-	exists, err := uc.StudentRepository.ExistsByName(ctx, student.Name)
+	exists, err := uc.StudentRepository.ExistsByName(ctx, studentInput.Name)
 	if err != nil {
-		uc.Logger.Error(ctx, "error checking if student exists", err, "name", student.Name)
+		uc.Logger.Error(ctx, "error checking if student exists", err, "name", studentInput.Name)
 
 		return dtos.NewInternalServerErrorResult()
 	}
 
 	if exists {
-		uc.Logger.Warn(ctx, "there is already a student with the same name", "name", student.Name)
+		uc.Logger.Warn(ctx, "there is already a student with the same name", "name", studentInput.Name)
 
 		return dtos.NewConflictResult()
 	}
 
-	return uc.Next.Execute(ctx, student)
+	return uc.Next.Execute(ctx, studentInput)
 }

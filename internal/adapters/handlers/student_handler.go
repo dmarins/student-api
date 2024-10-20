@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/dmarins/student-api/internal/domain/dtos"
-	"github.com/dmarins/student-api/internal/domain/entities"
 	"github.com/dmarins/student-api/internal/domain/usecases"
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
@@ -62,9 +61,5 @@ func (h *StudentHandler) Post(ectx echo.Context) error {
 
 	h.Logger.Debug(ctx, "echo validate ok")
 
-	student := entities.Student{
-		Name: studentInput.Name,
-	}
-
-	return ReturnResult(ectx, h.StudentCreationUseCase.Execute(ctx, student))
+	return ReturnResult(ectx, h.StudentCreationUseCase.Execute(ctx, studentInput))
 }

@@ -15,7 +15,7 @@ var fakeError error = errors.New("fails")
 func TestHealthCheckUseCase_Execute_WhenRepositoryFailsToCheckDbConnection(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.HealthCheckExecute, 0, nil).
+		SettingTracerBehavior(tracer.HealthCheckExecute).
 		SettingLoggerErrorBehavior("error checking db connection", fakeError)
 
 	builder.HealthCheckRepositoryMock.
@@ -33,7 +33,7 @@ func TestHealthCheckUseCase_Execute_WhenRepositoryFailsToCheckDbConnection(t *te
 func TestHealthCheckUseCase_Execute_WhenRepositoryCheckDbConnection(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.HealthCheckExecute, 0, nil)
+		SettingTracerBehavior(tracer.HealthCheckExecute)
 
 	builder.HealthCheckRepositoryMock.
 		EXPECT().

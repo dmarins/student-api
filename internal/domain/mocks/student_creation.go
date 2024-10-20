@@ -14,7 +14,6 @@ import (
 	reflect "reflect"
 
 	dtos "github.com/dmarins/student-api/internal/domain/dtos"
-	entities "github.com/dmarins/student-api/internal/domain/entities"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -43,17 +42,17 @@ func (m *MockIStudentCreationUseCase) EXPECT() *MockIStudentCreationUseCaseMockR
 }
 
 // Execute mocks base method.
-func (m *MockIStudentCreationUseCase) Execute(ctx context.Context, student entities.Student) *dtos.Result {
+func (m *MockIStudentCreationUseCase) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Execute", ctx, student)
+	ret := m.ctrl.Call(m, "Execute", ctx, studentInput)
 	ret0, _ := ret[0].(*dtos.Result)
 	return ret0
 }
 
 // Execute indicates an expected call of Execute.
-func (mr *MockIStudentCreationUseCaseMockRecorder) Execute(ctx, student any) *MockIStudentCreationUseCaseExecuteCall {
+func (mr *MockIStudentCreationUseCaseMockRecorder) Execute(ctx, studentInput any) *MockIStudentCreationUseCaseExecuteCall {
 	mr.mock.ctrl.T.Helper()
-	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockIStudentCreationUseCase)(nil).Execute), ctx, student)
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockIStudentCreationUseCase)(nil).Execute), ctx, studentInput)
 	return &MockIStudentCreationUseCaseExecuteCall{Call: call}
 }
 
@@ -69,13 +68,13 @@ func (c *MockIStudentCreationUseCaseExecuteCall) Return(arg0 *dtos.Result) *Mock
 }
 
 // Do rewrite *gomock.Call.Do
-func (c *MockIStudentCreationUseCaseExecuteCall) Do(f func(context.Context, entities.Student) *dtos.Result) *MockIStudentCreationUseCaseExecuteCall {
+func (c *MockIStudentCreationUseCaseExecuteCall) Do(f func(context.Context, dtos.StudentInput) *dtos.Result) *MockIStudentCreationUseCaseExecuteCall {
 	c.Call = c.Call.Do(f)
 	return c
 }
 
 // DoAndReturn rewrite *gomock.Call.DoAndReturn
-func (c *MockIStudentCreationUseCaseExecuteCall) DoAndReturn(f func(context.Context, entities.Student) *dtos.Result) *MockIStudentCreationUseCaseExecuteCall {
+func (c *MockIStudentCreationUseCaseExecuteCall) DoAndReturn(f func(context.Context, dtos.StudentInput) *dtos.Result) *MockIStudentCreationUseCaseExecuteCall {
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }

@@ -9,7 +9,6 @@ import (
 	"github.com/dmarins/student-api/internal/domain/usecases"
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
-	"github.com/google/uuid"
 )
 
 type StudentCreationWithPersistence struct {
@@ -26,20 +25,20 @@ func NewStudentCreationWithPersistence(tracer tracer.ITracer, logger logger.ILog
 	}
 }
 
-func (uc *StudentCreationWithPersistence) Execute(ctx context.Context, student entities.Student) *dtos.Result {
+func (uc *StudentCreationWithPersistence) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
 	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentCreationUseCasePersistenceExecute)
 	defer span.End()
+
+	student := entities.NewStudent(studentInput.Name)
+
+	uc.Logger.Debug(ctx, "new student", "id", student.ID)
 
 	uc.Tracer.AddAttributes(span, tracer.StudentCreationUseCasePersistenceExecute,
 		tracer.Attributes{
 			"Entity": student,
 		})
 
-	student.ID = uuid.New().String()
-
-	uc.Logger.Debug(ctx, "new student", "id", student.ID)
-
-	err := uc.StudentRepository.Add(ctx, &student)
+	err := uc.StudentRepository.Add(ctx, student)
 	if err != nil {
 		uc.Logger.Error(ctx, "error adding a new student", err)
 

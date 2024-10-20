@@ -12,17 +12,17 @@ import (
 func TestStudentCreationWithValidations_Execute_WhenTheRepositoryFailsToCheckIfTheStudentExists(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute, 1, f.fakeTracerAttributes).
-		SettingLoggerErrorBehavior("error checking if student exists", f.fakeError, "name", f.fakeStudent.Name)
+		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute).
+		SettingLoggerErrorBehavior("error checking if student exists", f.fakeError, "name", f.fakeStudentInput.Name)
 
 	builder.StudentRepositoryMock.
 		EXPECT().
-		ExistsByName(builder.Ctx, f.fakeStudent.Name).
+		ExistsByName(builder.Ctx, f.fakeStudentInput.Name).
 		Return(false, f.fakeError)
 
 	sut := builder.BuildStudentCreationWithValidations()
 
-	result := sut.Execute(builder.Ctx, f.fakeStudent)
+	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
 	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
@@ -30,17 +30,17 @@ func TestStudentCreationWithValidations_Execute_WhenTheRepositoryFailsToCheckIfT
 func TestStudentCreationWithValidations_Execute_WhenTheStudentAlreadyExists(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute, 1, f.fakeTracerAttributes).
-		SettingLoggerWarnBehavior("there is already a student with the same name", "name", f.fakeStudent.Name)
+		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute).
+		SettingLoggerWarnBehavior("there is already a student with the same name", "name", f.fakeStudentInput.Name)
 
 	builder.StudentRepositoryMock.
 		EXPECT().
-		ExistsByName(builder.Ctx, f.fakeStudent.Name).
+		ExistsByName(builder.Ctx, f.fakeStudentInput.Name).
 		Return(true, nil)
 
 	sut := builder.BuildStudentCreationWithValidations()
 
-	result := sut.Execute(builder.Ctx, f.fakeStudent)
+	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
 	assert.EqualValues(t, dtos.NewConflictResult(), result)
 }
@@ -48,21 +48,21 @@ func TestStudentCreationWithValidations_Execute_WhenTheStudentAlreadyExists(t *t
 func TestStudentCreationWithValidations_Execute_WhenAnErrorIsReturnedByTheNextDecorator(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute, 1, f.fakeTracerAttributes)
+		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute)
 
 	builder.StudentRepositoryMock.
 		EXPECT().
-		ExistsByName(builder.Ctx, f.fakeStudent.Name).
+		ExistsByName(builder.Ctx, f.fakeStudentInput.Name).
 		Return(false, nil)
 
 	builder.Next.
 		EXPECT().
-		Execute(builder.Ctx, f.fakeStudent).
+		Execute(builder.Ctx, f.fakeStudentInput).
 		Return(dtos.NewInternalServerErrorResult())
 
 	sut := builder.BuildStudentCreationWithValidations()
 
-	result := sut.Execute(builder.Ctx, f.fakeStudent)
+	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
 	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
@@ -70,21 +70,21 @@ func TestStudentCreationWithValidations_Execute_WhenAnErrorIsReturnedByTheNextDe
 func TestStudentCreationWithValidations_Execute_WhenTheStudentDoesNotExist(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute, 1, f.fakeTracerAttributes)
+		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute)
 
 	builder.StudentRepositoryMock.
 		EXPECT().
-		ExistsByName(builder.Ctx, f.fakeStudent.Name).
+		ExistsByName(builder.Ctx, f.fakeStudentInput.Name).
 		Return(false, nil)
 
 	builder.Next.
 		EXPECT().
-		Execute(builder.Ctx, f.fakeStudent).
-		Return(dtos.NewCreatedResult(f.fakeStudent))
+		Execute(builder.Ctx, f.fakeStudentInput).
+		Return(dtos.NewCreatedResult(f.fakeStudentInput))
 
 	sut := builder.BuildStudentCreationWithValidations()
 
-	result := sut.Execute(builder.Ctx, f.fakeStudent)
+	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
-	assert.EqualValues(t, dtos.NewCreatedResult(f.fakeStudent), result)
+	assert.EqualValues(t, dtos.NewCreatedResult(result.Data), result)
 }
