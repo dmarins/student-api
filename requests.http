@@ -1,7 +1,6 @@
 ### health check
 
 GET http://localhost:8080/health
-x-tenant: {{$guid}}
 
 ### missing header
 
