@@ -1,11 +1,15 @@
 issues:
-  new-from-rev: ""
+  new-from-rev: ""  # Leave this empty or set a specific revision to check for issues since that point
 run:
-  timeout: 5m
-  modules-download-mode: readonly
+  timeout: 5m  # Maximum time allowed for the linter to run
+  modules-download-mode: readonly  # Prevents downloading new modules, only uses what's already in the Go mod cache
 linters:
-  disable-all: true
+  disable-all: true  # Disables all linters by default
   enable:
-    - gofmt
-    - goimports
-    - govet
+    - gofmt        # Ensures the code is formatted according to Go standards
+    - goimports    # Similar to gofmt but also fixes and organizes imports
+    - govet        # Catches potential code issues like suspicious behavior or common pitfalls
+    - gocyclo      # Checks for cyclomatic complexity, ensuring functions are not overly complex
+    - staticcheck  # Performs advanced static analysis and finds bugs or unused code
+    - ineffassign  # Detects ineffective assignments (variables assigned but never used)
+    - errcheck     # Ensures errors are properly handled, avoiding unnoticed error returns
