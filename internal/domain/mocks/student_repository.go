@@ -117,3 +117,42 @@ func (c *MockIStudentRepositoryExistsByNameCall) DoAndReturn(f func(context.Cont
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }
+
+// FindById mocks base method.
+func (m *MockIStudentRepository) FindById(ctx context.Context, studentId string) (*entities.Student, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindById", ctx, studentId)
+	ret0, _ := ret[0].(*entities.Student)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindById indicates an expected call of FindById.
+func (mr *MockIStudentRepositoryMockRecorder) FindById(ctx, studentId any) *MockIStudentRepositoryFindByIdCall {
+	mr.mock.ctrl.T.Helper()
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindById", reflect.TypeOf((*MockIStudentRepository)(nil).FindById), ctx, studentId)
+	return &MockIStudentRepositoryFindByIdCall{Call: call}
+}
+
+// MockIStudentRepositoryFindByIdCall wrap *gomock.Call
+type MockIStudentRepositoryFindByIdCall struct {
+	*gomock.Call
+}
+
+// Return rewrite *gomock.Call.Return
+func (c *MockIStudentRepositoryFindByIdCall) Return(arg0 *entities.Student, arg1 error) *MockIStudentRepositoryFindByIdCall {
+	c.Call = c.Call.Return(arg0, arg1)
+	return c
+}
+
+// Do rewrite *gomock.Call.Do
+func (c *MockIStudentRepositoryFindByIdCall) Do(f func(context.Context, string) (*entities.Student, error)) *MockIStudentRepositoryFindByIdCall {
+	c.Call = c.Call.Do(f)
+	return c
+}
+
+// DoAndReturn rewrite *gomock.Call.DoAndReturn
+func (c *MockIStudentRepositoryFindByIdCall) DoAndReturn(f func(context.Context, string) (*entities.Student, error)) *MockIStudentRepositoryFindByIdCall {
+	c.Call = c.Call.DoAndReturn(f)
+	return c
+}

@@ -1,14 +1,17 @@
 package tracer
 
 const (
-	StudentHandlerCreate  = "StudentHandler:Create"
 	HealthCheckHandlerGet = "HealthCheckHandler:Get"
+	StudentHandlerCreate  = "StudentHandler:Create"
+	StudentHandlerGet     = "StudentHandler:Get"
 
+	HealthCheckExecute                       = "HealthCheck:Execute"
 	StudentCreationUseCasePersistenceExecute = "StudentCreationUseCasePersistence:Execute"
 	StudentCreationUseCaseValidationsExecute = "StudentCreationUseCaseValidations:Execute"
-	HealthCheckExecute                       = "HealthCheck:Execute"
+	StudentReadingUseCaseFindByIdExecute     = "StudentReadingUseCaseFindById:Execute"
 
+	HealthCheckRepositoryCheckDbConnection = "HealthCheckRepository:CheckDbConnection"
 	StudentRepositoryAdd                   = "StudentRepository:Add"
 	StudentRepositoryExistsByName          = "StudentRepository:ExistsByName"
-	HealthCheckRepositoryCheckDbConnection = "HealthCheckRepository:CheckDbConnection"
+	StudentRepositoryFindById              = "StudentRepository:FindById"
 )

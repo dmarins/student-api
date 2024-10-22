@@ -9,4 +9,5 @@ import (
 type IStudentRepository interface {
 	Add(ctx context.Context, student *entities.Student) error
 	ExistsByName(ctx context.Context, name string) (bool, error)
+	FindById(ctx context.Context, studentId string) (*entities.Student, error)
 }

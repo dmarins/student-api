@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/dmarins/student-api/internal/domain/entities"
 	"github.com/dmarins/student-api/internal/domain/repositories"
@@ -52,4 +53,28 @@ func (r *StudentRepository) ExistsByName(ctx context.Context, name string) (bool
 		Scan(&exists)
 
 	return exists, err
+}
+
+func (r *StudentRepository) FindById(ctx context.Context, studentId string) (*entities.Student, error) {
+	span, ctx := r.Tracer.NewSpanContext(ctx, tracer.StudentRepositoryFindById)
+	defer span.End()
+
+	r.Tracer.AddAttributes(span, tracer.StudentRepositoryFindById,
+		tracer.Attributes{
+			"ID": studentId,
+		})
+
+	row := r.Postgres.QueryRowContext(ctx, "SELECT Id, Name FROM students WHERE Id = $1", studentId)
+
+	var student entities.Student
+	err := row.Scan(&student.ID, &student.Name)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+
+		return nil, err
+	}
+
+	return &student, nil
 }

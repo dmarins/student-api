@@ -13,8 +13,10 @@ func StartCompositionRoot(options ...fx.Option) *fx.App {
 		),
 		registerHooks(),
 		infrastructureModule(),
+		repositoriesModule(),
 		healthCheckUseCaseModule(),
 		createStudentUseCaseModule(),
+		readingStudentUseCaseModule(),
 		healthCheckHandlerModule(),
 		studentHandlerModule(),
 	}

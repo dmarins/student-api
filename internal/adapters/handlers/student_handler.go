@@ -9,30 +9,36 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/logger"
 	"github.com/dmarins/student-api/internal/infrastructure/server"
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
+	"github.com/dmarins/student-api/internal/infrastructure/uuid"
 	echo "github.com/labstack/echo/v4"
 )
 
 type StudentHandler struct {
-	StudentCreationUseCase usecases.IStudentCreationUseCase
 	Tracer                 tracer.ITracer
 	Logger                 logger.ILogger
+	StudentCreationUseCase usecases.IStudentCreationUseCase
+	StudentReadingUseCase  usecases.IStudentReadingUseCase
 }
 
 func NewStudentHandler(
 	tracer tracer.ITracer,
 	logger logger.ILogger,
-	studentCreationUseCase usecases.IStudentCreationUseCase) *StudentHandler {
+	studentCreationUseCase usecases.IStudentCreationUseCase,
+	studentReadingUseCase usecases.IStudentReadingUseCase) *StudentHandler {
 	handler := &StudentHandler{
-		StudentCreationUseCase: studentCreationUseCase,
 		Tracer:                 tracer,
 		Logger:                 logger,
+		StudentCreationUseCase: studentCreationUseCase,
+		StudentReadingUseCase:  studentReadingUseCase,
 	}
 
 	return handler
 }
 
 func RegisterStudentRoutes(s server.IServer, h *StudentHandler) {
-	s.GetEcho().POST("/student", h.Post)
+	routesGroup := s.GetEcho().Group("/students")
+	routesGroup.POST("", h.Post)
+	routesGroup.GET("/:id", h.Get)
 }
 
 func (h *StudentHandler) Post(ectx echo.Context) error {
@@ -62,4 +68,27 @@ func (h *StudentHandler) Post(ectx echo.Context) error {
 	h.Logger.Debug(ctx, "echo validate ok")
 
 	return ReturnResult(ectx, h.StudentCreationUseCase.Execute(ctx, studentInput))
+}
+
+func (h *StudentHandler) Get(ectx echo.Context) error {
+	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerGet)
+	defer span.End()
+
+	studentId := ectx.Param("id")
+
+	h.Tracer.AddAttributes(span, tracer.StudentHandlerGet,
+		tracer.Attributes{
+			"Tenant":    ectx.Request().Header.Get(env.ProvideTenantHeaderName()),
+			"StudentId": studentId,
+		})
+
+	if ok := uuid.IsValid(studentId); !ok {
+		h.Logger.Warn(ctx, "id format is invalid", "id", studentId)
+
+		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
+	}
+
+	h.Logger.Debug(ctx, "validate ok")
+
+	return ReturnResult(ectx, h.StudentReadingUseCase.Execute(ctx, studentId))
 }

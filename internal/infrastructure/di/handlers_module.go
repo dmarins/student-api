@@ -8,13 +8,17 @@ import (
 	"go.uber.org/fx"
 )
 
-func provideStudentHandler(tracer tracer.ITracer, logger logger.ILogger, studentCreationUseCase usecases.IStudentCreationUseCase) *handlers.StudentHandler {
-	return handlers.NewStudentHandler(tracer, logger, studentCreationUseCase)
+func provideStudentHandler(
+	tracer tracer.ITracer,
+	logger logger.ILogger,
+	studentCreationUseCase usecases.IStudentCreationUseCase,
+	studentReadingUseCase usecases.IStudentReadingUseCase) *handlers.StudentHandler {
+	return handlers.NewStudentHandler(tracer, logger, studentCreationUseCase, studentReadingUseCase)
 }
 
 func studentHandlerModule() fx.Option {
 	return fx.Module("studentHandlers",
-		fx.Provide(fx.Annotate(provideStudentHandler, fx.ParamTags(``, ``, `name:"studentCreationWithValidations"`))),
+		fx.Provide(fx.Annotate(provideStudentHandler, fx.ParamTags(``, ``, `name:"studentCreationWithValidations"`, ``))),
 		fx.Invoke(handlers.RegisterStudentRoutes),
 	)
 }
