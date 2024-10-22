@@ -14,11 +14,8 @@ func StartCompositionRoot(options ...fx.Option) *fx.App {
 		registerHooks(),
 		infrastructureModule(),
 		repositoriesModule(),
-		healthCheckUseCaseModule(),
-		createStudentUseCaseModule(),
-		readingStudentUseCaseModule(),
-		healthCheckHandlerModule(),
-		studentHandlerModule(),
+		useCasesModule(),
+		handlersModule(),
 	}
 
 	allOptions := append(baseOptions, options...)

@@ -8,30 +8,32 @@ import (
 	"go.uber.org/fx"
 )
 
-func healthCheckUseCaseModule() fx.Option {
-	return fx.Module("healthCheckUseCase",
-		fx.Provide(
-			fx.Annotate(healthcheck.NewHealthCheck, fx.As(new(domain_usecases.IHealthCheckUseCase))),
-		),
+func useCasesModule() fx.Option {
+	return fx.Module("usecases",
+		healthCheckUseCase(),
+		createStudentUseCase(),
+		readingStudentUseCaseModule(),
 	)
 }
 
-func createStudentUseCaseModule() fx.Option {
-	return fx.Module("createStudentUseCase",
-		fx.Provide(
-			fx.Annotate(creation.NewStudentCreationWithPersistence, fx.ResultTags(`name:"studentCreationWithPersistence"`),
-				fx.As(new(domain_usecases.IStudentCreationUseCase))),
-			fx.Annotate(creation.NewStudentCreationWithValidations, fx.ParamTags(``, ``, ``, `name:"studentCreationWithPersistence"`),
-				fx.ResultTags(`name:"studentCreationWithValidations"`), fx.As(new(domain_usecases.IStudentCreationUseCase)),
-			),
+func healthCheckUseCase() fx.Option {
+	return fx.Provide(
+		fx.Annotate(healthcheck.NewHealthCheck, fx.As(new(domain_usecases.IHealthCheckUseCase))),
+	)
+}
+
+func createStudentUseCase() fx.Option {
+	return fx.Provide(
+		fx.Annotate(creation.NewStudentCreationWithPersistence, fx.ResultTags(`name:"studentCreationWithPersistence"`),
+			fx.As(new(domain_usecases.IStudentCreationUseCase))),
+		fx.Annotate(creation.NewStudentCreationWithValidations, fx.ParamTags(``, ``, ``, `name:"studentCreationWithPersistence"`),
+			fx.ResultTags(`name:"studentCreationWithValidations"`), fx.As(new(domain_usecases.IStudentCreationUseCase)),
 		),
 	)
 }
 
 func readingStudentUseCaseModule() fx.Option {
-	return fx.Module("readingStudentUseCase",
-		fx.Provide(
-			fx.Annotate(reading.NewStudentReadingWithFindById, fx.As(new(domain_usecases.IStudentReadingUseCase))),
-		),
+	return fx.Provide(
+		fx.Annotate(reading.NewStudentReadingWithFindById, fx.As(new(domain_usecases.IStudentReadingUseCase))),
 	)
 }
