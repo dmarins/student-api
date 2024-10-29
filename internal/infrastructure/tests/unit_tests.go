@@ -10,6 +10,7 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/usecases/healthcheck"
 	"github.com/dmarins/student-api/internal/usecases/student/create"
+	"github.com/dmarins/student-api/internal/usecases/student/read"
 	"go.uber.org/mock/gomock"
 )
 
@@ -113,4 +114,8 @@ func (b *UnitTestsBuilder) BuildStudentCreateWithValidations() usecases.IStudent
 
 func (b *UnitTestsBuilder) BuildStudentCreateWithPersistence() usecases.IStudentCreateUseCase {
 	return create.NewStudentCreateWithPersistence(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock)
+}
+
+func (b *UnitTestsBuilder) BuildStudentReadWithFindByID() usecases.IStudentReadUseCase {
+	return read.NewStudentReadWithFindById(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock)
 }
