@@ -72,6 +72,45 @@ func NewIntegrationTestsBuilder() *IntegrationTestsBuilder {
 	}
 }
 
+func NewFailedIntegrationTestsBuilder() *IntegrationTestsBuilder {
+	ctx := context.Background()
+
+	pgContainer, err := postgres.Run(
+		ctx,
+		"docker.io/postgres:16.4-alpine3.20",
+		postgres.WithDatabase("students"),
+		postgres.WithUsername("testuser"),
+		postgres.WithPassword("testpass"),
+		testcontainers.WithWaitStrategy(
+			wait.ForLog("database system is ready to accept connections").
+				WithOccurrence(2).
+				WithStartupTimeout(5*time.Second),
+		),
+	)
+	if err != nil {
+		log.Fatalf("Failed to start postgres container: %s", err)
+	}
+
+	dsn, err := pgContainer.ConnectionString(ctx, "sslmode=disable", "application_name=student-api-integration-tests")
+	if err != nil {
+		log.Fatalf("Failed to get postgres container port: %s", err)
+	}
+
+	dbConn, err := sql.Open("postgres", dsn)
+	if err != nil {
+		log.Fatalf("Failed to connect to postgres container: %s", err)
+	}
+
+	postgresDb := db.NewIntegrationTestDatabase(dbConn)
+
+	return &IntegrationTestsBuilder{
+		Ctx:         ctx,
+		PgContainer: pgContainer,
+		DbConn:      dbConn,
+		postgresDb:  postgresDb,
+	}
+}
+
 func (b *IntegrationTestsBuilder) WithLogger() *IntegrationTestsBuilder {
 	b.logger = logger.NewLogger()
 

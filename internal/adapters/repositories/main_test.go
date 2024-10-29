@@ -9,18 +9,25 @@ import (
 )
 
 type fakeValues struct {
-	fakeNewStudent    *entities.Student
-	fakeStoredStudent *entities.Student
+	fakeNewStudent      *entities.Student
+	fakeStoredStudent   *entities.Student
+	fakeNotFoundStudent *entities.Student
 }
 
 var f *fakeValues
 var builder *tests.IntegrationTestsBuilder
+var failedBuilder *tests.IntegrationTestsBuilder
 
 // TestMain will run before all the tests in the package repositories_test
 func TestMain(m *testing.M) {
 	// Setup: Create the builder and initialize the container
 	builder = tests.
 		NewIntegrationTestsBuilder().
+		WithLogger().
+		WithTracer()
+
+	failedBuilder = tests.
+		NewFailedIntegrationTestsBuilder().
 		WithLogger().
 		WithTracer()
 
@@ -32,6 +39,10 @@ func TestMain(m *testing.M) {
 		fakeStoredStudent: &entities.Student{
 			ID:   "06b2ec25-3fe0-475e-9077-e77a113f4727",
 			Name: "alice",
+		},
+		fakeNotFoundStudent: &entities.Student{
+			ID:   "58ecde02-18f6-4896-a716-64abf6724587",
+			Name: "jordan",
 		},
 	}
 
