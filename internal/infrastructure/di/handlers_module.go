@@ -28,13 +28,13 @@ func healthCheckHandler() fx.Option {
 func provideStudentHandler(
 	tracer tracer.ITracer,
 	logger logger.ILogger,
-	studentCreationUseCase usecases.IStudentCreationUseCase,
-	studentReadingUseCase usecases.IStudentReadingUseCase) *handlers.StudentHandler {
-	return handlers.NewStudentHandler(tracer, logger, studentCreationUseCase, studentReadingUseCase)
+	studentCreateUseCase usecases.IStudentCreateUseCase,
+	studentReadUseCase usecases.IStudentReadUseCase) *handlers.StudentHandler {
+	return handlers.NewStudentHandler(tracer, logger, studentCreateUseCase, studentReadUseCase)
 }
 
 func studentHandler() fx.Option {
 	return fx.Provide(
-		fx.Annotate(provideStudentHandler, fx.ParamTags(``, ``, `name:"studentCreationWithValidations"`, ``)),
+		fx.Annotate(provideStudentHandler, fx.ParamTags(``, ``, `name:"studentCreateWithValidations"`, ``)),
 	)
 }

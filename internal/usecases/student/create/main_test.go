@@ -1,4 +1,4 @@
-package creation_test
+package create_test
 
 import (
 	"errors"

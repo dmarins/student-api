@@ -1,4 +1,4 @@
-package creation
+package create
 
 import (
 	"context"
@@ -11,29 +11,29 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
 )
 
-type StudentCreationWithPersistence struct {
+type StudentCreateWithPersistence struct {
 	StudentRepository repositories.IStudentRepository
 	Tracer            tracer.ITracer
 	Logger            logger.ILogger
 }
 
-func NewStudentCreationWithPersistence(tracer tracer.ITracer, logger logger.ILogger, studentRepository repositories.IStudentRepository) usecases.IStudentCreationUseCase {
-	return &StudentCreationWithPersistence{
+func NewStudentCreateWithPersistence(tracer tracer.ITracer, logger logger.ILogger, studentRepository repositories.IStudentRepository) usecases.IStudentCreateUseCase {
+	return &StudentCreateWithPersistence{
 		StudentRepository: studentRepository,
 		Tracer:            tracer,
 		Logger:            logger,
 	}
 }
 
-func (uc *StudentCreationWithPersistence) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
-	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentCreationUseCasePersistenceExecute)
+func (uc *StudentCreateWithPersistence) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
+	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentCreateUseCasePersistenceExecute)
 	defer span.End()
 
 	student := entities.NewStudent(studentInput.Name)
 
 	uc.Logger.Debug(ctx, "new student", "id", student.ID)
 
-	uc.Tracer.AddAttributes(span, tracer.StudentCreationUseCasePersistenceExecute,
+	uc.Tracer.AddAttributes(span, tracer.StudentCreateUseCasePersistenceExecute,
 		tracer.Attributes{
 			"Entity": student,
 		})

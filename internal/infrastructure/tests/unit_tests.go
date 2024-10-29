@@ -9,7 +9,7 @@ import (
 	"github.com/dmarins/student-api/internal/domain/usecases"
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/usecases/healthcheck"
-	"github.com/dmarins/student-api/internal/usecases/student/creation"
+	"github.com/dmarins/student-api/internal/usecases/student/create"
 	"go.uber.org/mock/gomock"
 )
 
@@ -21,7 +21,7 @@ type UnitTestsBuilder struct {
 	LoggerMock                *mocks.MockILogger
 	StudentRepositoryMock     *mocks.MockIStudentRepository
 	HealthCheckRepositoryMock *mocks.MockIHealthCheckRepository
-	Next                      *mocks.MockIStudentCreationUseCase
+	Next                      *mocks.MockIStudentCreateUseCase
 }
 
 func NewUnitTestsBuilder(t *testing.T) *UnitTestsBuilder {
@@ -31,7 +31,7 @@ func NewUnitTestsBuilder(t *testing.T) *UnitTestsBuilder {
 	spanMock := mocks.NewMockISpan(ctrl)
 	studentRepositoryMock := mocks.NewMockIStudentRepository(ctrl)
 	healthCheckRepositoryMock := mocks.NewMockIHealthCheckRepository(ctrl)
-	next := mocks.NewMockIStudentCreationUseCase(ctrl)
+	next := mocks.NewMockIStudentCreateUseCase(ctrl)
 
 	return &UnitTestsBuilder{
 		Ctrl:                      ctrl,
@@ -107,10 +107,10 @@ func (b *UnitTestsBuilder) BuildHealthCheckUseCase() usecases.IHealthCheckUseCas
 	return healthcheck.NewHealthCheck(b.TracerMock, b.LoggerMock, b.HealthCheckRepositoryMock)
 }
 
-func (b *UnitTestsBuilder) BuildStudentCreationWithValidations() usecases.IStudentCreationUseCase {
-	return creation.NewStudentCreationWithValidations(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock, b.Next)
+func (b *UnitTestsBuilder) BuildStudentCreateWithValidations() usecases.IStudentCreateUseCase {
+	return create.NewStudentCreateWithValidations(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock, b.Next)
 }
 
-func (b *UnitTestsBuilder) BuildStudentCreationWithPersistence() usecases.IStudentCreationUseCase {
-	return creation.NewStudentCreationWithPersistence(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock)
+func (b *UnitTestsBuilder) BuildStudentCreateWithPersistence() usecases.IStudentCreateUseCase {
+	return create.NewStudentCreateWithPersistence(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock)
 }

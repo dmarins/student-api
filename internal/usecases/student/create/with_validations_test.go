@@ -1,4 +1,4 @@
-package creation_test
+package create_test
 
 import (
 	"testing"
@@ -9,10 +9,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestStudentCreationWithValidations_Execute_WhenTheRepositoryFailsToCheckIfTheStudentExists(t *testing.T) {
+func TestStudentCreateWithValidations_Execute_WhenTheRepositoryFailsToCheckIfTheStudentExists(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute).
+		SettingTracerBehavior(tracer.StudentCreateUseCaseValidationsExecute).
 		SettingLoggerErrorBehavior("error checking if student exists", f.fakeError, "name", f.fakeStudentInput.Name)
 
 	builder.StudentRepositoryMock.
@@ -20,17 +20,17 @@ func TestStudentCreationWithValidations_Execute_WhenTheRepositoryFailsToCheckIfT
 		ExistsByName(builder.Ctx, f.fakeStudentInput.Name).
 		Return(false, f.fakeError)
 
-	sut := builder.BuildStudentCreationWithValidations()
+	sut := builder.BuildStudentCreateWithValidations()
 
 	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
 	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
 
-func TestStudentCreationWithValidations_Execute_WhenTheStudentAlreadyExists(t *testing.T) {
+func TestStudentCreateWithValidations_Execute_WhenTheStudentAlreadyExists(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute).
+		SettingTracerBehavior(tracer.StudentCreateUseCaseValidationsExecute).
 		SettingLoggerWarnBehavior("there is already a student with the same name", "name", f.fakeStudentInput.Name)
 
 	builder.StudentRepositoryMock.
@@ -38,17 +38,17 @@ func TestStudentCreationWithValidations_Execute_WhenTheStudentAlreadyExists(t *t
 		ExistsByName(builder.Ctx, f.fakeStudentInput.Name).
 		Return(true, nil)
 
-	sut := builder.BuildStudentCreationWithValidations()
+	sut := builder.BuildStudentCreateWithValidations()
 
 	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
 	assert.EqualValues(t, dtos.NewConflictResult(), result)
 }
 
-func TestStudentCreationWithValidations_Execute_WhenAnErrorIsReturnedByTheNextDecorator(t *testing.T) {
+func TestStudentCreateWithValidations_Execute_WhenAnErrorIsReturnedByTheNextDecorator(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute)
+		SettingTracerBehavior(tracer.StudentCreateUseCaseValidationsExecute)
 
 	builder.StudentRepositoryMock.
 		EXPECT().
@@ -60,17 +60,17 @@ func TestStudentCreationWithValidations_Execute_WhenAnErrorIsReturnedByTheNextDe
 		Execute(builder.Ctx, f.fakeStudentInput).
 		Return(dtos.NewInternalServerErrorResult())
 
-	sut := builder.BuildStudentCreationWithValidations()
+	sut := builder.BuildStudentCreateWithValidations()
 
 	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
 	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
 
-func TestStudentCreationWithValidations_Execute_WhenTheStudentDoesNotExist(t *testing.T) {
+func TestStudentCreateWithValidations_Execute_WhenTheStudentDoesNotExist(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.StudentCreationUseCaseValidationsExecute)
+		SettingTracerBehavior(tracer.StudentCreateUseCaseValidationsExecute)
 
 	builder.StudentRepositoryMock.
 		EXPECT().
@@ -82,7 +82,7 @@ func TestStudentCreationWithValidations_Execute_WhenTheStudentDoesNotExist(t *te
 		Execute(builder.Ctx, f.fakeStudentInput).
 		Return(dtos.NewCreatedResult(f.fakeStudentInput))
 
-	sut := builder.BuildStudentCreationWithValidations()
+	sut := builder.BuildStudentCreateWithValidations()
 
 	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 

@@ -1,4 +1,4 @@
-package creation
+package create
 
 import (
 	"context"
@@ -10,15 +10,15 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
 )
 
-type StudentCreationWithValidations struct {
+type StudentCreateWithValidations struct {
 	StudentRepository repositories.IStudentRepository
 	Tracer            tracer.ITracer
 	Logger            logger.ILogger
-	Next              usecases.IStudentCreationUseCase
+	Next              usecases.IStudentCreateUseCase
 }
 
-func NewStudentCreationWithValidations(tracer tracer.ITracer, logger logger.ILogger, studentRepository repositories.IStudentRepository, next usecases.IStudentCreationUseCase) usecases.IStudentCreationUseCase {
-	return &StudentCreationWithValidations{
+func NewStudentCreateWithValidations(tracer tracer.ITracer, logger logger.ILogger, studentRepository repositories.IStudentRepository, next usecases.IStudentCreateUseCase) usecases.IStudentCreateUseCase {
+	return &StudentCreateWithValidations{
 		StudentRepository: studentRepository,
 		Tracer:            tracer,
 		Logger:            logger,
@@ -26,11 +26,11 @@ func NewStudentCreationWithValidations(tracer tracer.ITracer, logger logger.ILog
 	}
 }
 
-func (uc *StudentCreationWithValidations) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
-	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentCreationUseCaseValidationsExecute)
+func (uc *StudentCreateWithValidations) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
+	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentCreateUseCaseValidationsExecute)
 	defer span.End()
 
-	uc.Tracer.AddAttributes(span, tracer.StudentCreationUseCaseValidationsExecute,
+	uc.Tracer.AddAttributes(span, tracer.StudentCreateUseCaseValidationsExecute,
 		tracer.Attributes{
 			"Payload": studentInput,
 		})

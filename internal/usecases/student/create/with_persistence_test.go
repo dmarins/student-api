@@ -1,4 +1,4 @@
-package creation_test
+package create_test
 
 import (
 	"testing"
@@ -10,11 +10,11 @@ import (
 	"go.uber.org/mock/gomock"
 )
 
-func TestStudentCreationWithPersistence_Execute_WhenRepositoryFailsToAddStudent(t *testing.T) {
+func TestStudentCreateWithPersistence_Execute_WhenRepositoryFailsToAddStudent(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
 		SettingLoggerDebugBehavior("new student", "id", gomock.Any()).
-		SettingTracerBehavior(tracer.StudentCreationUseCasePersistenceExecute).
+		SettingTracerBehavior(tracer.StudentCreateUseCasePersistenceExecute).
 		SettingLoggerErrorBehavior("error adding a new student", f.fakeError)
 
 	builder.StudentRepositoryMock.
@@ -22,17 +22,17 @@ func TestStudentCreationWithPersistence_Execute_WhenRepositoryFailsToAddStudent(
 		Add(builder.Ctx, gomock.Any()).
 		Return(f.fakeError)
 
-	sut := builder.BuildStudentCreationWithPersistence()
+	sut := builder.BuildStudentCreateWithPersistence()
 
 	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
 	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
 
-func TestStudentCreationWithPersistence_Execute_WhenRepositoryAddsTheStudent(t *testing.T) {
+func TestStudentCreateWithPersistence_Execute_WhenRepositoryAddsTheStudent(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
-		SettingTracerBehavior(tracer.StudentCreationUseCasePersistenceExecute).
+		SettingTracerBehavior(tracer.StudentCreateUseCasePersistenceExecute).
 		SettingLoggerDebugBehavior("new student", "id", gomock.Any()).
 		SettingLoggerDebugBehavior("student stored")
 
@@ -41,7 +41,7 @@ func TestStudentCreationWithPersistence_Execute_WhenRepositoryAddsTheStudent(t *
 		Add(builder.Ctx, gomock.Any()).
 		Return(nil)
 
-	sut := builder.BuildStudentCreationWithPersistence()
+	sut := builder.BuildStudentCreateWithPersistence()
 
 	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 

@@ -5,10 +5,10 @@ const (
 	StudentHandlerCreate  = "StudentHandler:Create"
 	StudentHandlerGet     = "StudentHandler:Get"
 
-	HealthCheckExecute                       = "HealthCheck:Execute"
-	StudentCreationUseCasePersistenceExecute = "StudentCreationUseCasePersistence:Execute"
-	StudentCreationUseCaseValidationsExecute = "StudentCreationUseCaseValidations:Execute"
-	StudentReadingUseCaseFindByIdExecute     = "StudentReadingUseCaseFindById:Execute"
+	HealthCheckExecute                     = "HealthCheck:Execute"
+	StudentCreateUseCasePersistenceExecute = "StudentCreateUseCasePersistence:Execute"
+	StudentCreateUseCaseValidationsExecute = "StudentCreateUseCaseValidations:Execute"
+	StudentReadUseCaseFindByIdExecute      = "StudentReadUseCaseFindById:Execute"
 
 	HealthCheckRepositoryCheckDbConnection = "HealthCheckRepository:CheckDbConnection"
 	StudentRepositoryAdd                   = "StudentRepository:Add"

@@ -14,22 +14,22 @@ import (
 )
 
 type StudentHandler struct {
-	Tracer                 tracer.ITracer
-	Logger                 logger.ILogger
-	StudentCreationUseCase usecases.IStudentCreationUseCase
-	StudentReadingUseCase  usecases.IStudentReadingUseCase
+	Tracer               tracer.ITracer
+	Logger               logger.ILogger
+	StudentCreateUseCase usecases.IStudentCreateUseCase
+	StudentReadUseCase   usecases.IStudentReadUseCase
 }
 
 func NewStudentHandler(
 	tracer tracer.ITracer,
 	logger logger.ILogger,
-	studentCreationUseCase usecases.IStudentCreationUseCase,
-	studentReadingUseCase usecases.IStudentReadingUseCase) *StudentHandler {
+	studentCreateUseCase usecases.IStudentCreateUseCase,
+	studentReadingUseCase usecases.IStudentReadUseCase) *StudentHandler {
 	handler := &StudentHandler{
-		Tracer:                 tracer,
-		Logger:                 logger,
-		StudentCreationUseCase: studentCreationUseCase,
-		StudentReadingUseCase:  studentReadingUseCase,
+		Tracer:               tracer,
+		Logger:               logger,
+		StudentCreateUseCase: studentCreateUseCase,
+		StudentReadUseCase:   studentReadingUseCase,
 	}
 
 	return handler
@@ -67,7 +67,7 @@ func (h *StudentHandler) Post(ectx echo.Context) error {
 
 	h.Logger.Debug(ctx, "echo validate ok")
 
-	return ReturnResult(ectx, h.StudentCreationUseCase.Execute(ctx, studentInput))
+	return ReturnResult(ectx, h.StudentCreateUseCase.Execute(ctx, studentInput))
 }
 
 func (h *StudentHandler) Get(ectx echo.Context) error {
@@ -90,5 +90,5 @@ func (h *StudentHandler) Get(ectx echo.Context) error {
 
 	h.Logger.Debug(ctx, "validate ok")
 
-	return ReturnResult(ectx, h.StudentReadingUseCase.Execute(ctx, studentId))
+	return ReturnResult(ectx, h.StudentReadUseCase.Execute(ctx, studentId))
 }

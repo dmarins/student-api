@@ -47,7 +47,8 @@ mocks-gen: mockgen-download mocks-clean
 	$(GOBIN)/mockgen -source=internal/infrastructure/tracer/span_wrapper.go -destination=internal/domain/mocks/span_wrapper.go -typed=true -package=mocks 
 	$(GOBIN)/mockgen -source=internal/domain/repositories/healthcheck_repository.go -destination=internal/domain/mocks/healthcheck_repository.go -typed=true -package=mocks
 	$(GOBIN)/mockgen -source=internal/domain/repositories/student_repository.go -destination=internal/domain/mocks/student_repository.go -typed=true -package=mocks
-	$(GOBIN)/mockgen -source=internal/domain/usecases/student_creation.go -destination=internal/domain/mocks/student_creation.go -typed=true -package=mocks
+	$(GOBIN)/mockgen -source=internal/domain/usecases/student_create.go -destination=internal/domain/mocks/student_create.go -typed=true -package=mocks
+	$(GOBIN)/mockgen -source=internal/domain/usecases/student_read.go -destination=internal/domain/mocks/student_read.go -typed=true -package=mocks
 	$(GOBIN)/mockgen -source=internal/domain/usecases/healthcheck.go -destination=internal/domain/mocks/healthcheck.go -typed=true -package=mocks
 
 tests-clean:

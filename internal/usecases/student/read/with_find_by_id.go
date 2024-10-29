@@ -1,4 +1,4 @@
-package reading
+package read
 
 import (
 	"context"
@@ -10,25 +10,25 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
 )
 
-type StudentReadingWithFindById struct {
+type StudentReadWithFindById struct {
 	Tracer            tracer.ITracer
 	Logger            logger.ILogger
 	StudentRepository repositories.IStudentRepository
 }
 
-func NewStudentReadingWithFindById(tracer tracer.ITracer, logger logger.ILogger, studentRepository repositories.IStudentRepository) usecases.IStudentReadingUseCase {
-	return &StudentReadingWithFindById{
+func NewStudentReadWithFindById(tracer tracer.ITracer, logger logger.ILogger, studentRepository repositories.IStudentRepository) usecases.IStudentReadUseCase {
+	return &StudentReadWithFindById{
 		Tracer:            tracer,
 		Logger:            logger,
 		StudentRepository: studentRepository,
 	}
 }
 
-func (uc *StudentReadingWithFindById) Execute(ctx context.Context, studentId string) *dtos.Result {
-	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentReadingUseCaseFindByIdExecute)
+func (uc *StudentReadWithFindById) Execute(ctx context.Context, studentId string) *dtos.Result {
+	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentReadUseCaseFindByIdExecute)
 	defer span.End()
 
-	uc.Tracer.AddAttributes(span, tracer.StudentReadingUseCaseFindByIdExecute,
+	uc.Tracer.AddAttributes(span, tracer.StudentReadUseCaseFindByIdExecute,
 		tracer.Attributes{
 			"ID": studentId,
 		})

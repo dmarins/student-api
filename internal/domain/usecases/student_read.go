@@ -6,6 +6,6 @@ import (
 	"github.com/dmarins/student-api/internal/domain/dtos"
 )
 
-type IStudentReadingUseCase interface {
+type IStudentReadUseCase interface {
 	Execute(ctx context.Context, studentId string) *dtos.Result
 }

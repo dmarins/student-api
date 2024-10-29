@@ -3,8 +3,8 @@ package di
 import (
 	domain_usecases "github.com/dmarins/student-api/internal/domain/usecases"
 	"github.com/dmarins/student-api/internal/usecases/healthcheck"
-	"github.com/dmarins/student-api/internal/usecases/student/creation"
-	"github.com/dmarins/student-api/internal/usecases/student/reading"
+	"github.com/dmarins/student-api/internal/usecases/student/create"
+	"github.com/dmarins/student-api/internal/usecases/student/read"
 	"go.uber.org/fx"
 )
 
@@ -24,16 +24,16 @@ func healthCheckUseCase() fx.Option {
 
 func createStudentUseCase() fx.Option {
 	return fx.Provide(
-		fx.Annotate(creation.NewStudentCreationWithPersistence, fx.ResultTags(`name:"studentCreationWithPersistence"`),
-			fx.As(new(domain_usecases.IStudentCreationUseCase))),
-		fx.Annotate(creation.NewStudentCreationWithValidations, fx.ParamTags(``, ``, ``, `name:"studentCreationWithPersistence"`),
-			fx.ResultTags(`name:"studentCreationWithValidations"`), fx.As(new(domain_usecases.IStudentCreationUseCase)),
+		fx.Annotate(create.NewStudentCreateWithPersistence, fx.ResultTags(`name:"studentCreateWithPersistence"`),
+			fx.As(new(domain_usecases.IStudentCreateUseCase))),
+		fx.Annotate(create.NewStudentCreateWithPersistence, fx.ParamTags(``, ``, ``, `name:"studentCreateWithPersistence"`),
+			fx.ResultTags(`name:"studentCreateWithValidations"`), fx.As(new(domain_usecases.IStudentCreateUseCase)),
 		),
 	)
 }
 
 func readingStudentUseCaseModule() fx.Option {
 	return fx.Provide(
-		fx.Annotate(reading.NewStudentReadingWithFindById, fx.As(new(domain_usecases.IStudentReadingUseCase))),
+		fx.Annotate(read.NewStudentReadWithFindById, fx.As(new(domain_usecases.IStudentReadUseCase))),
 	)
 }
