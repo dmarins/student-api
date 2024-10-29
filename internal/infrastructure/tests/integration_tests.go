@@ -91,7 +91,7 @@ func NewFailedIntegrationTestsBuilder() *IntegrationTestsBuilder {
 		log.Fatalf("Failed to start postgres container: %s", err)
 	}
 
-	dsn, err := pgContainer.ConnectionString(ctx, "sslmode=disable", "application_name=student-api-integration-tests")
+	dsn, err := pgContainer.ConnectionString(ctx, "sslmode=enabled", "application_name=student-api-integration-tests")
 	if err != nil {
 		log.Fatalf("Failed to get postgres container port: %s", err)
 	}

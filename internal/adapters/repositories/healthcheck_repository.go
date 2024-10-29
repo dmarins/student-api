@@ -2,8 +2,6 @@ package repositories
 
 import (
 	"context"
-	"database/sql"
-	"fmt"
 
 	"github.com/dmarins/student-api/internal/domain/repositories"
 	"github.com/dmarins/student-api/internal/infrastructure/db"
@@ -31,10 +29,6 @@ func (r *HealthCheckRepository) CheckDbConnection(ctx context.Context) error {
 	row := r.Postgres.QueryRowContext(ctx, "SELECT 1")
 
 	if err := row.Scan(&result); err != nil {
-		if err == sql.ErrNoRows {
-			return fmt.Errorf("no rows returned in health check query: %w", err)
-		}
-
 		return err
 	}
 

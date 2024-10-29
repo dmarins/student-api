@@ -14,3 +14,11 @@ func TestHealthCheckRepository_CheckDbConnection_Success(t *testing.T) {
 
 	assert.NoError(t, err)
 }
+
+func TestHealthCheckRepository_CheckDbConnection_Fails(t *testing.T) {
+	sut := failedBuilder.BuildHealthCheckRepository()
+
+	err := sut.CheckDbConnection(builder.Ctx)
+
+	assert.Error(t, err)
+}
