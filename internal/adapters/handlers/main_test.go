@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/dmarins/student-api/internal/domain/dtos"
+	"github.com/dmarins/student-api/internal/domain/entities"
 	"github.com/dmarins/student-api/internal/infrastructure/tests"
 )
 
@@ -12,6 +13,7 @@ type fakeValues struct {
 	fakeInputStudent        *dtos.StudentInput
 	fakeInvalidInputStudent *dtos.StudentInput
 	fakeStoredInputStudent  *dtos.StudentInput
+	fakeStudent             *entities.Student
 }
 
 var f *fakeValues
@@ -33,6 +35,10 @@ func TestMain(m *testing.M) {
 			Name: "",
 		},
 		fakeStoredInputStudent: &dtos.StudentInput{
+			Name: "alice",
+		},
+		fakeStudent: &entities.Student{
+			ID:   "06b2ec25-3fe0-475e-9077-e77a113f4727",
 			Name: "alice",
 		},
 	}
