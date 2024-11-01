@@ -36,7 +36,7 @@ func provideStudentHandler(tracer tracer.ITracer,
 func studentHandler() fx.Option {
 	return fx.Provide(
 		fx.Annotate(provideStudentHandler,
-			fx.ParamTags(``, ``, `name:"studentCreateWithValidations"`, ``, `name:"studentUpdateWithValidations"`),
+			fx.ParamTags(``, ``, `name:"studentCreateWithValidations"`, ``, `name:"studentUpdateWithFindById"`),
 		),
 	)
 }

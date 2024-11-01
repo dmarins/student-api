@@ -44,8 +44,10 @@ func updateStudentUseCase() fx.Option {
 	return fx.Provide(
 		fx.Annotate(update.NewStudentUpdateWithPersistence, fx.ResultTags(`name:"studentUpdateWithPersistence"`),
 			fx.As(new(domain_usecases.IStudentUpdateUseCase))),
-		fx.Annotate(update.NewStudentUpdateWithValidations, fx.ParamTags(``, ``, ``, `name:"studentUpdateWithPersistence"`),
-			fx.ResultTags(`name:"studentUpdateWithValidations"`), fx.As(new(domain_usecases.IStudentUpdateUseCase)),
+		fx.Annotate(update.NewStudentUpdateWithNameCheck, fx.ParamTags(``, ``, ``, `name:"studentUpdateWithPersistence"`),
+			fx.ResultTags(`name:"studentUpdateWithNameCheck"`), fx.As(new(domain_usecases.IStudentUpdateUseCase))),
+		fx.Annotate(update.NewStudentUpdateWithFindById, fx.ParamTags(``, ``, ``, `name:"studentUpdateWithNameCheck"`),
+			fx.ResultTags(`name:"studentUpdateWithFindById"`), fx.As(new(domain_usecases.IStudentUpdateUseCase)),
 		),
 	)
 }
