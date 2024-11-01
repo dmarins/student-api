@@ -76,3 +76,19 @@ func TestStudentRepository_FindById_WhenTheQueryFails(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, student)
 }
+
+func TestStudentRepository_Update_WhenRepositoryUpdatesTheStudent(t *testing.T) {
+	sut := builder.BuildStudentRepository()
+
+	err := sut.Update(builder.Ctx, f.fakeNewStudent)
+
+	assert.NoError(t, err)
+}
+
+func TestStudentRepository_Update_WhenTheQueryFails(t *testing.T) {
+	sut := failedBuilder.BuildStudentRepository()
+
+	err := sut.Update(builder.Ctx, f.fakeNewStudent)
+
+	assert.Error(t, err)
+}

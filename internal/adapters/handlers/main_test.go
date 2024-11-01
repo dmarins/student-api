@@ -10,10 +10,13 @@ import (
 )
 
 type fakeValues struct {
-	fakeInputStudent        *dtos.StudentInput
-	fakeInvalidInputStudent *dtos.StudentInput
-	fakeStoredInputStudent  *dtos.StudentInput
-	fakeStudent             *entities.Student
+	fakeInputStudent              *dtos.StudentInput
+	fakeUpdateInputStudent        *dtos.StudentUpdateInput
+	fakeInvalidInputStudent       *dtos.StudentInput
+	fakeInvalidUpdateInputStudent *dtos.StudentUpdateInput
+	fakeStoredInputStudent        *dtos.StudentInput
+	fakeStoredUpdateInputStudent  *dtos.StudentUpdateInput
+	fakeStudent                   *entities.Student
 }
 
 var f *fakeValues
@@ -39,6 +42,15 @@ func TestMain(m *testing.M) {
 		},
 		fakeStudent: &entities.Student{
 			ID:   "06b2ec25-3fe0-475e-9077-e77a113f4727",
+			Name: "alice",
+		},
+		fakeUpdateInputStudent: &dtos.StudentUpdateInput{
+			Name: "ashley updated",
+		},
+		fakeInvalidUpdateInputStudent: &dtos.StudentUpdateInput{
+			Name: "",
+		},
+		fakeStoredUpdateInputStudent: &dtos.StudentUpdateInput{
 			Name: "alice",
 		},
 	}

@@ -11,6 +11,7 @@ import (
 	"github.com/dmarins/student-api/internal/usecases/healthcheck"
 	"github.com/dmarins/student-api/internal/usecases/student/create"
 	"github.com/dmarins/student-api/internal/usecases/student/read"
+	"github.com/dmarins/student-api/internal/usecases/student/update"
 	"go.uber.org/mock/gomock"
 )
 
@@ -22,7 +23,8 @@ type UnitTestsBuilder struct {
 	LoggerMock                *mocks.MockILogger
 	StudentRepositoryMock     *mocks.MockIStudentRepository
 	HealthCheckRepositoryMock *mocks.MockIHealthCheckRepository
-	Next                      *mocks.MockIStudentCreateUseCase
+	StudentCreateUseCaseMock  *mocks.MockIStudentCreateUseCase
+	StudentUpdateUseCaseMock  *mocks.MockIStudentUpdateUseCase
 }
 
 func NewUnitTestsBuilder(t *testing.T) *UnitTestsBuilder {
@@ -32,7 +34,8 @@ func NewUnitTestsBuilder(t *testing.T) *UnitTestsBuilder {
 	spanMock := mocks.NewMockISpan(ctrl)
 	studentRepositoryMock := mocks.NewMockIStudentRepository(ctrl)
 	healthCheckRepositoryMock := mocks.NewMockIHealthCheckRepository(ctrl)
-	next := mocks.NewMockIStudentCreateUseCase(ctrl)
+	studentCreateUseCaseMock := mocks.NewMockIStudentCreateUseCase(ctrl)
+	studentUpdateUseCaseMock := mocks.NewMockIStudentUpdateUseCase(ctrl)
 
 	return &UnitTestsBuilder{
 		Ctrl:                      ctrl,
@@ -41,7 +44,8 @@ func NewUnitTestsBuilder(t *testing.T) *UnitTestsBuilder {
 		SpanMock:                  spanMock,
 		StudentRepositoryMock:     studentRepositoryMock,
 		HealthCheckRepositoryMock: healthCheckRepositoryMock,
-		Next:                      next,
+		StudentCreateUseCaseMock:  studentCreateUseCaseMock,
+		StudentUpdateUseCaseMock:  studentUpdateUseCaseMock,
 	}
 }
 
@@ -108,8 +112,8 @@ func (b *UnitTestsBuilder) BuildHealthCheckUseCase() usecases.IHealthCheckUseCas
 	return healthcheck.NewHealthCheck(b.TracerMock, b.LoggerMock, b.HealthCheckRepositoryMock)
 }
 
-func (b *UnitTestsBuilder) BuildStudentCreateWithValidations() usecases.IStudentCreateUseCase {
-	return create.NewStudentCreateWithNameCheck(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock, b.Next)
+func (b *UnitTestsBuilder) BuildStudentCreateWithNameCheck() usecases.IStudentCreateUseCase {
+	return create.NewStudentCreateWithNameCheck(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock, b.StudentCreateUseCaseMock)
 }
 
 func (b *UnitTestsBuilder) BuildStudentCreateWithPersistence() usecases.IStudentCreateUseCase {
@@ -118,4 +122,16 @@ func (b *UnitTestsBuilder) BuildStudentCreateWithPersistence() usecases.IStudent
 
 func (b *UnitTestsBuilder) BuildStudentReadWithFindByID() usecases.IStudentReadUseCase {
 	return read.NewStudentReadWithFindById(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock)
+}
+
+func (b *UnitTestsBuilder) BuildStudentUpdateWithNameCheck() usecases.IStudentUpdateUseCase {
+	return update.NewStudentUpdateWithNameCheck(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock, b.StudentUpdateUseCaseMock)
+}
+
+func (b *UnitTestsBuilder) BuildStudentUpdateWithFindById() usecases.IStudentUpdateUseCase {
+	return update.NewStudentUpdateWithFindById(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock, b.StudentUpdateUseCaseMock)
+}
+
+func (b *UnitTestsBuilder) BuildStudentUpdateWithPersistence() usecases.IStudentUpdateUseCase {
+	return update.NewStudentUpdateWithPersistence(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock)
 }

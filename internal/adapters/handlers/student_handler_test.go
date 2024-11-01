@@ -152,3 +152,91 @@ func TestStudentHandler_Get_WhenStudentIsNotFound(t *testing.T) {
 
 	response.Value("message").IsEqual(dtos.NewNotFoundResult().Message)
 }
+
+func TestStudentHandler_Put_WithWrongMethod(t *testing.T) {
+	e := builder.Build(t)
+
+	e.PATCH("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusMethodNotAllowed)
+}
+
+func TestStudentHandler_Put_WithWrongPath(t *testing.T) {
+	e := builder.Build(t)
+
+	e.PUT("/studentssss/dbf54856-9a98-4672-9c90-e9da71a1f893").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusNotFound)
+}
+
+func TestStudentHandler_Put_WhenTenantIsNotSent(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.PUT("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
+		Expect().
+		Status(http.StatusBadRequest).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
+}
+
+func TestStudentHandler_Put_WithErrorBind(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.PUT("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
+		WithHeader("x-tenant", "sbrubles").
+		WithJSON("/{}").
+		Expect().
+		Status(http.StatusBadRequest).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
+}
+
+func TestStudentHandler_Put_WithErrorValidation(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.PUT("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
+		WithHeader("x-tenant", "sbrubles").
+		WithJSON(f.fakeInvalidUpdateInputStudent).
+		Expect().
+		Status(http.StatusBadRequest).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
+}
+
+func TestStudentHandler_Put_WithStudentAlreadyExists(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.PUT("/students/06b2ec25-3fe0-475e-9077-e77a113f4727").
+		WithHeader("x-tenant", "sbrubles").
+		WithJSON(f.fakeStoredUpdateInputStudent).
+		Expect().
+		Status(http.StatusConflict).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewConflictResult().Message)
+}
+
+func TestStudentHandler_Put_WhenTheStudentsIsUpdated(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.PUT("/students/e6e84c46-6ddf-4d9a-b27a-ddb74b4d63bb").
+		WithHeader("x-tenant", "sbrubles").
+		WithJSON(f.fakeUpdateInputStudent).
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual("The operation was performed successfully.")
+	response.Value("data").Object().Value("id").String().NotEmpty()
+	response.Value("data").Object().Value("name").IsEqual(f.fakeUpdateInputStudent.Name)
+}

@@ -20,7 +20,7 @@ func TestStudentCreateWithNameCheck_Execute_WhenTheRepositoryFailsToCheckIfTheSt
 		ExistsByName(builder.Ctx, f.fakeStudentInput.Name).
 		Return(false, f.fakeError)
 
-	sut := builder.BuildStudentCreateWithValidations()
+	sut := builder.BuildStudentCreateWithNameCheck()
 
 	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
@@ -38,7 +38,7 @@ func TestStudentCreateWithNameCheck_Execute_WhenTheStudentAlreadyExists(t *testi
 		ExistsByName(builder.Ctx, f.fakeStudentInput.Name).
 		Return(true, nil)
 
-	sut := builder.BuildStudentCreateWithValidations()
+	sut := builder.BuildStudentCreateWithNameCheck()
 
 	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
@@ -55,12 +55,12 @@ func TestStudentCreateWithNameCheck_Execute_WhenAnErrorIsReturnedByTheNextDecora
 		ExistsByName(builder.Ctx, f.fakeStudentInput.Name).
 		Return(false, nil)
 
-	builder.Next.
+	builder.StudentCreateUseCaseMock.
 		EXPECT().
 		Execute(builder.Ctx, f.fakeStudentInput).
 		Return(dtos.NewInternalServerErrorResult())
 
-	sut := builder.BuildStudentCreateWithValidations()
+	sut := builder.BuildStudentCreateWithNameCheck()
 
 	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
@@ -77,12 +77,12 @@ func TestStudentCreateWithNameCheck_Execute_WhenTheStudentDoesNotExist(t *testin
 		ExistsByName(builder.Ctx, f.fakeStudentInput.Name).
 		Return(false, nil)
 
-	builder.Next.
+	builder.StudentCreateUseCaseMock.
 		EXPECT().
 		Execute(builder.Ctx, f.fakeStudentInput).
 		Return(dtos.NewCreatedResult(f.fakeStudentInput))
 
-	sut := builder.BuildStudentCreateWithValidations()
+	sut := builder.BuildStudentCreateWithNameCheck()
 
 	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
 
