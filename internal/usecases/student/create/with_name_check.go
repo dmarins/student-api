@@ -10,15 +10,18 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/tracer"
 )
 
-type StudentCreateWithValidations struct {
+type StudentCreateWithNameCheck struct {
 	StudentRepository repositories.IStudentRepository
 	Tracer            tracer.ITracer
 	Logger            logger.ILogger
 	Next              usecases.IStudentCreateUseCase
 }
 
-func NewStudentCreateWithValidations(tracer tracer.ITracer, logger logger.ILogger, studentRepository repositories.IStudentRepository, next usecases.IStudentCreateUseCase) usecases.IStudentCreateUseCase {
-	return &StudentCreateWithValidations{
+func NewStudentCreateWithNameCheck(tracer tracer.ITracer,
+	logger logger.ILogger,
+	studentRepository repositories.IStudentRepository,
+	next usecases.IStudentCreateUseCase) usecases.IStudentCreateUseCase {
+	return &StudentCreateWithNameCheck{
 		StudentRepository: studentRepository,
 		Tracer:            tracer,
 		Logger:            logger,
@@ -26,7 +29,7 @@ func NewStudentCreateWithValidations(tracer tracer.ITracer, logger logger.ILogge
 	}
 }
 
-func (uc *StudentCreateWithValidations) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
+func (uc *StudentCreateWithNameCheck) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
 	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentCreateUseCaseValidationsExecute)
 	defer span.End()
 

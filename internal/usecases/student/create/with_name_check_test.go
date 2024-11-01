@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestStudentCreateWithValidations_Execute_WhenTheRepositoryFailsToCheckIfTheStudentExists(t *testing.T) {
+func TestStudentCreateWithNameCheck_Execute_WhenTheRepositoryFailsToCheckIfTheStudentExists(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
 		SettingTracerBehavior(tracer.StudentCreateUseCaseValidationsExecute).
@@ -27,7 +27,7 @@ func TestStudentCreateWithValidations_Execute_WhenTheRepositoryFailsToCheckIfThe
 	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
 
-func TestStudentCreateWithValidations_Execute_WhenTheStudentAlreadyExists(t *testing.T) {
+func TestStudentCreateWithNameCheck_Execute_WhenTheStudentAlreadyExists(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
 		SettingTracerBehavior(tracer.StudentCreateUseCaseValidationsExecute).
@@ -45,7 +45,7 @@ func TestStudentCreateWithValidations_Execute_WhenTheStudentAlreadyExists(t *tes
 	assert.EqualValues(t, dtos.NewConflictResult(), result)
 }
 
-func TestStudentCreateWithValidations_Execute_WhenAnErrorIsReturnedByTheNextDecorator(t *testing.T) {
+func TestStudentCreateWithNameCheck_Execute_WhenAnErrorIsReturnedByTheNextDecorator(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
 		SettingTracerBehavior(tracer.StudentCreateUseCaseValidationsExecute)
@@ -67,7 +67,7 @@ func TestStudentCreateWithValidations_Execute_WhenAnErrorIsReturnedByTheNextDeco
 	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
 
-func TestStudentCreateWithValidations_Execute_WhenTheStudentDoesNotExist(t *testing.T) {
+func TestStudentCreateWithNameCheck_Execute_WhenTheStudentDoesNotExist(t *testing.T) {
 	builder := tests.NewUnitTestsBuilder(t).
 		WithValidCtx().
 		SettingTracerBehavior(tracer.StudentCreateUseCaseValidationsExecute)

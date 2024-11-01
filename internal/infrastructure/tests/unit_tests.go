@@ -109,7 +109,7 @@ func (b *UnitTestsBuilder) BuildHealthCheckUseCase() usecases.IHealthCheckUseCas
 }
 
 func (b *UnitTestsBuilder) BuildStudentCreateWithValidations() usecases.IStudentCreateUseCase {
-	return create.NewStudentCreateWithValidations(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock, b.Next)
+	return create.NewStudentCreateWithNameCheck(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock, b.Next)
 }
 
 func (b *UnitTestsBuilder) BuildStudentCreateWithPersistence() usecases.IStudentCreateUseCase {

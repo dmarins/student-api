@@ -28,8 +28,8 @@ func createStudentUseCase() fx.Option {
 	return fx.Provide(
 		fx.Annotate(create.NewStudentCreateWithPersistence, fx.ResultTags(`name:"studentCreateWithPersistence"`),
 			fx.As(new(domain_usecases.IStudentCreateUseCase))),
-		fx.Annotate(create.NewStudentCreateWithValidations, fx.ParamTags(``, ``, ``, `name:"studentCreateWithPersistence"`),
-			fx.ResultTags(`name:"studentCreateWithValidations"`), fx.As(new(domain_usecases.IStudentCreateUseCase)),
+		fx.Annotate(create.NewStudentCreateWithNameCheck, fx.ParamTags(``, ``, ``, `name:"studentCreateWithPersistence"`),
+			fx.ResultTags(`name:"studentCreateWithNameCheck"`), fx.As(new(domain_usecases.IStudentCreateUseCase)),
 		),
 	)
 }
