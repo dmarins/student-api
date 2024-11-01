@@ -9,6 +9,8 @@ const (
 	StudentCreateUseCasePersistenceExecute = "StudentCreateUseCasePersistence:Execute"
 	StudentCreateUseCaseValidationsExecute = "StudentCreateUseCaseValidations:Execute"
 	StudentReadUseCaseFindByIdExecute      = "StudentReadUseCaseFindById:Execute"
+	StudentUpdateUseCasePersistenceExecute = "StudentUpdateUseCasePersistence:Execute"
+	StudentUpdateUseCaseValidationsExecute = "StudentUpdateUseCaseValidations:Execute"
 
 	HealthCheckRepositoryCheckDbConnection = "HealthCheckRepository:CheckDbConnection"
 	StudentRepositoryAdd                   = "StudentRepository:Add"

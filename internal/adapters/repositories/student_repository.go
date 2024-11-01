@@ -78,3 +78,17 @@ func (r *StudentRepository) FindById(ctx context.Context, studentId string) (*en
 
 	return &student, nil
 }
+
+func (r *StudentRepository) Update(ctx context.Context, student *entities.Student) error {
+	span, ctx := r.Tracer.NewSpanContext(ctx, tracer.StudentRepositoryAdd)
+	defer span.End()
+
+	r.Tracer.AddAttributes(span, tracer.StudentRepositoryAdd,
+		tracer.Attributes{
+			"Entity": student,
+		})
+
+	_, err := r.Postgres.ExecContext(ctx, "UPDATE students SET name = $1 WHERE id = $2", student.Name, student.ID)
+
+	return err
+}

@@ -1,0 +1,48 @@
+### missing header
+
+PUT http://localhost:8080/students/dbf54856-9a98-4672-9c90-e9da71a1f893
+Content-Type: application/json
+
+{
+    "name": "john updated {{$randomInt 1 100}}"
+}
+
+### success
+
+PUT http://localhost:8080/students/dbf54856-9a98-4672-9c90-e9da71a1f893
+x-tenant: {{$guid}}
+Content-Type: application/json
+
+{
+    "name": "john updated {{$randomInt 1 100}}"
+}
+
+### invalid payload
+
+PUT http://localhost:8080/students/dbf54856-9a98-4672-9c90-e9da71a1f893
+x-tenant: {{$guid}}
+Content-Type: application/json
+
+{
+    "name": 1
+}
+
+### required field
+
+PUT http://localhost:8080/students/dbf54856-9a98-4672-9c90-e9da71a1f893
+x-tenant: {{$guid}}
+Content-Type: application/json
+
+{
+    "name": ""
+}
+
+### same name
+
+PUT http://localhost:8080/students/bcff9f56-1ba6-4f92-9478-635c3f18e558
+x-tenant: {{$guid}}
+Content-Type: application/json
+
+{
+    "name": "bob"
+}

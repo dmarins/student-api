@@ -5,6 +5,7 @@ import (
 	"github.com/dmarins/student-api/internal/usecases/healthcheck"
 	"github.com/dmarins/student-api/internal/usecases/student/create"
 	"github.com/dmarins/student-api/internal/usecases/student/read"
+	"github.com/dmarins/student-api/internal/usecases/student/update"
 	"go.uber.org/fx"
 )
 
@@ -13,6 +14,7 @@ func useCasesModule() fx.Option {
 		healthCheckUseCase(),
 		createStudentUseCase(),
 		readingStudentUseCaseModule(),
+		updateStudentUseCase(),
 	)
 }
 
@@ -35,5 +37,15 @@ func createStudentUseCase() fx.Option {
 func readingStudentUseCaseModule() fx.Option {
 	return fx.Provide(
 		fx.Annotate(read.NewStudentReadWithFindById, fx.As(new(domain_usecases.IStudentReadUseCase))),
+	)
+}
+
+func updateStudentUseCase() fx.Option {
+	return fx.Provide(
+		fx.Annotate(update.NewStudentUpdateWithPersistence, fx.ResultTags(`name:"studentUpdateWithPersistence"`),
+			fx.As(new(domain_usecases.IStudentUpdateUseCase))),
+		fx.Annotate(update.NewStudentUpdateWithValidations, fx.ParamTags(``, ``, ``, `name:"studentUpdateWithPersistence"`),
+			fx.ResultTags(`name:"studentUpdateWithValidations"`), fx.As(new(domain_usecases.IStudentUpdateUseCase)),
+		),
 	)
 }

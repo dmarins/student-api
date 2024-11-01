@@ -18,18 +18,21 @@ type StudentHandler struct {
 	Logger               logger.ILogger
 	StudentCreateUseCase usecases.IStudentCreateUseCase
 	StudentReadUseCase   usecases.IStudentReadUseCase
+	StudentUpdateUseCase usecases.IStudentUpdateUseCase
 }
 
 func NewStudentHandler(
 	tracer tracer.ITracer,
 	logger logger.ILogger,
 	studentCreateUseCase usecases.IStudentCreateUseCase,
-	studentReadingUseCase usecases.IStudentReadUseCase) *StudentHandler {
+	studentReadingUseCase usecases.IStudentReadUseCase,
+	studentUpdateUseCase usecases.IStudentUpdateUseCase) *StudentHandler {
 	handler := &StudentHandler{
 		Tracer:               tracer,
 		Logger:               logger,
 		StudentCreateUseCase: studentCreateUseCase,
 		StudentReadUseCase:   studentReadingUseCase,
+		StudentUpdateUseCase: studentUpdateUseCase,
 	}
 
 	return handler
@@ -39,6 +42,7 @@ func RegisterStudentRoutes(s server.IServer, h *StudentHandler) {
 	routesGroup := s.GetEcho().Group("/students")
 	routesGroup.POST("", h.Post)
 	routesGroup.GET("/:id", h.Get)
+	routesGroup.PUT("/:id", h.Put)
 }
 
 func (h *StudentHandler) Post(ectx echo.Context) error {
@@ -82,13 +86,56 @@ func (h *StudentHandler) Get(ectx echo.Context) error {
 			"StudentId": studentId,
 		})
 
-	if ok := uuid.IsValid(studentId); !ok {
-		h.Logger.Warn(ctx, "id format is invalid", "id", studentId)
+	ok := uuid.IsValid(studentId)
+	if !ok {
+		h.Logger.Warn(ctx, "identifier format is invalid", "id", studentId)
 
 		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
 	}
 
-	h.Logger.Debug(ctx, "validate ok")
+	h.Logger.Debug(ctx, "identifier format ok")
 
 	return ReturnResult(ectx, h.StudentReadUseCase.Execute(ctx, studentId))
+}
+
+func (h *StudentHandler) Put(ectx echo.Context) error {
+	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerCreate)
+	defer span.End()
+
+	studentId := ectx.Param("id")
+
+	h.Tracer.AddAttributes(span, tracer.StudentHandlerCreate,
+		tracer.Attributes{
+			"Tenant":    ectx.Request().Header.Get(env.ProvideTenantHeaderName()),
+			"StudentId": studentId,
+		})
+
+	ok := uuid.IsValid(studentId)
+	if !ok {
+		h.Logger.Warn(ctx, "identifier format is invalid", "id", studentId)
+
+		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
+	}
+
+	h.Logger.Debug(ctx, "identifier format ok")
+
+	var studentUpdateInput dtos.StudentUpdateInput
+	if err := ectx.Bind(&studentUpdateInput); err != nil {
+		h.Logger.Warn(ctx, "invalid payload, check the data sent", "error", err.Error())
+
+		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
+	}
+
+	h.Logger.Debug(ctx, "echo bind ok")
+
+	studentUpdateInput.ID = studentId
+	if err := ectx.Validate(&studentUpdateInput); err != nil {
+		h.Logger.Warn(ctx, "invalid field", "error", err.Error())
+
+		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
+	}
+
+	h.Logger.Debug(ctx, "echo validate ok")
+
+	return ReturnResult(ectx, h.StudentUpdateUseCase.Execute(ctx, studentUpdateInput))
 }

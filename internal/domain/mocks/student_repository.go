@@ -156,3 +156,41 @@ func (c *MockIStudentRepositoryFindByIdCall) DoAndReturn(f func(context.Context,
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }
+
+// Update mocks base method.
+func (m *MockIStudentRepository) Update(ctx context.Context, student *entities.Student) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Update", ctx, student)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Update indicates an expected call of Update.
+func (mr *MockIStudentRepositoryMockRecorder) Update(ctx, student any) *MockIStudentRepositoryUpdateCall {
+	mr.mock.ctrl.T.Helper()
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockIStudentRepository)(nil).Update), ctx, student)
+	return &MockIStudentRepositoryUpdateCall{Call: call}
+}
+
+// MockIStudentRepositoryUpdateCall wrap *gomock.Call
+type MockIStudentRepositoryUpdateCall struct {
+	*gomock.Call
+}
+
+// Return rewrite *gomock.Call.Return
+func (c *MockIStudentRepositoryUpdateCall) Return(arg0 error) *MockIStudentRepositoryUpdateCall {
+	c.Call = c.Call.Return(arg0)
+	return c
+}
+
+// Do rewrite *gomock.Call.Do
+func (c *MockIStudentRepositoryUpdateCall) Do(f func(context.Context, *entities.Student) error) *MockIStudentRepositoryUpdateCall {
+	c.Call = c.Call.Do(f)
+	return c
+}
+
+// DoAndReturn rewrite *gomock.Call.DoAndReturn
+func (c *MockIStudentRepositoryUpdateCall) DoAndReturn(f func(context.Context, *entities.Student) error) *MockIStudentRepositoryUpdateCall {
+	c.Call = c.Call.DoAndReturn(f)
+	return c
+}
