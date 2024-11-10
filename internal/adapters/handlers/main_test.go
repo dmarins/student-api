@@ -17,6 +17,7 @@ type fakeValues struct {
 	fakeStoredInputStudent        *dtos.StudentInput
 	fakeStoredUpdateInputStudent  *dtos.StudentUpdateInput
 	fakeStudent                   *entities.Student
+	fakeStudentToBeDeleted        string
 }
 
 var f *fakeValues
@@ -53,6 +54,7 @@ func TestMain(m *testing.M) {
 		fakeStoredUpdateInputStudent: &dtos.StudentUpdateInput{
 			Name: "alice",
 		},
+		fakeStudentToBeDeleted: "8e99273f-e566-4476-836e-048b1ecd9c4d",
 	}
 
 	// Run all tests in handlers_test

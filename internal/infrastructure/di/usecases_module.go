@@ -4,6 +4,7 @@ import (
 	domain_usecases "github.com/dmarins/student-api/internal/domain/usecases"
 	"github.com/dmarins/student-api/internal/usecases/healthcheck"
 	"github.com/dmarins/student-api/internal/usecases/student/create"
+	"github.com/dmarins/student-api/internal/usecases/student/delete"
 	"github.com/dmarins/student-api/internal/usecases/student/read"
 	"github.com/dmarins/student-api/internal/usecases/student/update"
 	"go.uber.org/fx"
@@ -13,8 +14,9 @@ func useCasesModule() fx.Option {
 	return fx.Module("usecases",
 		healthCheckUseCase(),
 		createStudentUseCase(),
-		readingStudentUseCaseModule(),
+		readStudentUseCaseModule(),
 		updateStudentUseCase(),
+		deleteStudentUseCase(),
 	)
 }
 
@@ -34,7 +36,7 @@ func createStudentUseCase() fx.Option {
 	)
 }
 
-func readingStudentUseCaseModule() fx.Option {
+func readStudentUseCaseModule() fx.Option {
 	return fx.Provide(
 		fx.Annotate(read.NewStudentReadWithFindById, fx.As(new(domain_usecases.IStudentReadUseCase))),
 	)
@@ -48,6 +50,16 @@ func updateStudentUseCase() fx.Option {
 			fx.ResultTags(`name:"studentUpdateWithNameCheck"`), fx.As(new(domain_usecases.IStudentUpdateUseCase))),
 		fx.Annotate(update.NewStudentUpdateWithFindById, fx.ParamTags(``, ``, ``, `name:"studentUpdateWithNameCheck"`),
 			fx.ResultTags(`name:"studentUpdateWithFindById"`), fx.As(new(domain_usecases.IStudentUpdateUseCase)),
+		),
+	)
+}
+
+func deleteStudentUseCase() fx.Option {
+	return fx.Provide(
+		fx.Annotate(delete.NewStudentDeleteWithPersistence, fx.ResultTags(`name:"studentDeleteWithPersistence"`),
+			fx.As(new(domain_usecases.IStudentDeleteUseCase))),
+		fx.Annotate(delete.NewStudentDeleteWithFindById, fx.ParamTags(``, ``, ``, `name:"studentDeleteWithPersistence"`),
+			fx.ResultTags(`name:"studentDeleteWithFindById"`), fx.As(new(domain_usecases.IStudentDeleteUseCase)),
 		),
 	)
 }

@@ -156,7 +156,7 @@ func TestStudentHandler_Get_WhenStudentIsNotFound(t *testing.T) {
 func TestStudentHandler_Put_WithWrongMethod(t *testing.T) {
 	e := builder.Build(t)
 
-	e.PATCH("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
+	e.PATCH("/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusMethodNotAllowed)
@@ -239,4 +239,57 @@ func TestStudentHandler_Put_WhenTheStudentsIsUpdated(t *testing.T) {
 	response.Value("message").IsEqual("The operation was performed successfully.")
 	response.Value("data").Object().Value("id").String().NotEmpty()
 	response.Value("data").Object().Value("name").IsEqual(f.fakeUpdateInputStudent.Name)
+}
+
+func TestStudentHandler_Delete_WithWrongMethod(t *testing.T) {
+	e := builder.Build(t)
+
+	e.PATCH("/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusMethodNotAllowed)
+}
+
+func TestStudentHandler_Delete_WithWrongPath(t *testing.T) {
+	e := builder.Build(t)
+
+	e.DELETE("/studentssss/8e99273f-e566-4476-836e-048b1ecd9c4d").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusNotFound)
+}
+
+func TestStudentHandler_Delete_WhenTenantIsNotSent(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.DELETE("/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
+		Expect().
+		Status(http.StatusBadRequest).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
+}
+
+func TestStudentHandler_Delete_WithErrorValidation(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.DELETE("/students/1").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusBadRequest).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
+}
+
+func TestStudentHandler_Delete_WhenTheStudentsIsDeleted(t *testing.T) {
+	e := builder.Build(t)
+
+	e.DELETE("/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
+		WithHeader("x-tenant", "sbrubles").
+		WithJSON(f.fakeStudentToBeDeleted).
+		Expect().
+		Status(http.StatusNoContent)
 }
