@@ -46,6 +46,14 @@ func NewCreatedResult(data any) *Result {
 	)
 }
 
+func NewNoCotentResult() *Result {
+	return newSuccessResult(
+		204,
+		nil,
+		"",
+	)
+}
+
 func NewBadRequestResult() *Result {
 	return newWarningResult(
 		400,

@@ -51,6 +51,7 @@ mocks-gen: mockgen-download mocks-clean
 	$(GOBIN)/mockgen -source=internal/domain/usecases/student_create.go -destination=internal/domain/mocks/student_create.go -typed=true -package=mocks
 	$(GOBIN)/mockgen -source=internal/domain/usecases/student_read.go -destination=internal/domain/mocks/student_read.go -typed=true -package=mocks
 	$(GOBIN)/mockgen -source=internal/domain/usecases/student_update.go -destination=internal/domain/mocks/student_update.go -typed=true -package=mocks
+	$(GOBIN)/mockgen -source=internal/domain/usecases/student_delete.go -destination=internal/domain/mocks/student_delete.go -typed=true -package=mocks
 
 tests-clean:
 	$(GOCMD) clean -testcache

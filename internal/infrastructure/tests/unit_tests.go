@@ -10,6 +10,7 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/env"
 	"github.com/dmarins/student-api/internal/usecases/healthcheck"
 	"github.com/dmarins/student-api/internal/usecases/student/create"
+	"github.com/dmarins/student-api/internal/usecases/student/delete"
 	"github.com/dmarins/student-api/internal/usecases/student/read"
 	"github.com/dmarins/student-api/internal/usecases/student/update"
 	"go.uber.org/mock/gomock"
@@ -25,6 +26,7 @@ type UnitTestsBuilder struct {
 	HealthCheckRepositoryMock *mocks.MockIHealthCheckRepository
 	StudentCreateUseCaseMock  *mocks.MockIStudentCreateUseCase
 	StudentUpdateUseCaseMock  *mocks.MockIStudentUpdateUseCase
+	StudentDeleteUseCaseMock  *mocks.MockIStudentDeleteUseCase
 }
 
 func NewUnitTestsBuilder(t *testing.T) *UnitTestsBuilder {
@@ -36,6 +38,7 @@ func NewUnitTestsBuilder(t *testing.T) *UnitTestsBuilder {
 	healthCheckRepositoryMock := mocks.NewMockIHealthCheckRepository(ctrl)
 	studentCreateUseCaseMock := mocks.NewMockIStudentCreateUseCase(ctrl)
 	studentUpdateUseCaseMock := mocks.NewMockIStudentUpdateUseCase(ctrl)
+	studentDeleteUseCaseMock := mocks.NewMockIStudentDeleteUseCase(ctrl)
 
 	return &UnitTestsBuilder{
 		Ctrl:                      ctrl,
@@ -46,6 +49,7 @@ func NewUnitTestsBuilder(t *testing.T) *UnitTestsBuilder {
 		HealthCheckRepositoryMock: healthCheckRepositoryMock,
 		StudentCreateUseCaseMock:  studentCreateUseCaseMock,
 		StudentUpdateUseCaseMock:  studentUpdateUseCaseMock,
+		StudentDeleteUseCaseMock:  studentDeleteUseCaseMock,
 	}
 }
 
@@ -134,4 +138,12 @@ func (b *UnitTestsBuilder) BuildStudentUpdateWithFindById() usecases.IStudentUpd
 
 func (b *UnitTestsBuilder) BuildStudentUpdateWithPersistence() usecases.IStudentUpdateUseCase {
 	return update.NewStudentUpdateWithPersistence(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock)
+}
+
+func (b *UnitTestsBuilder) BuildStudentDeleteWithFindById() usecases.IStudentDeleteUseCase {
+	return delete.NewStudentDeleteWithFindById(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock, b.StudentDeleteUseCaseMock)
+}
+
+func (b *UnitTestsBuilder) BuildStudentDeleteWithPersistence() usecases.IStudentDeleteUseCase {
+	return delete.NewStudentDeleteWithPersistence(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock)
 }
