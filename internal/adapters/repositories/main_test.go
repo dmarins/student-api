@@ -9,9 +9,10 @@ import (
 )
 
 type fakeValues struct {
-	fakeNewStudent      *entities.Student
-	fakeStoredStudent   *entities.Student
-	fakeNotFoundStudent *entities.Student
+	fakeNewStudent         *entities.Student
+	fakeStoredStudent      *entities.Student
+	fakeNotFoundStudent    *entities.Student
+	fakeStudentToBeDeleted string
 }
 
 var f *fakeValues
@@ -44,6 +45,7 @@ func TestMain(m *testing.M) {
 			ID:   "58ecde02-18f6-4896-a716-64abf6724587",
 			Name: "jordan",
 		},
+		fakeStudentToBeDeleted: "8e99273f-e566-4476-836e-048b1ecd9c4d",
 	}
 
 	// Run all tests in repositories_test

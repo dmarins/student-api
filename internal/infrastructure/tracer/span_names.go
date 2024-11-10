@@ -16,4 +16,6 @@ const (
 	StudentRepositoryAdd                   = "StudentRepository:Add"
 	StudentRepositoryExistsByName          = "StudentRepository:ExistsByName"
 	StudentRepositoryFindById              = "StudentRepository:FindById"
+	StudentRepositoryUpdate                = "StudentRepository:Update"
+	StudentRepositoryDelete                = "StudentRepository:Delete"
 )

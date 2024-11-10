@@ -80,15 +80,29 @@ func (r *StudentRepository) FindById(ctx context.Context, studentId string) (*en
 }
 
 func (r *StudentRepository) Update(ctx context.Context, student *entities.Student) error {
-	span, ctx := r.Tracer.NewSpanContext(ctx, tracer.StudentRepositoryAdd)
+	span, ctx := r.Tracer.NewSpanContext(ctx, tracer.StudentRepositoryUpdate)
 	defer span.End()
 
-	r.Tracer.AddAttributes(span, tracer.StudentRepositoryAdd,
+	r.Tracer.AddAttributes(span, tracer.StudentRepositoryUpdate,
 		tracer.Attributes{
 			"Entity": student,
 		})
 
 	_, err := r.Postgres.ExecContext(ctx, "UPDATE students SET name = $1 WHERE id = $2", student.Name, student.ID)
+
+	return err
+}
+
+func (r *StudentRepository) Delete(ctx context.Context, studentId string) error {
+	span, ctx := r.Tracer.NewSpanContext(ctx, tracer.StudentRepositoryDelete)
+	defer span.End()
+
+	r.Tracer.AddAttributes(span, tracer.StudentRepositoryDelete,
+		tracer.Attributes{
+			"ID": studentId,
+		})
+
+	_, err := r.Postgres.ExecContext(ctx, "DELETE FROM students WHERE id = $1", studentId)
 
 	return err
 }

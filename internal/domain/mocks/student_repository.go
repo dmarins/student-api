@@ -79,6 +79,44 @@ func (c *MockIStudentRepositoryAddCall) DoAndReturn(f func(context.Context, *ent
 	return c
 }
 
+// Delete mocks base method.
+func (m *MockIStudentRepository) Delete(ctx context.Context, studentId string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Delete", ctx, studentId)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Delete indicates an expected call of Delete.
+func (mr *MockIStudentRepositoryMockRecorder) Delete(ctx, studentId any) *MockIStudentRepositoryDeleteCall {
+	mr.mock.ctrl.T.Helper()
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockIStudentRepository)(nil).Delete), ctx, studentId)
+	return &MockIStudentRepositoryDeleteCall{Call: call}
+}
+
+// MockIStudentRepositoryDeleteCall wrap *gomock.Call
+type MockIStudentRepositoryDeleteCall struct {
+	*gomock.Call
+}
+
+// Return rewrite *gomock.Call.Return
+func (c *MockIStudentRepositoryDeleteCall) Return(arg0 error) *MockIStudentRepositoryDeleteCall {
+	c.Call = c.Call.Return(arg0)
+	return c
+}
+
+// Do rewrite *gomock.Call.Do
+func (c *MockIStudentRepositoryDeleteCall) Do(f func(context.Context, string) error) *MockIStudentRepositoryDeleteCall {
+	c.Call = c.Call.Do(f)
+	return c
+}
+
+// DoAndReturn rewrite *gomock.Call.DoAndReturn
+func (c *MockIStudentRepositoryDeleteCall) DoAndReturn(f func(context.Context, string) error) *MockIStudentRepositoryDeleteCall {
+	c.Call = c.Call.DoAndReturn(f)
+	return c
+}
+
 // ExistsByName mocks base method.
 func (m *MockIStudentRepository) ExistsByName(ctx context.Context, name string) (bool, error) {
 	m.ctrl.T.Helper()

@@ -92,3 +92,19 @@ func TestStudentRepository_Update_WhenTheQueryFails(t *testing.T) {
 
 	assert.Error(t, err)
 }
+
+func TestStudentRepository_Delete_WhenRepositoryRemovesTheStudent(t *testing.T) {
+	sut := builder.BuildStudentRepository()
+
+	err := sut.Delete(builder.Ctx, f.fakeStudentToBeDeleted)
+
+	assert.NoError(t, err)
+}
+
+func TestStudentRepository_Delete_WhenTheQueryFails(t *testing.T) {
+	sut := failedBuilder.BuildStudentRepository()
+
+	err := sut.Delete(builder.Ctx, f.fakeStudentToBeDeleted)
+
+	assert.Error(t, err)
+}
