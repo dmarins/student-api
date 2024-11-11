@@ -15,6 +15,7 @@ type (
 		Close(ctx context.Context, logger logger.ILogger)
 		ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
 		QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
+		QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
 	}
 
 	Db struct {
@@ -78,4 +79,8 @@ func (d *Db) ExecContext(ctx context.Context, query string, args ...any) (sql.Re
 
 func (d *Db) QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row {
 	return d.postgres.QueryRowContext(ctx, query, args...)
+}
+
+func (d *Db) QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error) {
+	return d.postgres.QueryContext(ctx, query, args...)
 }

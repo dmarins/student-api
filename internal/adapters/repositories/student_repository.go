@@ -3,7 +3,9 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"strings"
 
+	"github.com/dmarins/student-api/internal/domain/dtos"
 	"github.com/dmarins/student-api/internal/domain/entities"
 	"github.com/dmarins/student-api/internal/domain/repositories"
 	"github.com/dmarins/student-api/internal/infrastructure/db"
@@ -105,4 +107,67 @@ func (r *StudentRepository) Delete(ctx context.Context, studentId string) error 
 	_, err := r.Postgres.ExecContext(ctx, "DELETE FROM students WHERE id = $1", studentId)
 
 	return err
+}
+
+func (r *StudentRepository) SearchBy(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) ([]*entities.Student, error) {
+	span, ctx := r.Tracer.NewSpanContext(ctx, tracer.StudentRepositorySearchBy)
+	defer span.End()
+
+	r.Tracer.AddAttributes(span, tracer.StudentRepositorySearchBy,
+		tracer.Attributes{
+			"Pagination": pagination,
+			"Filter":     filter,
+		})
+
+	query := "SELECT id, name FROM students WHERE"
+	args := make([]interface{}, 0)
+
+	if filter.Name != nil {
+		query += " name LIKE $1"
+		args = append(args, "%"+*filter.Name+"%")
+	}
+
+	if strings.EqualFold(pagination.SortField, dtos.FILTER_NAME) {
+		query += " ORDER BY name "
+	} else {
+		query += " ORDER BY id "
+	}
+
+	if pagination.IsASC() {
+		query += dtos.ORDER_ASC
+	} else {
+		query += dtos.ORDER_DESC
+	}
+
+	query += " LIMIT $2 OFFSET $3"
+	args = append(args, pagination.PageSize, pagination.Offset())
+
+	rows, err := r.Postgres.QueryContext(ctx, query, args[:]...)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var students []*entities.Student
+	for rows.Next() {
+		var student entities.Student
+
+		err := rows.Scan(&student.ID, &student.Name)
+		if err != nil {
+			if err == sql.ErrNoRows {
+				return nil, nil
+			}
+
+			return nil, err
+		}
+
+		students = append(students, &student)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return students, nil
 }

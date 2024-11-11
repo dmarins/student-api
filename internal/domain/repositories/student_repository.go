@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 
+	"github.com/dmarins/student-api/internal/domain/dtos"
 	"github.com/dmarins/student-api/internal/domain/entities"
 )
 
@@ -12,4 +13,5 @@ type IStudentRepository interface {
 	FindById(ctx context.Context, studentId string) (*entities.Student, error)
 	Update(ctx context.Context, student *entities.Student) error
 	Delete(ctx context.Context, studentId string) error
+	SearchBy(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) ([]*entities.Student, error)
 }

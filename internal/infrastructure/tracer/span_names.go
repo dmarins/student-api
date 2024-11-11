@@ -22,4 +22,5 @@ const (
 	StudentRepositoryFindById              = "StudentRepository:FindById"
 	StudentRepositoryUpdate                = "StudentRepository:Update"
 	StudentRepositoryDelete                = "StudentRepository:Delete"
+	StudentRepositorySearchBy              = "StudentRepository:SearchBy"
 )

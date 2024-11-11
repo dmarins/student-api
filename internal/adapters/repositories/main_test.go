@@ -60,3 +60,7 @@ func TestMain(m *testing.M) {
 	// Exit with the code returned by the tests
 	os.Exit(code)
 }
+
+func ToPointer[T any](value T) *T {
+	return &value
+}

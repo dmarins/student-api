@@ -3,6 +3,7 @@ package repositories_test
 import (
 	"testing"
 
+	"github.com/dmarins/student-api/internal/domain/dtos"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
 )
@@ -107,4 +108,94 @@ func TestStudentRepository_Delete_WhenTheQueryFails(t *testing.T) {
 	err := sut.Delete(builder.Ctx, f.fakeStudentToBeDeleted)
 
 	assert.Error(t, err)
+}
+
+func TestStudentRepository_SearchBy_WhenRepositoryReturnsOnePageOfData(t *testing.T) {
+	sut := builder.BuildStudentRepository()
+
+	results, err := sut.SearchBy(builder.Ctx,
+		dtos.PaginationRequest{
+			Page:      1,
+			PageSize:  10,
+			SortOrder: "asc",
+			SortField: "name",
+		},
+		dtos.Filter{
+			Name: ToPointer("a"),
+		},
+	)
+
+	assert.NoError(t, err)
+	assert.Len(t, results, 3)
+}
+
+func TestStudentRepository_SearchBy_WhenRepositoryReturnsThreePageOfData(t *testing.T) {
+	sut := builder.BuildStudentRepository()
+
+	results, err := sut.SearchBy(builder.Ctx,
+		dtos.PaginationRequest{
+			Page:      1,
+			PageSize:  1,
+			SortOrder: "asc",
+			SortField: "name",
+		},
+		dtos.Filter{
+			Name: ToPointer("a"),
+		},
+	)
+
+	assert.NoError(t, err)
+	assert.Len(t, results, 1)
+	assert.Equal(t, results[0].Name, "alice")
+
+	results, err = sut.SearchBy(builder.Ctx,
+		dtos.PaginationRequest{
+			Page:      2,
+			PageSize:  1,
+			SortOrder: "asc",
+			SortField: "name",
+		},
+		dtos.Filter{
+			Name: ToPointer("a"),
+		},
+	)
+
+	assert.NoError(t, err)
+	assert.Len(t, results, 1)
+	assert.Equal(t, results[0].Name, "ashley")
+
+	results, err = sut.SearchBy(builder.Ctx,
+		dtos.PaginationRequest{
+			Page:      3,
+			PageSize:  1,
+			SortOrder: "asc",
+			SortField: "name",
+		},
+		dtos.Filter{
+			Name: ToPointer("a"),
+		},
+	)
+
+	assert.NoError(t, err)
+	assert.Len(t, results, 1)
+	assert.Equal(t, results[0].Name, "megan")
+}
+
+func TestStudentRepository_SearchBy_WhenTheQueryFails(t *testing.T) {
+	sut := failedBuilder.BuildStudentRepository()
+
+	results, err := sut.SearchBy(builder.Ctx,
+		dtos.PaginationRequest{
+			Page:      1,
+			PageSize:  10,
+			SortOrder: "asc",
+			SortField: "name",
+		},
+		dtos.Filter{
+			Name: ToPointer("a"),
+		},
+	)
+
+	assert.Error(t, err)
+	assert.Nil(t, results)
 }

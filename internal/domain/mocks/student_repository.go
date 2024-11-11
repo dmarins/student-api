@@ -13,6 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	dtos "github.com/dmarins/student-api/internal/domain/dtos"
 	entities "github.com/dmarins/student-api/internal/domain/entities"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -191,6 +192,45 @@ func (c *MockIStudentRepositoryFindByIdCall) Do(f func(context.Context, string) 
 
 // DoAndReturn rewrite *gomock.Call.DoAndReturn
 func (c *MockIStudentRepositoryFindByIdCall) DoAndReturn(f func(context.Context, string) (*entities.Student, error)) *MockIStudentRepositoryFindByIdCall {
+	c.Call = c.Call.DoAndReturn(f)
+	return c
+}
+
+// SearchBy mocks base method.
+func (m *MockIStudentRepository) SearchBy(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) ([]*entities.Student, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SearchBy", ctx, pagination, filter)
+	ret0, _ := ret[0].([]*entities.Student)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// SearchBy indicates an expected call of SearchBy.
+func (mr *MockIStudentRepositoryMockRecorder) SearchBy(ctx, pagination, filter any) *MockIStudentRepositorySearchByCall {
+	mr.mock.ctrl.T.Helper()
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SearchBy", reflect.TypeOf((*MockIStudentRepository)(nil).SearchBy), ctx, pagination, filter)
+	return &MockIStudentRepositorySearchByCall{Call: call}
+}
+
+// MockIStudentRepositorySearchByCall wrap *gomock.Call
+type MockIStudentRepositorySearchByCall struct {
+	*gomock.Call
+}
+
+// Return rewrite *gomock.Call.Return
+func (c *MockIStudentRepositorySearchByCall) Return(arg0 []*entities.Student, arg1 error) *MockIStudentRepositorySearchByCall {
+	c.Call = c.Call.Return(arg0, arg1)
+	return c
+}
+
+// Do rewrite *gomock.Call.Do
+func (c *MockIStudentRepositorySearchByCall) Do(f func(context.Context, dtos.PaginationRequest, dtos.Filter) ([]*entities.Student, error)) *MockIStudentRepositorySearchByCall {
+	c.Call = c.Call.Do(f)
+	return c
+}
+
+// DoAndReturn rewrite *gomock.Call.DoAndReturn
+func (c *MockIStudentRepositorySearchByCall) DoAndReturn(f func(context.Context, dtos.PaginationRequest, dtos.Filter) ([]*entities.Student, error)) *MockIStudentRepositorySearchByCall {
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }
