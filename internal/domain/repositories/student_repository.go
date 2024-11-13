@@ -14,4 +14,5 @@ type IStudentRepository interface {
 	Update(ctx context.Context, student *entities.Student) error
 	Delete(ctx context.Context, studentId string) error
 	SearchBy(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) ([]*entities.Student, error)
+	Count(ctx context.Context, filter dtos.Filter) (int, error)
 }

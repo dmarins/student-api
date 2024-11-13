@@ -121,15 +121,32 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsOnePageOfData(t *testin
 			SortField: "name",
 		},
 		dtos.Filter{
-			Name: ToPointer("a"),
+			Name: ToPointer("thompson"),
 		},
 	)
 
 	assert.NoError(t, err)
-	assert.Len(t, results, 3)
+	assert.Len(t, results, 2)
+	assert.Equal(t, results[0].Name, "michael thompson")
+	assert.Equal(t, results[1].Name, "will thompson")
+
+	results, err = sut.SearchBy(builder.Ctx,
+		dtos.PaginationRequest{
+			Page:      2,
+			PageSize:  10,
+			SortOrder: "asc",
+			SortField: "name",
+		},
+		dtos.Filter{
+			Name: ToPointer("thompson"),
+		},
+	)
+
+	assert.NoError(t, err)
+	assert.Len(t, results, 0)
 }
 
-func TestStudentRepository_SearchBy_WhenRepositoryReturnsThreePageOfData(t *testing.T) {
+func TestStudentRepository_SearchBy_WhenRepositoryReturnsTwoPageOfData(t *testing.T) {
 	sut := builder.BuildStudentRepository()
 
 	results, err := sut.SearchBy(builder.Ctx,
@@ -140,13 +157,13 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsThreePageOfData(t *test
 			SortField: "name",
 		},
 		dtos.Filter{
-			Name: ToPointer("a"),
+			Name: ToPointer("thompson"),
 		},
 	)
 
 	assert.NoError(t, err)
 	assert.Len(t, results, 1)
-	assert.Equal(t, results[0].Name, "alice")
+	assert.Equal(t, results[0].Name, "michael thompson")
 
 	results, err = sut.SearchBy(builder.Ctx,
 		dtos.PaginationRequest{
@@ -156,29 +173,34 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsThreePageOfData(t *test
 			SortField: "name",
 		},
 		dtos.Filter{
-			Name: ToPointer("a"),
+			Name: ToPointer("thompson"),
 		},
 	)
 
 	assert.NoError(t, err)
 	assert.Len(t, results, 1)
-	assert.Equal(t, results[0].Name, "ashley")
+	assert.Equal(t, results[0].Name, "will thompson")
+}
 
-	results, err = sut.SearchBy(builder.Ctx,
+func TestStudentRepository_SearchBy_ToSortOrderDescAndSortFieldId(t *testing.T) {
+	sut := builder.BuildStudentRepository()
+
+	results, err := sut.SearchBy(builder.Ctx,
 		dtos.PaginationRequest{
-			Page:      3,
-			PageSize:  1,
-			SortOrder: "asc",
-			SortField: "name",
+			Page:      1,
+			PageSize:  10,
+			SortOrder: "desc",
+			SortField: "id",
 		},
 		dtos.Filter{
-			Name: ToPointer("a"),
+			Name: ToPointer("thompson"),
 		},
 	)
 
 	assert.NoError(t, err)
-	assert.Len(t, results, 1)
-	assert.Equal(t, results[0].Name, "megan")
+	assert.Len(t, results, 2)
+	assert.Equal(t, results[0].Name, "will thompson")
+	assert.Equal(t, results[1].Name, "michael thompson")
 }
 
 func TestStudentRepository_SearchBy_WhenTheQueryFails(t *testing.T) {
@@ -192,10 +214,49 @@ func TestStudentRepository_SearchBy_WhenTheQueryFails(t *testing.T) {
 			SortField: "name",
 		},
 		dtos.Filter{
-			Name: ToPointer("a"),
+			Name: ToPointer("thompson"),
 		},
 	)
 
 	assert.Error(t, err)
 	assert.Nil(t, results)
+}
+
+func TestStudentRepository_Count_WhenRepositoryReturnsCount(t *testing.T) {
+	sut := builder.BuildStudentRepository()
+
+	count, err := sut.Count(builder.Ctx,
+		dtos.Filter{
+			Name: ToPointer("thompson"),
+		},
+	)
+
+	assert.NoError(t, err)
+	assert.Equal(t, count, 2)
+}
+
+func TestStudentRepository_Count_WhenRepositoryReturnsZero(t *testing.T) {
+	sut := builder.BuildStudentRepository()
+
+	count, err := sut.Count(builder.Ctx,
+		dtos.Filter{
+			Name: ToPointer("sbrubles"),
+		},
+	)
+
+	assert.NoError(t, err)
+	assert.Zero(t, count)
+}
+
+func TestStudentRepository_Count_WhenTheQueryFails(t *testing.T) {
+	sut := failedBuilder.BuildStudentRepository()
+
+	count, err := sut.Count(builder.Ctx,
+		dtos.Filter{
+			Name: ToPointer("thompson"),
+		},
+	)
+
+	assert.Error(t, err)
+	assert.Zero(t, count)
 }

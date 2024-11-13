@@ -23,4 +23,5 @@ const (
 	StudentRepositoryUpdate                = "StudentRepository:Update"
 	StudentRepositoryDelete                = "StudentRepository:Delete"
 	StudentRepositorySearchBy              = "StudentRepository:SearchBy"
+	StudentRepositoryCount                 = "StudentRepository:Count"
 )

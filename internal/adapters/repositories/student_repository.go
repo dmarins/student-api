@@ -3,6 +3,7 @@ package repositories
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"strings"
 
 	"github.com/dmarins/student-api/internal/domain/dtos"
@@ -50,10 +51,7 @@ func (r *StudentRepository) ExistsByName(ctx context.Context, name string) (bool
 
 	var exists bool
 
-	err := r.Postgres.
-		QueryRowContext(ctx, "SELECT EXISTS(SELECT 1 FROM students WHERE name = $1)", name).
-		Scan(&exists)
-
+	err := r.Postgres.QueryRowContext(ctx, "SELECT EXISTS(SELECT 1 FROM students WHERE name = $1)", name).Scan(&exists)
 	return exists, err
 }
 
@@ -109,6 +107,29 @@ func (r *StudentRepository) Delete(ctx context.Context, studentId string) error 
 	return err
 }
 
+func (r *StudentRepository) Count(ctx context.Context, filter dtos.Filter) (int, error) {
+	span, ctx := r.Tracer.NewSpanContext(ctx, tracer.StudentRepositoryCount)
+	defer span.End()
+
+	r.Tracer.AddAttributes(span, tracer.StudentRepositoryCount,
+		tracer.Attributes{
+			"Filter": filter,
+		})
+
+	query := "SELECT COUNT(*) FROM students"
+	args := make([]interface{}, 0)
+
+	if filter.Name != nil {
+		query += " WHERE name LIKE $1"
+		args = append(args, fmt.Sprintf("%%%s%%", *filter.Name))
+	}
+
+	var count int
+
+	err := r.Postgres.QueryRowContext(ctx, query, args[:]...).Scan(&count)
+	return count, err
+}
+
 func (r *StudentRepository) SearchBy(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) ([]*entities.Student, error) {
 	span, ctx := r.Tracer.NewSpanContext(ctx, tracer.StudentRepositorySearchBy)
 	defer span.End()
@@ -119,12 +140,12 @@ func (r *StudentRepository) SearchBy(ctx context.Context, pagination dtos.Pagina
 			"Filter":     filter,
 		})
 
-	query := "SELECT id, name FROM students WHERE"
+	query := "SELECT id, name FROM students"
 	args := make([]interface{}, 0)
 
 	if filter.Name != nil {
-		query += " name LIKE $1"
-		args = append(args, "%"+*filter.Name+"%")
+		query += " WHERE name LIKE $1"
+		args = append(args, fmt.Sprintf("%%%s%%", *filter.Name))
 	}
 
 	if strings.EqualFold(pagination.SortField, dtos.FILTER_NAME) {

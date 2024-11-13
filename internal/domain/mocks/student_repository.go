@@ -80,6 +80,45 @@ func (c *MockIStudentRepositoryAddCall) DoAndReturn(f func(context.Context, *ent
 	return c
 }
 
+// Count mocks base method.
+func (m *MockIStudentRepository) Count(ctx context.Context, filter dtos.Filter) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Count", ctx, filter)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Count indicates an expected call of Count.
+func (mr *MockIStudentRepositoryMockRecorder) Count(ctx, filter any) *MockIStudentRepositoryCountCall {
+	mr.mock.ctrl.T.Helper()
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Count", reflect.TypeOf((*MockIStudentRepository)(nil).Count), ctx, filter)
+	return &MockIStudentRepositoryCountCall{Call: call}
+}
+
+// MockIStudentRepositoryCountCall wrap *gomock.Call
+type MockIStudentRepositoryCountCall struct {
+	*gomock.Call
+}
+
+// Return rewrite *gomock.Call.Return
+func (c *MockIStudentRepositoryCountCall) Return(arg0 int, arg1 error) *MockIStudentRepositoryCountCall {
+	c.Call = c.Call.Return(arg0, arg1)
+	return c
+}
+
+// Do rewrite *gomock.Call.Do
+func (c *MockIStudentRepositoryCountCall) Do(f func(context.Context, dtos.Filter) (int, error)) *MockIStudentRepositoryCountCall {
+	c.Call = c.Call.Do(f)
+	return c
+}
+
+// DoAndReturn rewrite *gomock.Call.DoAndReturn
+func (c *MockIStudentRepositoryCountCall) DoAndReturn(f func(context.Context, dtos.Filter) (int, error)) *MockIStudentRepositoryCountCall {
+	c.Call = c.Call.DoAndReturn(f)
+	return c
+}
+
 // Delete mocks base method.
 func (m *MockIStudentRepository) Delete(ctx context.Context, studentId string) error {
 	m.ctrl.T.Helper()
