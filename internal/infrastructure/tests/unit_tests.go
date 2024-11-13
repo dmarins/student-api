@@ -147,3 +147,7 @@ func (b *UnitTestsBuilder) BuildStudentDeleteWithFindById() usecases.IStudentDel
 func (b *UnitTestsBuilder) BuildStudentDeleteWithPersistence() usecases.IStudentDeleteUseCase {
 	return delete.NewStudentDeleteWithPersistence(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock)
 }
+
+func (b *UnitTestsBuilder) BuildStudentSearchWithSearchBy() usecases.IStudentSearchUseCase {
+	return read.NewStudentSearchWithSearchBy(b.TracerMock, b.LoggerMock, b.StudentRepositoryMock)
+}

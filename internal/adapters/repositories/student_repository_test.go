@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/dmarins/student-api/internal/domain/dtos"
+	"github.com/dmarins/student-api/internal/infrastructure/tests"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
 )
@@ -121,7 +122,7 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsOnePageOfData(t *testin
 			SortField: "name",
 		},
 		dtos.Filter{
-			Name: ToPointer("thompson"),
+			Name: tests.ToPointer("thompson"),
 		},
 	)
 
@@ -138,7 +139,7 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsOnePageOfData(t *testin
 			SortField: "name",
 		},
 		dtos.Filter{
-			Name: ToPointer("thompson"),
+			Name: tests.ToPointer("thompson"),
 		},
 	)
 
@@ -157,7 +158,7 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsTwoPageOfData(t *testin
 			SortField: "name",
 		},
 		dtos.Filter{
-			Name: ToPointer("thompson"),
+			Name: tests.ToPointer("thompson"),
 		},
 	)
 
@@ -173,7 +174,7 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsTwoPageOfData(t *testin
 			SortField: "name",
 		},
 		dtos.Filter{
-			Name: ToPointer("thompson"),
+			Name: tests.ToPointer("thompson"),
 		},
 	)
 
@@ -193,7 +194,7 @@ func TestStudentRepository_SearchBy_ToSortOrderDescAndSortFieldId(t *testing.T) 
 			SortField: "id",
 		},
 		dtos.Filter{
-			Name: ToPointer("thompson"),
+			Name: tests.ToPointer("thompson"),
 		},
 	)
 
@@ -214,7 +215,7 @@ func TestStudentRepository_SearchBy_WhenTheQueryFails(t *testing.T) {
 			SortField: "name",
 		},
 		dtos.Filter{
-			Name: ToPointer("thompson"),
+			Name: tests.ToPointer("thompson"),
 		},
 	)
 
@@ -227,7 +228,7 @@ func TestStudentRepository_Count_WhenRepositoryReturnsCount(t *testing.T) {
 
 	count, err := sut.Count(builder.Ctx,
 		dtos.Filter{
-			Name: ToPointer("thompson"),
+			Name: tests.ToPointer("thompson"),
 		},
 	)
 
@@ -240,7 +241,7 @@ func TestStudentRepository_Count_WhenRepositoryReturnsZero(t *testing.T) {
 
 	count, err := sut.Count(builder.Ctx,
 		dtos.Filter{
-			Name: ToPointer("sbrubles"),
+			Name: tests.ToPointer("sbrubles"),
 		},
 	)
 
@@ -253,7 +254,7 @@ func TestStudentRepository_Count_WhenTheQueryFails(t *testing.T) {
 
 	count, err := sut.Count(builder.Ctx,
 		dtos.Filter{
-			Name: ToPointer("thompson"),
+			Name: tests.ToPointer("thompson"),
 		},
 	)
 

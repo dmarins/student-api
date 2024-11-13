@@ -9,3 +9,7 @@ import (
 type IStudentReadUseCase interface {
 	Execute(ctx context.Context, studentId string) *dtos.Result
 }
+
+type IStudentSearchUseCase interface {
+	Execute(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) (*dtos.PaginationResponse, error)
+}

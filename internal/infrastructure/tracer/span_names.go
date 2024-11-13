@@ -15,6 +15,7 @@ const (
 	StudentUpdateUseCaseValidationsExecute = "StudentUpdateUseCaseValidations:Execute"
 	StudentDeleteUseCaseFindByIdExecute    = "StudentDeleteUseCaseFindById:Execute"
 	StudentDeleteUseCasePersistenceExecute = "StudentDeleteUseCasePersistence:Execute"
+	StudentSearchUseCaseSearchByExecute    = "StudentSearchUseCaseSearchBy:Execute"
 
 	HealthCheckRepositoryCheckDbConnection = "HealthCheckRepository:CheckDbConnection"
 	StudentRepositoryAdd                   = "StudentRepository:Add"

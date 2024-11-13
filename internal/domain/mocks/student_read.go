@@ -78,3 +78,66 @@ func (c *MockIStudentReadUseCaseExecuteCall) DoAndReturn(f func(context.Context,
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }
+
+// MockIStudentSearchUseCase is a mock of IStudentSearchUseCase interface.
+type MockIStudentSearchUseCase struct {
+	ctrl     *gomock.Controller
+	recorder *MockIStudentSearchUseCaseMockRecorder
+	isgomock struct{}
+}
+
+// MockIStudentSearchUseCaseMockRecorder is the mock recorder for MockIStudentSearchUseCase.
+type MockIStudentSearchUseCaseMockRecorder struct {
+	mock *MockIStudentSearchUseCase
+}
+
+// NewMockIStudentSearchUseCase creates a new mock instance.
+func NewMockIStudentSearchUseCase(ctrl *gomock.Controller) *MockIStudentSearchUseCase {
+	mock := &MockIStudentSearchUseCase{ctrl: ctrl}
+	mock.recorder = &MockIStudentSearchUseCaseMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIStudentSearchUseCase) EXPECT() *MockIStudentSearchUseCaseMockRecorder {
+	return m.recorder
+}
+
+// Execute mocks base method.
+func (m *MockIStudentSearchUseCase) Execute(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) (*dtos.PaginationResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Execute", ctx, pagination, filter)
+	ret0, _ := ret[0].(*dtos.PaginationResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Execute indicates an expected call of Execute.
+func (mr *MockIStudentSearchUseCaseMockRecorder) Execute(ctx, pagination, filter any) *MockIStudentSearchUseCaseExecuteCall {
+	mr.mock.ctrl.T.Helper()
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockIStudentSearchUseCase)(nil).Execute), ctx, pagination, filter)
+	return &MockIStudentSearchUseCaseExecuteCall{Call: call}
+}
+
+// MockIStudentSearchUseCaseExecuteCall wrap *gomock.Call
+type MockIStudentSearchUseCaseExecuteCall struct {
+	*gomock.Call
+}
+
+// Return rewrite *gomock.Call.Return
+func (c *MockIStudentSearchUseCaseExecuteCall) Return(arg0 *dtos.PaginationResponse, arg1 error) *MockIStudentSearchUseCaseExecuteCall {
+	c.Call = c.Call.Return(arg0, arg1)
+	return c
+}
+
+// Do rewrite *gomock.Call.Do
+func (c *MockIStudentSearchUseCaseExecuteCall) Do(f func(context.Context, dtos.PaginationRequest, dtos.Filter) (*dtos.PaginationResponse, error)) *MockIStudentSearchUseCaseExecuteCall {
+	c.Call = c.Call.Do(f)
+	return c
+}
+
+// DoAndReturn rewrite *gomock.Call.DoAndReturn
+func (c *MockIStudentSearchUseCaseExecuteCall) DoAndReturn(f func(context.Context, dtos.PaginationRequest, dtos.Filter) (*dtos.PaginationResponse, error)) *MockIStudentSearchUseCaseExecuteCall {
+	c.Call = c.Call.DoAndReturn(f)
+	return c
+}
