@@ -7,7 +7,7 @@ import (
 	"github.com/dmarins/student-api/internal/domain/dtos"
 )
 
-func TestStudentHandler_Post_WithWrongMethod(t *testing.T) {
+func TestStudentHandler_Create_WithWrongMethod(t *testing.T) {
 	e := builder.Build(t)
 
 	e.PATCH("/students").
@@ -16,7 +16,7 @@ func TestStudentHandler_Post_WithWrongMethod(t *testing.T) {
 		Status(http.StatusMethodNotAllowed)
 }
 
-func TestStudentHandler_Post_WithWrongPath(t *testing.T) {
+func TestStudentHandler_Create_WithWrongPath(t *testing.T) {
 	e := builder.Build(t)
 
 	e.POST("/studentssss").
@@ -25,7 +25,7 @@ func TestStudentHandler_Post_WithWrongPath(t *testing.T) {
 		Status(http.StatusNotFound)
 }
 
-func TestStudentHandler_Post_WhenTenantIsNotSent(t *testing.T) {
+func TestStudentHandler_Create_WhenTenantIsNotSent(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.POST("/students").
@@ -37,7 +37,7 @@ func TestStudentHandler_Post_WhenTenantIsNotSent(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
 }
 
-func TestStudentHandler_Post_WithErrorBind(t *testing.T) {
+func TestStudentHandler_Create_WithErrorBind(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.POST("/students").
@@ -51,7 +51,7 @@ func TestStudentHandler_Post_WithErrorBind(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
 }
 
-func TestStudentHandler_Post_WithErrorValidation(t *testing.T) {
+func TestStudentHandler_Create_WithErrorValidation(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.POST("/students").
@@ -65,7 +65,7 @@ func TestStudentHandler_Post_WithErrorValidation(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
 }
 
-func TestStudentHandler_Post_WithStudentAlreadyExists(t *testing.T) {
+func TestStudentHandler_Create_WithStudentAlreadyExists(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.POST("/students").
@@ -79,7 +79,7 @@ func TestStudentHandler_Post_WithStudentAlreadyExists(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewConflictResult().Message)
 }
 
-func TestStudentHandler_Post_WhenTheStudentsIsCreated(t *testing.T) {
+func TestStudentHandler_Create_WhenTheStudentsIsCreated(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.POST("/students").
@@ -95,7 +95,7 @@ func TestStudentHandler_Post_WhenTheStudentsIsCreated(t *testing.T) {
 	response.Value("data").Object().Value("name").IsEqual(f.fakeInputStudent.Name)
 }
 
-func TestStudentHandler_Get_WithWrongMethod(t *testing.T) {
+func TestStudentHandler_Read_WithWrongMethod(t *testing.T) {
 	e := builder.Build(t)
 
 	e.PATCH("/students").
@@ -104,7 +104,7 @@ func TestStudentHandler_Get_WithWrongMethod(t *testing.T) {
 		Status(http.StatusMethodNotAllowed)
 }
 
-func TestStudentHandler_Get_WithWrongPath(t *testing.T) {
+func TestStudentHandler_Read_WithWrongPath(t *testing.T) {
 	e := builder.Build(t)
 
 	e.GET("/studentssss").
@@ -113,7 +113,7 @@ func TestStudentHandler_Get_WithWrongPath(t *testing.T) {
 		Status(http.StatusNotFound)
 }
 
-func TestStudentHandler_Get_WhenTenantIsNotSent(t *testing.T) {
+func TestStudentHandler_Read_WhenTenantIsNotSent(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.GET("/students").
@@ -125,7 +125,7 @@ func TestStudentHandler_Get_WhenTenantIsNotSent(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
 }
 
-func TestStudentHandler_Get_WhenStudentIsFound(t *testing.T) {
+func TestStudentHandler_Read_WhenStudentIsFound(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.GET("/students/06b2ec25-3fe0-475e-9077-e77a113f4727").
@@ -140,7 +140,7 @@ func TestStudentHandler_Get_WhenStudentIsFound(t *testing.T) {
 	response.Value("data").Object().Value("name").IsEqual(f.fakeStudent.Name)
 }
 
-func TestStudentHandler_Get_WhenStudentIsNotFound(t *testing.T) {
+func TestStudentHandler_Read_WhenStudentIsNotFound(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.GET("/students/58ecde02-18f6-4896-a716-64abf6724587").
@@ -153,7 +153,7 @@ func TestStudentHandler_Get_WhenStudentIsNotFound(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewNotFoundResult().Message)
 }
 
-func TestStudentHandler_Put_WithWrongMethod(t *testing.T) {
+func TestStudentHandler_Update_WithWrongMethod(t *testing.T) {
 	e := builder.Build(t)
 
 	e.PATCH("/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
@@ -162,7 +162,7 @@ func TestStudentHandler_Put_WithWrongMethod(t *testing.T) {
 		Status(http.StatusMethodNotAllowed)
 }
 
-func TestStudentHandler_Put_WithWrongPath(t *testing.T) {
+func TestStudentHandler_Update_WithWrongPath(t *testing.T) {
 	e := builder.Build(t)
 
 	e.PUT("/studentssss/dbf54856-9a98-4672-9c90-e9da71a1f893").
@@ -171,7 +171,7 @@ func TestStudentHandler_Put_WithWrongPath(t *testing.T) {
 		Status(http.StatusNotFound)
 }
 
-func TestStudentHandler_Put_WhenTenantIsNotSent(t *testing.T) {
+func TestStudentHandler_Update_WhenTenantIsNotSent(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.PUT("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
@@ -183,7 +183,7 @@ func TestStudentHandler_Put_WhenTenantIsNotSent(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
 }
 
-func TestStudentHandler_Put_WithErrorBind(t *testing.T) {
+func TestStudentHandler_Update_WithErrorBind(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.PUT("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
@@ -197,7 +197,7 @@ func TestStudentHandler_Put_WithErrorBind(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
 }
 
-func TestStudentHandler_Put_WithErrorValidation(t *testing.T) {
+func TestStudentHandler_Update_WithErrorValidation(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.PUT("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
@@ -211,7 +211,7 @@ func TestStudentHandler_Put_WithErrorValidation(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
 }
 
-func TestStudentHandler_Put_WithStudentAlreadyExists(t *testing.T) {
+func TestStudentHandler_Update_WithStudentAlreadyExists(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.PUT("/students/06b2ec25-3fe0-475e-9077-e77a113f4727").
@@ -225,7 +225,7 @@ func TestStudentHandler_Put_WithStudentAlreadyExists(t *testing.T) {
 	response.Value("message").IsEqual(dtos.NewConflictResult().Message)
 }
 
-func TestStudentHandler_Put_WhenTheStudentsIsUpdated(t *testing.T) {
+func TestStudentHandler_Update_WhenTheStudentsIsUpdated(t *testing.T) {
 	e := builder.Build(t)
 
 	response := e.PUT("/students/e6e84c46-6ddf-4d9a-b27a-ddb74b4d63bb").
@@ -292,4 +292,261 @@ func TestStudentHandler_Delete_WhenTheStudentsIsDeleted(t *testing.T) {
 		WithJSON(f.fakeStudentToBeDeleted).
 		Expect().
 		Status(http.StatusNoContent)
+}
+
+func TestStudentHandler_Search_WithWrongMethod(t *testing.T) {
+	e := builder.Build(t)
+
+	e.PATCH("/students").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusMethodNotAllowed)
+}
+
+func TestStudentHandler_Search_WithWrongPath(t *testing.T) {
+	e := builder.Build(t)
+
+	e.GET("/studentssss").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusNotFound)
+}
+
+func TestStudentHandler_Search_WhenTenantIsNotSent(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		Expect().
+		Status(http.StatusBadRequest).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
+}
+
+func TestStudentHandler_Search_NoPaginationAndNoFilters(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewOkResult(nil).Message)
+	response.Value("data").Object().Value("total_pages").IsEqual(1)
+	response.Value("data").Object().Value("current_page").IsEqual(1)
+	response.Value("data").Object().Value("page_size").IsEqual(10)
+	response.Value("data").Object().Value("total_items").IsEqual(7)
+}
+
+func TestStudentHandler_Search_WithPageOnly(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithQuery("page", 1).
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewOkResult(nil).Message)
+	response.Value("data").Object().Value("total_pages").IsEqual(1)
+	response.Value("data").Object().Value("current_page").IsEqual(1)
+	response.Value("data").Object().Value("page_size").IsEqual(10)
+	response.Value("data").Object().Value("total_items").IsEqual(7)
+}
+
+func TestStudentHandler_Search_WithPageSizeOnly(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithQuery("pageSize", 10).
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewOkResult(nil).Message)
+	response.Value("data").Object().Value("total_pages").IsEqual(1)
+	response.Value("data").Object().Value("current_page").IsEqual(1)
+	response.Value("data").Object().Value("page_size").IsEqual(10)
+	response.Value("data").Object().Value("total_items").IsEqual(7)
+}
+
+func TestStudentHandler_Search_WithPageAndPageSize(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithQuery("page", 1).
+		WithQuery("pageSize", 10).
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewOkResult(nil).Message)
+	response.Value("data").Object().Value("total_pages").IsEqual(1)
+	response.Value("data").Object().Value("current_page").IsEqual(1)
+	response.Value("data").Object().Value("page_size").IsEqual(10)
+	response.Value("data").Object().Value("total_items").IsEqual(7)
+}
+
+func TestStudentHandler_Search_WithPaginationErrorBind(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithQuery("page", "abc").
+		WithQuery("pageSize", "def").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusBadRequest).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewBadRequestResult().Message)
+}
+
+func TestStudentHandler_Search_IncreasingPagination(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithQuery("page", 1).
+		WithQuery("pageSize", 3).
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewOkResult(nil).Message)
+	response.Value("data").Object().Value("total_pages").IsEqual(3)
+	response.Value("data").Object().Value("current_page").IsEqual(1)
+	response.Value("data").Object().Value("page_size").IsEqual(3)
+	response.Value("data").Object().Value("total_items").IsEqual(7)
+}
+
+func TestStudentHandler_Search_WithPageAndPageSizeEqualToZero(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithQuery("page", 0).
+		WithQuery("pageSize", 0).
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewOkResult(nil).Message)
+	response.Value("data").Object().Value("total_pages").IsEqual(1)
+	response.Value("data").Object().Value("current_page").IsEqual(1)
+	response.Value("data").Object().Value("page_size").IsEqual(10)
+	response.Value("data").Object().Value("total_items").IsEqual(7)
+}
+
+func TestStudentHandler_Search_WithPageAndPageSizeNegatives(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithQuery("page", -1).
+		WithQuery("pageSize", -1).
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewOkResult(nil).Message)
+	response.Value("data").Object().Value("total_pages").IsEqual(1)
+	response.Value("data").Object().Value("current_page").IsEqual(1)
+	response.Value("data").Object().Value("page_size").IsEqual(10)
+	response.Value("data").Object().Value("total_items").IsEqual(7)
+}
+
+func TestStudentHandler_Search_WithPaginationAndSortOrderOnly(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithQuery("page", 1).
+		WithQuery("pageSize", 10).
+		WithQuery("sortOrder", "desc").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewOkResult(nil).Message)
+	response.Value("data").Object().Value("total_pages").IsEqual(1)
+	response.Value("data").Object().Value("current_page").IsEqual(1)
+	response.Value("data").Object().Value("page_size").IsEqual(10)
+	response.Value("data").Object().Value("total_items").IsEqual(7)
+}
+
+func TestStudentHandler_Search_WithPaginationAndSortFieldOnly(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithQuery("page", 1).
+		WithQuery("pageSize", 10).
+		WithQuery("sortField", "name").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewOkResult(nil).Message)
+	response.Value("data").Object().Value("total_pages").IsEqual(1)
+	response.Value("data").Object().Value("current_page").IsEqual(1)
+	response.Value("data").Object().Value("page_size").IsEqual(10)
+	response.Value("data").Object().Value("total_items").IsEqual(7)
+}
+
+func TestStudentHandler_Search_WithPaginationAndOrdination(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithQuery("page", 1).
+		WithQuery("pageSize", 10).
+		WithQuery("sortOrder", "desc").
+		WithQuery("sortField", "name").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewOkResult(nil).Message)
+	response.Value("data").Object().Value("total_pages").IsEqual(1)
+	response.Value("data").Object().Value("current_page").IsEqual(1)
+	response.Value("data").Object().Value("page_size").IsEqual(10)
+	response.Value("data").Object().Value("total_items").IsEqual(7)
+}
+
+func TestStudentHandler_Search_WithPaginationAndOrdinationAndFilterByName(t *testing.T) {
+	e := builder.Build(t)
+
+	response := e.GET("/students").
+		WithQuery("page", 1).
+		WithQuery("pageSize", 10).
+		WithQuery("sortOrder", "desc").
+		WithQuery("sortField", "name").
+		WithQuery("name", "thompson").
+		WithHeader("x-tenant", "sbrubles").
+		Expect().
+		Status(http.StatusOK).
+		JSON().
+		Object()
+
+	response.Value("message").IsEqual(dtos.NewOkResult(nil).Message)
+	response.Value("data").Object().Value("total_pages").IsEqual(1)
+	response.Value("data").Object().Value("current_page").IsEqual(1)
+	response.Value("data").Object().Value("page_size").IsEqual(10)
+	response.Value("data").Object().Value("total_items").IsEqual(2)
 }
