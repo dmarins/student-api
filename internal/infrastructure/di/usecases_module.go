@@ -17,6 +17,7 @@ func useCasesModule() fx.Option {
 		readStudentUseCaseModule(),
 		updateStudentUseCase(),
 		deleteStudentUseCase(),
+		searchStudentUseCaseModule(),
 	)
 }
 
@@ -61,5 +62,11 @@ func deleteStudentUseCase() fx.Option {
 		fx.Annotate(delete.NewStudentDeleteWithFindById, fx.ParamTags(``, ``, ``, `name:"studentDeleteWithPersistence"`),
 			fx.ResultTags(`name:"studentDeleteWithFindById"`), fx.As(new(domain_usecases.IStudentDeleteUseCase)),
 		),
+	)
+}
+
+func searchStudentUseCaseModule() fx.Option {
+	return fx.Provide(
+		fx.Annotate(read.NewStudentSearchWithSearchBy, fx.As(new(domain_usecases.IStudentSearchUseCase))),
 	)
 }

@@ -118,8 +118,8 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsOnePageOfData(t *testin
 		dtos.PaginationRequest{
 			Page:      1,
 			PageSize:  10,
-			SortOrder: "asc",
-			SortField: "name",
+			SortOrder: tests.ToPointer("asc"),
+			SortField: tests.ToPointer("name"),
 		},
 		dtos.Filter{
 			Name: tests.ToPointer("thompson"),
@@ -135,8 +135,8 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsOnePageOfData(t *testin
 		dtos.PaginationRequest{
 			Page:      2,
 			PageSize:  10,
-			SortOrder: "asc",
-			SortField: "name",
+			SortOrder: tests.ToPointer("asc"),
+			SortField: tests.ToPointer("name"),
 		},
 		dtos.Filter{
 			Name: tests.ToPointer("thompson"),
@@ -154,8 +154,8 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsTwoPageOfData(t *testin
 		dtos.PaginationRequest{
 			Page:      1,
 			PageSize:  1,
-			SortOrder: "asc",
-			SortField: "name",
+			SortOrder: tests.ToPointer("asc"),
+			SortField: tests.ToPointer("name"),
 		},
 		dtos.Filter{
 			Name: tests.ToPointer("thompson"),
@@ -170,8 +170,8 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsTwoPageOfData(t *testin
 		dtos.PaginationRequest{
 			Page:      2,
 			PageSize:  1,
-			SortOrder: "asc",
-			SortField: "name",
+			SortOrder: tests.ToPointer("asc"),
+			SortField: tests.ToPointer("name"),
 		},
 		dtos.Filter{
 			Name: tests.ToPointer("thompson"),
@@ -190,8 +190,8 @@ func TestStudentRepository_SearchBy_ToSortOrderDescAndSortFieldId(t *testing.T) 
 		dtos.PaginationRequest{
 			Page:      1,
 			PageSize:  10,
-			SortOrder: "desc",
-			SortField: "id",
+			SortOrder: tests.ToPointer("desc"),
+			SortField: tests.ToPointer("id"),
 		},
 		dtos.Filter{
 			Name: tests.ToPointer("thompson"),
@@ -211,8 +211,8 @@ func TestStudentRepository_SearchBy_WhenTheQueryFails(t *testing.T) {
 		dtos.PaginationRequest{
 			Page:      1,
 			PageSize:  10,
-			SortOrder: "asc",
-			SortField: "name",
+			SortOrder: tests.ToPointer("asc"),
+			SortField: tests.ToPointer("name"),
 		},
 		dtos.Filter{
 			Name: tests.ToPointer("thompson"),

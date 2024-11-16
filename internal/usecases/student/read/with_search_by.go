@@ -24,7 +24,7 @@ func NewStudentSearchWithSearchBy(tracer tracer.ITracer, logger logger.ILogger, 
 	}
 }
 
-func (uc *StudentSearchWithSearchBy) Execute(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) (*dtos.PaginationResponse, error) {
+func (uc *StudentSearchWithSearchBy) Execute(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) *dtos.Result {
 	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentSearchUseCaseSearchByExecute)
 	defer span.End()
 
@@ -37,18 +37,22 @@ func (uc *StudentSearchWithSearchBy) Execute(ctx context.Context, pagination dto
 	count, err := uc.StudentRepository.Count(ctx, filter)
 	if err != nil {
 		uc.Logger.Error(ctx, "error counting students", err)
-		return nil, err
+
+		return dtos.NewInternalServerErrorResult()
 	}
 
 	if count <= 0 {
-		return dtos.NewPagination(0, pagination.Page, pagination.PageSize, nil), nil
+		paginationResponse := dtos.NewPaginationResponse(0, pagination.Page, pagination.PageSize, nil)
+		return dtos.NewOkResult(paginationResponse)
 	}
 
 	students, err := uc.StudentRepository.SearchBy(ctx, pagination, filter)
 	if err != nil {
 		uc.Logger.Error(ctx, "error searching students", err)
-		return nil, err
+
+		return dtos.NewInternalServerErrorResult()
 	}
 
-	return dtos.NewPagination(count, pagination.Page, pagination.PageSize, students), nil
+	paginationResponse := dtos.NewPaginationResponse(count, pagination.Page, pagination.PageSize, students)
+	return dtos.NewOkResult(paginationResponse)
 }

@@ -15,10 +15,10 @@ const (
 
 type (
 	PaginationRequest struct {
-		Page      int    `json:"page"`
-		PageSize  int    `json:"pageSize"`
-		SortOrder string `json:"sortOrder"`
-		SortField string `json:"sortField"`
+		Page      int     `query:"page"`
+		PageSize  int     `query:"pageSize"`
+		SortOrder *string `query:"sortOrder"`
+		SortField *string `query:"sortField"`
 	}
 
 	PaginationResponse struct {
@@ -30,7 +30,24 @@ type (
 	}
 )
 
-func NewPagination(totalItems, currentPage, pageSize int, items interface{}) *PaginationResponse {
+func NewPaginationRequest(page, pageSize int, sortOrder, sortField *string) *PaginationRequest {
+	if page <= 0 {
+		page = DEFAULT_PAGE_VALUE
+	}
+
+	if pageSize <= 0 {
+		pageSize = DEFAULT_PAGE_SIZE_VALUE
+	}
+
+	return &PaginationRequest{
+		Page:      page,
+		PageSize:  pageSize,
+		SortOrder: sortOrder,
+		SortField: sortField,
+	}
+}
+
+func NewPaginationResponse(totalItems, currentPage, pageSize int, items interface{}) *PaginationResponse {
 	if pageSize <= 0 {
 		pageSize = DEFAULT_PAGE_SIZE_VALUE
 	}
@@ -55,7 +72,7 @@ func NewPagination(totalItems, currentPage, pageSize int, items interface{}) *Pa
 }
 
 func (p *PaginationRequest) IsASC() bool {
-	return p.SortOrder == "" || strings.EqualFold(ORDER_ASC, p.SortOrder)
+	return *p.SortOrder == "" || strings.EqualFold(ORDER_ASC, *p.SortOrder)
 }
 
 func (p *PaginationRequest) Offset() int {

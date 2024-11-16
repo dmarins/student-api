@@ -30,14 +30,21 @@ func provideStudentHandler(tracer tracer.ITracer,
 	studentCreateUseCase usecases.IStudentCreateUseCase,
 	studentReadUseCase usecases.IStudentReadUseCase,
 	studentUpdateUseCase usecases.IStudentUpdateUseCase,
-	studentDeleteUseCase usecases.IStudentDeleteUseCase) *handlers.StudentHandler {
-	return handlers.NewStudentHandler(tracer, logger, studentCreateUseCase, studentReadUseCase, studentUpdateUseCase, studentDeleteUseCase)
+	studentDeleteUseCase usecases.IStudentDeleteUseCase,
+	studentSearchUseCase usecases.IStudentSearchUseCase) *handlers.StudentHandler {
+	return handlers.NewStudentHandler(tracer,
+		logger,
+		studentCreateUseCase,
+		studentReadUseCase,
+		studentUpdateUseCase,
+		studentDeleteUseCase,
+		studentSearchUseCase)
 }
 
 func studentHandler() fx.Option {
 	return fx.Provide(
 		fx.Annotate(provideStudentHandler,
-			fx.ParamTags(``, ``, `name:"studentCreateWithNameCheck"`, ``, `name:"studentUpdateWithFindById"`, `name:"studentDeleteWithFindById"`),
+			fx.ParamTags(``, ``, `name:"studentCreateWithNameCheck"`, ``, `name:"studentUpdateWithFindById"`, `name:"studentDeleteWithFindById"`, ``),
 		),
 	)
 }

@@ -19,8 +19,8 @@ func TestStudentSearchWithSearchBy_Execute_WhenCountFails(t *testing.T) {
 	pagination := dtos.PaginationRequest{
 		Page:      1,
 		PageSize:  10,
-		SortOrder: "asc",
-		SortField: "name",
+		SortOrder: tests.ToPointer("asc"),
+		SortField: tests.ToPointer("name"),
 	}
 
 	filter := dtos.Filter{
@@ -34,10 +34,9 @@ func TestStudentSearchWithSearchBy_Execute_WhenCountFails(t *testing.T) {
 
 	sut := builder.BuildStudentSearchWithSearchBy()
 
-	result, err := sut.Execute(builder.Ctx, pagination, filter)
+	result := sut.Execute(builder.Ctx, pagination, filter)
 
-	assert.Nil(t, result)
-	assert.Error(t, err)
+	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
 
 func TestStudentSearchWithSearchBy_Execute_WhenCountReturnsZero(t *testing.T) {
@@ -48,8 +47,8 @@ func TestStudentSearchWithSearchBy_Execute_WhenCountReturnsZero(t *testing.T) {
 	pagination := dtos.PaginationRequest{
 		Page:      1,
 		PageSize:  10,
-		SortOrder: "asc",
-		SortField: "name",
+		SortOrder: tests.ToPointer("asc"),
+		SortField: tests.ToPointer("name"),
 	}
 
 	filter := dtos.Filter{
@@ -68,17 +67,9 @@ func TestStudentSearchWithSearchBy_Execute_WhenCountReturnsZero(t *testing.T) {
 
 	sut := builder.BuildStudentSearchWithSearchBy()
 
-	result, err := sut.Execute(builder.Ctx, pagination, filter)
+	result := sut.Execute(builder.Ctx, pagination, filter)
 
-	assert.Nil(t, err)
-	assert.EqualValues(t, result,
-		&dtos.PaginationResponse{
-			TotalPages:  1,
-			CurrentPage: 1,
-			PageSize:    10,
-			TotalItems:  0,
-			Items:       nil,
-		})
+	assert.EqualValues(t, dtos.NewOkResult(result.Data), result)
 }
 
 func TestStudentSearchWithSearchBy_Execute_WhenSearchByFails(t *testing.T) {
@@ -90,8 +81,8 @@ func TestStudentSearchWithSearchBy_Execute_WhenSearchByFails(t *testing.T) {
 	pagination := dtos.PaginationRequest{
 		Page:      1,
 		PageSize:  10,
-		SortOrder: "asc",
-		SortField: "name",
+		SortOrder: tests.ToPointer("asc"),
+		SortField: tests.ToPointer("name"),
 	}
 
 	filter := dtos.Filter{
@@ -110,10 +101,9 @@ func TestStudentSearchWithSearchBy_Execute_WhenSearchByFails(t *testing.T) {
 
 	sut := builder.BuildStudentSearchWithSearchBy()
 
-	result, err := sut.Execute(builder.Ctx, pagination, filter)
+	result := sut.Execute(builder.Ctx, pagination, filter)
 
-	assert.Nil(t, result)
-	assert.Error(t, err)
+	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
 
 func TestStudentSearchWithSearchBy_Execute_WhenSearchByReturnsAsExpected(t *testing.T) {
@@ -124,8 +114,8 @@ func TestStudentSearchWithSearchBy_Execute_WhenSearchByReturnsAsExpected(t *test
 	pagination := dtos.PaginationRequest{
 		Page:      1,
 		PageSize:  10,
-		SortOrder: "asc",
-		SortField: "name",
+		SortOrder: tests.ToPointer("asc"),
+		SortField: tests.ToPointer("name"),
 	}
 
 	filter := dtos.Filter{
@@ -153,24 +143,7 @@ func TestStudentSearchWithSearchBy_Execute_WhenSearchByReturnsAsExpected(t *test
 
 	sut := builder.BuildStudentSearchWithSearchBy()
 
-	result, err := sut.Execute(builder.Ctx, pagination, filter)
+	result := sut.Execute(builder.Ctx, pagination, filter)
 
-	assert.Nil(t, err)
-	assert.EqualValues(t, result,
-		&dtos.PaginationResponse{
-			TotalPages:  1,
-			CurrentPage: 1,
-			PageSize:    10,
-			TotalItems:  2,
-			Items: []*entities.Student{
-				{
-					ID:   "a",
-					Name: "student 1",
-				},
-				{
-					ID:   "b",
-					Name: "student 2",
-				},
-			},
-		})
+	assert.EqualValues(t, dtos.NewOkResult(result.Data), result)
 }

@@ -20,6 +20,7 @@ type StudentHandler struct {
 	StudentReadUseCase   usecases.IStudentReadUseCase
 	StudentUpdateUseCase usecases.IStudentUpdateUseCase
 	StudentDeleteUseCase usecases.IStudentDeleteUseCase
+	StudentSearchUseCase usecases.IStudentSearchUseCase
 }
 
 func NewStudentHandler(
@@ -28,7 +29,8 @@ func NewStudentHandler(
 	studentCreateUseCase usecases.IStudentCreateUseCase,
 	studentReadingUseCase usecases.IStudentReadUseCase,
 	studentUpdateUseCase usecases.IStudentUpdateUseCase,
-	studentDeleteUseCase usecases.IStudentDeleteUseCase) *StudentHandler {
+	studentDeleteUseCase usecases.IStudentDeleteUseCase,
+	studentSearchUseCase usecases.IStudentSearchUseCase) *StudentHandler {
 	handler := &StudentHandler{
 		Tracer:               tracer,
 		Logger:               logger,
@@ -36,6 +38,7 @@ func NewStudentHandler(
 		StudentReadUseCase:   studentReadingUseCase,
 		StudentUpdateUseCase: studentUpdateUseCase,
 		StudentDeleteUseCase: studentDeleteUseCase,
+		StudentSearchUseCase: studentSearchUseCase,
 	}
 
 	return handler
@@ -44,17 +47,18 @@ func NewStudentHandler(
 func RegisterStudentRoutes(s server.IServer, h *StudentHandler) {
 	routesGroup := s.GetEcho().Group("/students")
 
-	routesGroup.POST("", h.Post)
-	routesGroup.GET("/:id", h.Get)
-	routesGroup.PUT("/:id", h.Put)
+	routesGroup.POST("", h.Create)
+	routesGroup.GET("/:id", h.Read)
+	routesGroup.PUT("/:id", h.Update)
 	routesGroup.DELETE("/:id", h.Delete)
+	routesGroup.GET("", h.Search)
 }
 
-func (h *StudentHandler) Post(ectx echo.Context) error {
-	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerPost)
+func (h *StudentHandler) Create(ectx echo.Context) error {
+	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerCreate)
 	defer span.End()
 
-	h.Tracer.AddAttributes(span, tracer.StudentHandlerPost,
+	h.Tracer.AddAttributes(span, tracer.StudentHandlerCreate,
 		tracer.Attributes{
 			"Tenant": ectx.Request().Header.Get(env.ProvideTenantHeaderName()),
 		})
@@ -79,13 +83,13 @@ func (h *StudentHandler) Post(ectx echo.Context) error {
 	return ReturnResult(ectx, h.StudentCreateUseCase.Execute(ctx, studentInput))
 }
 
-func (h *StudentHandler) Get(ectx echo.Context) error {
-	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerGet)
+func (h *StudentHandler) Read(ectx echo.Context) error {
+	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerRead)
 	defer span.End()
 
 	studentId := ectx.Param("id")
 
-	h.Tracer.AddAttributes(span, tracer.StudentHandlerGet,
+	h.Tracer.AddAttributes(span, tracer.StudentHandlerRead,
 		tracer.Attributes{
 			"Tenant":    ectx.Request().Header.Get(env.ProvideTenantHeaderName()),
 			"StudentId": studentId,
@@ -103,13 +107,13 @@ func (h *StudentHandler) Get(ectx echo.Context) error {
 	return ReturnResult(ectx, h.StudentReadUseCase.Execute(ctx, studentId))
 }
 
-func (h *StudentHandler) Put(ectx echo.Context) error {
-	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerPut)
+func (h *StudentHandler) Update(ectx echo.Context) error {
+	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerUpdate)
 	defer span.End()
 
 	studentId := ectx.Param("id")
 
-	h.Tracer.AddAttributes(span, tracer.StudentHandlerPut,
+	h.Tracer.AddAttributes(span, tracer.StudentHandlerUpdate,
 		tracer.Attributes{
 			"Tenant":    ectx.Request().Header.Get(env.ProvideTenantHeaderName()),
 			"StudentId": studentId,
@@ -167,4 +171,51 @@ func (h *StudentHandler) Delete(ectx echo.Context) error {
 	h.Logger.Debug(ctx, "identifier format ok")
 
 	return ReturnResult(ectx, h.StudentDeleteUseCase.Execute(ctx, studentId))
+}
+
+func (h *StudentHandler) Search(ectx echo.Context) error {
+	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerSearch)
+	defer span.End()
+
+	h.Tracer.AddAttributes(span, tracer.StudentHandlerSearch,
+		tracer.Attributes{
+			"Tenant": ectx.Request().Header.Get(env.ProvideTenantHeaderName()),
+		})
+
+	var paginationRequest dtos.PaginationRequest
+	if err := ectx.Bind(&paginationRequest); err != nil {
+		h.Logger.Warn(ctx, "invalid pagination, check the data sent", "error", err.Error())
+
+		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
+	}
+
+	paginationRequest = *dtos.NewPaginationRequest(
+		paginationRequest.Page,
+		paginationRequest.PageSize,
+		paginationRequest.SortOrder,
+		paginationRequest.SortField,
+	)
+
+	h.Tracer.AddAttributes(span, tracer.StudentHandlerSearch,
+		tracer.Attributes{
+			"Pagination": paginationRequest,
+		})
+
+	h.Logger.Debug(ctx, "echo bind pagination ok")
+
+	var filter dtos.Filter
+	if err := ectx.Bind(&filter); err != nil {
+		h.Logger.Warn(ctx, "invalid filter, check the data sent", "error", err.Error())
+
+		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
+	}
+
+	h.Tracer.AddAttributes(span, tracer.StudentHandlerSearch,
+		tracer.Attributes{
+			"Filter": filter,
+		})
+
+	h.Logger.Debug(ctx, "echo bind filter ok")
+
+	return ReturnResult(ectx, h.StudentSearchUseCase.Execute(ctx, paginationRequest, filter))
 }

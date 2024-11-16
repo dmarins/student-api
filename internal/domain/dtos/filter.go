@@ -5,5 +5,5 @@ const (
 )
 
 type Filter struct {
-	Name *string
+	Name *string `query:"name"`
 }

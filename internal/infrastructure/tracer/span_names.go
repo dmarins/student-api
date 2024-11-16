@@ -2,10 +2,11 @@ package tracer
 
 const (
 	HealthCheckHandlerGet = "HealthCheckHandler:Get"
-	StudentHandlerPost    = "StudentHandler:Post"
-	StudentHandlerGet     = "StudentHandler:Get"
-	StudentHandlerPut     = "StudentHandler:Put"
+	StudentHandlerCreate  = "StudentHandler:Create"
+	StudentHandlerRead    = "StudentHandler:Read"
+	StudentHandlerUpdate  = "StudentHandler:Update"
 	StudentHandlerDelete  = "StudentHandler:Delete"
+	StudentHandlerSearch  = "StudentHandler:Search"
 
 	HealthCheckExecute                     = "HealthCheck:Execute"
 	StudentCreateUseCasePersistenceExecute = "StudentCreateUseCasePersistence:Execute"

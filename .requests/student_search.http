@@ -1,0 +1,33 @@
+### missing header
+
+GET http://localhost:8080/students?page=1&pageSize=10
+
+### success
+
+GET http://localhost:8080/students
+x-tenant: {{$guid}}
+
+### success with filter
+
+GET http://localhost:8080/students?name=thompson
+x-tenant: {{$guid}}
+
+### success with explicit pagination
+
+GET http://localhost:8080/students?page=1&pageSize=3
+x-tenant: {{$guid}}
+
+### success with explicit pagination
+
+GET http://localhost:8080/students?page=3&pageSize=1&name=thompson
+x-tenant: {{$guid}}
+
+### success with complete pagination
+
+GET http://localhost:8080/students?page=1&pageSize=10&sortOrder=desc&sortField=name
+x-tenant: {{$guid}}
+
+### success with complete pagination and filter
+
+GET http://localhost:8080/students?page=1&pageSize=10&sortOrder=asc&sortField=name&name=thompson
+x-tenant: {{$guid}}

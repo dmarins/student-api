@@ -142,25 +142,31 @@ func (r *StudentRepository) SearchBy(ctx context.Context, pagination dtos.Pagina
 
 	query := "SELECT id, name FROM students"
 	args := make([]interface{}, 0)
+	placeholder := 1
 
 	if filter.Name != nil {
-		query += " WHERE name LIKE $1"
+		query += fmt.Sprintf(" WHERE name LIKE $%d", placeholder)
 		args = append(args, fmt.Sprintf("%%%s%%", *filter.Name))
+		placeholder++
 	}
 
-	if strings.EqualFold(pagination.SortField, dtos.FILTER_NAME) {
-		query += " ORDER BY name "
-	} else {
-		query += " ORDER BY id "
+	if pagination.SortField != nil {
+		if strings.EqualFold(*pagination.SortField, dtos.FILTER_NAME) {
+			query += " ORDER BY name "
+		} else {
+			query += " ORDER BY id "
+		}
 	}
 
-	if pagination.IsASC() {
-		query += dtos.ORDER_ASC
-	} else {
-		query += dtos.ORDER_DESC
+	if pagination.SortField != nil && pagination.SortOrder != nil {
+		if pagination.IsASC() {
+			query += dtos.ORDER_ASC
+		} else {
+			query += dtos.ORDER_DESC
+		}
 	}
 
-	query += " LIMIT $2 OFFSET $3"
+	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", placeholder, placeholder+1)
 	args = append(args, pagination.PageSize, pagination.Offset())
 
 	rows, err := r.Postgres.QueryContext(ctx, query, args[:]...)

@@ -11,5 +11,5 @@ type IStudentReadUseCase interface {
 }
 
 type IStudentSearchUseCase interface {
-	Execute(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) (*dtos.PaginationResponse, error)
+	Execute(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) *dtos.Result
 }
