@@ -13,6 +13,7 @@ import (
 	"github.com/dmarins/student-api/internal/infrastructure/server/middlewares"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	echoSwagger "github.com/swaggo/echo-swagger"
 )
 
 type (
@@ -35,6 +36,8 @@ func NewServer(logger logger.ILogger) IServer {
 	e.Use(middlewares.RequestContext(logger))
 	e.Use(middlewares.Timeout(logger))
 	e.Use(middlewares.Recover(logger))
+
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	e.Server.Addr = fmt.Sprintf("%s:%s", env.ProvideAppHost(), env.ProvideAppPort())
 

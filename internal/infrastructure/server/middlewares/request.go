@@ -3,6 +3,7 @@ package middlewares
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"github.com/dmarins/student-api/internal/domain/dtos"
 	"github.com/dmarins/student-api/internal/infrastructure/env"
@@ -11,9 +12,17 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-var agnosticRoute string = "/health"
-var tenant string
-var cid string
+var agnosticRoutes []string = []string{"/health", "/swagger"}
+
+func isAgnosticRoute(path string) bool {
+	for _, agnosticRoute := range agnosticRoutes {
+		if strings.Contains(path, agnosticRoute) {
+			return true
+		}
+	}
+
+	return false
+}
 
 func RequestContext(logger logger.ILogger) echo.MiddlewareFunc {
 	headerCidKey := env.ProvideCidHeaderName()
@@ -25,18 +34,20 @@ func RequestContext(logger logger.ILogger) echo.MiddlewareFunc {
 			ctx := c.Request().Context()
 			path := c.Request().URL.Path
 
-			if path != agnosticRoute {
-				cid := c.Request().Header.Get(headerCidKey)
-				if cid == "" {
-					cid = uuid.NewId()
-					c.Request().Header.Set(headerCidKey, cid)
-				}
+			if isAgnosticRoute(path) {
+				return next(c)
+			}
 
-				tenant = c.Request().Header.Get(headerTenantKey)
-				if tenant == "" {
-					logger.Warn(ctx, "the x-tenant header was not provided", "cid", cid)
-					return c.JSON(http.StatusBadRequest, dtos.NewBadRequestResult())
-				}
+			cid := c.Request().Header.Get(headerCidKey)
+			if cid == "" {
+				cid = uuid.NewId()
+				c.Request().Header.Set(headerCidKey, cid)
+			}
+
+			tenant := c.Request().Header.Get(headerTenantKey)
+			if tenant == "" {
+				logger.Warn(ctx, "the x-tenant header was not provided", "cid", cid)
+				return c.JSON(http.StatusBadRequest, dtos.NewBadRequestResult())
 			}
 
 			rctx := dtos.RequestContext{

@@ -29,6 +29,15 @@ func RegisterHealthCheckRoute(s server.IServer, h *HealthCheckHandler) {
 	s.GetEcho().GET("/health", h.Get)
 }
 
+// HealthCheck godoc
+//
+//	@Summary		Check if the API is available.
+//	@Description	Checks if the API has connectivity to your database.
+//	@Tags			health
+//	@Produce		json
+//	@Success		200	{object}	dtos.Result
+//	@Failure		500	{object}	dtos.Result
+//	@Router			/health [get]
 func (h *HealthCheckHandler) Get(ectx echo.Context) error {
 	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.HealthCheckHandlerGet)
 	defer span.End()

@@ -3,7 +3,7 @@ GOCMD=go
 DOCKERCMD=docker
 GOBIN=$(shell $(GOCMD) env GOPATH)/bin
 
-.PHONY: down local-up local-restart docker-up docker-restart download run pgquery mockgen-download mocks-clean mocks-gen tests-clean tests tests-coverage
+.PHONY: down local-up local-restart docker-up docker-restart download run pgquery mockgen-download mocks-clean mocks-gen tests-clean tests tests-coverage openapi-download openapi-gen
 
 down:
 	$(DOCKERCOMPOSECMD) down --remove-orphans
@@ -62,3 +62,11 @@ tests: tests-clean local-restart
 tests-coverage: tests-clean
 	$(GOCMD) test -cover -p=1 -covermode=count -coverprofile=coverage.out ./...
 	$(GOCMD) tool cover -html=coverage.out
+
+openapi-download:
+	$(GOCMD) mod download
+	$(GOCMD) install github.com/swaggo/swag/cmd/swag@latest
+
+openapi-gen: openapi-download
+	$(GOBIN)/swag init -g cmd/main.go -o docs/openapi
+	$(GOBIN)/swag fmt

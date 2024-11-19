@@ -1,0 +1,35 @@
+basePath: /
+definitions:
+  dtos.Result:
+    properties:
+      data: {}
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is an example API written in Go.
+  title: Student Swagger Example API
+  version: "1.0"
+paths:
+  /health:
+    get:
+      description: Checks if the API has connectivity to your database.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dtos.Result'
+      summary: Check if the API is available.
+      tags:
+      - health
+schemes:
+- http
+swagger: "2.0"
