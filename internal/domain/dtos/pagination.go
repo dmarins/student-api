@@ -14,14 +14,14 @@ const (
 )
 
 type (
-	PaginationRequest struct {
+	PaginationInput struct {
 		Page      int     `query:"page"`
 		PageSize  int     `query:"pageSize"`
 		SortOrder *string `query:"sortOrder"`
 		SortField *string `query:"sortField"`
 	}
 
-	PaginationResponse struct {
+	PaginationOutput struct {
 		TotalPages  int         `json:"total_pages"`
 		CurrentPage int         `json:"current_page"`
 		PageSize    int         `json:"page_size"`
@@ -30,7 +30,7 @@ type (
 	}
 )
 
-func NewPaginationRequest(page, pageSize int, sortOrder, sortField *string) *PaginationRequest {
+func NewPaginationInput(page, pageSize int, sortOrder, sortField *string) *PaginationInput {
 	if page <= 0 {
 		page = DEFAULT_PAGE_VALUE
 	}
@@ -39,7 +39,7 @@ func NewPaginationRequest(page, pageSize int, sortOrder, sortField *string) *Pag
 		pageSize = DEFAULT_PAGE_SIZE_VALUE
 	}
 
-	return &PaginationRequest{
+	return &PaginationInput{
 		Page:      page,
 		PageSize:  pageSize,
 		SortOrder: sortOrder,
@@ -47,13 +47,13 @@ func NewPaginationRequest(page, pageSize int, sortOrder, sortField *string) *Pag
 	}
 }
 
-func NewPaginationResponse(totalItems, currentPage, pageSize int, items interface{}) *PaginationResponse {
+func NewPaginationOutput(totalItems, currentPage, pageSize int, items interface{}) *PaginationOutput {
 	if pageSize <= 0 {
 		pageSize = DEFAULT_PAGE_SIZE_VALUE
 	}
 
 	if totalItems <= 0 {
-		return &PaginationResponse{
+		return &PaginationOutput{
 			TotalPages:  DEFAULT_PAGE_VALUE,
 			CurrentPage: DEFAULT_PAGE_VALUE,
 			PageSize:    pageSize,
@@ -62,7 +62,7 @@ func NewPaginationResponse(totalItems, currentPage, pageSize int, items interfac
 		}
 	}
 
-	return &PaginationResponse{
+	return &PaginationOutput{
 		TotalPages:  (totalItems + pageSize - 1) / pageSize,
 		CurrentPage: currentPage,
 		PageSize:    pageSize,
@@ -71,10 +71,10 @@ func NewPaginationResponse(totalItems, currentPage, pageSize int, items interfac
 	}
 }
 
-func (p *PaginationRequest) IsASC() bool {
+func (p *PaginationInput) IsASC() bool {
 	return *p.SortOrder == "" || strings.EqualFold(ORDER_ASC, *p.SortOrder)
 }
 
-func (p *PaginationRequest) Offset() int {
+func (p *PaginationInput) Offset() int {
 	return (p.Page - 1) * p.PageSize
 }

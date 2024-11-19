@@ -104,7 +104,7 @@ func (m *MockIStudentSearchUseCase) EXPECT() *MockIStudentSearchUseCaseMockRecor
 }
 
 // Execute mocks base method.
-func (m *MockIStudentSearchUseCase) Execute(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) *dtos.Result {
+func (m *MockIStudentSearchUseCase) Execute(ctx context.Context, pagination dtos.PaginationInput, filter dtos.Filter) *dtos.Result {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Execute", ctx, pagination, filter)
 	ret0, _ := ret[0].(*dtos.Result)
@@ -130,13 +130,13 @@ func (c *MockIStudentSearchUseCaseExecuteCall) Return(arg0 *dtos.Result) *MockIS
 }
 
 // Do rewrite *gomock.Call.Do
-func (c *MockIStudentSearchUseCaseExecuteCall) Do(f func(context.Context, dtos.PaginationRequest, dtos.Filter) *dtos.Result) *MockIStudentSearchUseCaseExecuteCall {
+func (c *MockIStudentSearchUseCaseExecuteCall) Do(f func(context.Context, dtos.PaginationInput, dtos.Filter) *dtos.Result) *MockIStudentSearchUseCaseExecuteCall {
 	c.Call = c.Call.Do(f)
 	return c
 }
 
 // DoAndReturn rewrite *gomock.Call.DoAndReturn
-func (c *MockIStudentSearchUseCaseExecuteCall) DoAndReturn(f func(context.Context, dtos.PaginationRequest, dtos.Filter) *dtos.Result) *MockIStudentSearchUseCaseExecuteCall {
+func (c *MockIStudentSearchUseCaseExecuteCall) DoAndReturn(f func(context.Context, dtos.PaginationInput, dtos.Filter) *dtos.Result) *MockIStudentSearchUseCaseExecuteCall {
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }

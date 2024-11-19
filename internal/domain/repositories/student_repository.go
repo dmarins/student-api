@@ -13,6 +13,6 @@ type IStudentRepository interface {
 	FindById(ctx context.Context, studentId string) (*entities.Student, error)
 	Update(ctx context.Context, student *entities.Student) error
 	Delete(ctx context.Context, studentId string) error
-	SearchBy(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) ([]*entities.Student, error)
+	SearchBy(ctx context.Context, pagination dtos.PaginationInput, filter dtos.Filter) ([]*entities.Student, error)
 	Count(ctx context.Context, filter dtos.Filter) (int, error)
 }

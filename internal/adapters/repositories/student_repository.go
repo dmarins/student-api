@@ -130,7 +130,7 @@ func (r *StudentRepository) Count(ctx context.Context, filter dtos.Filter) (int,
 	return count, err
 }
 
-func (r *StudentRepository) SearchBy(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) ([]*entities.Student, error) {
+func (r *StudentRepository) SearchBy(ctx context.Context, pagination dtos.PaginationInput, filter dtos.Filter) ([]*entities.Student, error) {
 	span, ctx := r.Tracer.NewSpanContext(ctx, tracer.StudentRepositorySearchBy)
 	defer span.End()
 

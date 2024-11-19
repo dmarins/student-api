@@ -115,7 +115,7 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsOnePageOfData(t *testin
 	sut := builder.BuildStudentRepository()
 
 	results, err := sut.SearchBy(builder.Ctx,
-		dtos.PaginationRequest{
+		dtos.PaginationInput{
 			Page:      1,
 			PageSize:  10,
 			SortOrder: tests.ToPointer("asc"),
@@ -132,7 +132,7 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsOnePageOfData(t *testin
 	assert.Equal(t, results[1].Name, "will thompson")
 
 	results, err = sut.SearchBy(builder.Ctx,
-		dtos.PaginationRequest{
+		dtos.PaginationInput{
 			Page:      2,
 			PageSize:  10,
 			SortOrder: tests.ToPointer("asc"),
@@ -151,7 +151,7 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsTwoPageOfData(t *testin
 	sut := builder.BuildStudentRepository()
 
 	results, err := sut.SearchBy(builder.Ctx,
-		dtos.PaginationRequest{
+		dtos.PaginationInput{
 			Page:      1,
 			PageSize:  1,
 			SortOrder: tests.ToPointer("asc"),
@@ -167,7 +167,7 @@ func TestStudentRepository_SearchBy_WhenRepositoryReturnsTwoPageOfData(t *testin
 	assert.Equal(t, results[0].Name, "michael thompson")
 
 	results, err = sut.SearchBy(builder.Ctx,
-		dtos.PaginationRequest{
+		dtos.PaginationInput{
 			Page:      2,
 			PageSize:  1,
 			SortOrder: tests.ToPointer("asc"),
@@ -187,7 +187,7 @@ func TestStudentRepository_SearchBy_ToSortOrderDescAndSortFieldId(t *testing.T) 
 	sut := builder.BuildStudentRepository()
 
 	results, err := sut.SearchBy(builder.Ctx,
-		dtos.PaginationRequest{
+		dtos.PaginationInput{
 			Page:      1,
 			PageSize:  10,
 			SortOrder: tests.ToPointer("desc"),
@@ -208,7 +208,7 @@ func TestStudentRepository_SearchBy_WhenTheQueryFails(t *testing.T) {
 	sut := failedBuilder.BuildStudentRepository()
 
 	results, err := sut.SearchBy(builder.Ctx,
-		dtos.PaginationRequest{
+		dtos.PaginationInput{
 			Page:      1,
 			PageSize:  10,
 			SortOrder: tests.ToPointer("asc"),

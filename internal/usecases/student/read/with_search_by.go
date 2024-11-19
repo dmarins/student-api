@@ -24,7 +24,7 @@ func NewStudentSearchWithSearchBy(tracer tracer.ITracer, logger logger.ILogger, 
 	}
 }
 
-func (uc *StudentSearchWithSearchBy) Execute(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) *dtos.Result {
+func (uc *StudentSearchWithSearchBy) Execute(ctx context.Context, pagination dtos.PaginationInput, filter dtos.Filter) *dtos.Result {
 	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentSearchUseCaseSearchByExecute)
 	defer span.End()
 
@@ -42,7 +42,7 @@ func (uc *StudentSearchWithSearchBy) Execute(ctx context.Context, pagination dto
 	}
 
 	if count <= 0 {
-		paginationResponse := dtos.NewPaginationResponse(0, pagination.Page, pagination.PageSize, nil)
+		paginationResponse := dtos.NewPaginationOutput(0, pagination.Page, pagination.PageSize, nil)
 		return dtos.NewOkResult(paginationResponse)
 	}
 
@@ -53,6 +53,6 @@ func (uc *StudentSearchWithSearchBy) Execute(ctx context.Context, pagination dto
 		return dtos.NewInternalServerErrorResult()
 	}
 
-	paginationResponse := dtos.NewPaginationResponse(count, pagination.Page, pagination.PageSize, students)
+	paginationResponse := dtos.NewPaginationOutput(count, pagination.Page, pagination.PageSize, students)
 	return dtos.NewOkResult(paginationResponse)
 }

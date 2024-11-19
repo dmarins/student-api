@@ -16,7 +16,7 @@ func TestStudentSearchWithSearchBy_Execute_WhenCountFails(t *testing.T) {
 		SettingTracerBehavior(tracer.StudentSearchUseCaseSearchByExecute).
 		SettingLoggerErrorBehavior("error counting students", f.fakeError)
 
-	pagination := dtos.PaginationRequest{
+	pagination := dtos.PaginationInput{
 		Page:      1,
 		PageSize:  10,
 		SortOrder: tests.ToPointer("asc"),
@@ -44,7 +44,7 @@ func TestStudentSearchWithSearchBy_Execute_WhenCountReturnsZero(t *testing.T) {
 		WithValidCtx().
 		SettingTracerBehavior(tracer.StudentSearchUseCaseSearchByExecute)
 
-	pagination := dtos.PaginationRequest{
+	pagination := dtos.PaginationInput{
 		Page:      1,
 		PageSize:  10,
 		SortOrder: tests.ToPointer("asc"),
@@ -78,7 +78,7 @@ func TestStudentSearchWithSearchBy_Execute_WhenSearchByFails(t *testing.T) {
 		SettingTracerBehavior(tracer.StudentSearchUseCaseSearchByExecute).
 		SettingLoggerErrorBehavior("error searching students", f.fakeError)
 
-	pagination := dtos.PaginationRequest{
+	pagination := dtos.PaginationInput{
 		Page:      1,
 		PageSize:  10,
 		SortOrder: tests.ToPointer("asc"),
@@ -111,7 +111,7 @@ func TestStudentSearchWithSearchBy_Execute_WhenSearchByReturnsAsExpected(t *test
 		WithValidCtx().
 		SettingTracerBehavior(tracer.StudentSearchUseCaseSearchByExecute)
 
-	pagination := dtos.PaginationRequest{
+	pagination := dtos.PaginationInput{
 		Page:      1,
 		PageSize:  10,
 		SortOrder: tests.ToPointer("asc"),

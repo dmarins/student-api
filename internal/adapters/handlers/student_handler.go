@@ -182,14 +182,14 @@ func (h *StudentHandler) Search(ectx echo.Context) error {
 			"Tenant": ectx.Request().Header.Get(env.ProvideTenantHeaderName()),
 		})
 
-	var paginationRequest dtos.PaginationRequest
+	var paginationRequest dtos.PaginationInput
 	if err := ectx.Bind(&paginationRequest); err != nil {
 		h.Logger.Warn(ctx, "invalid pagination, check the data sent", "error", err.Error())
 
 		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
 	}
 
-	paginationRequest = *dtos.NewPaginationRequest(
+	paginationRequest = *dtos.NewPaginationInput(
 		paginationRequest.Page,
 		paginationRequest.PageSize,
 		paginationRequest.SortOrder,

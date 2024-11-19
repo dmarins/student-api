@@ -236,7 +236,7 @@ func (c *MockIStudentRepositoryFindByIdCall) DoAndReturn(f func(context.Context,
 }
 
 // SearchBy mocks base method.
-func (m *MockIStudentRepository) SearchBy(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) ([]*entities.Student, error) {
+func (m *MockIStudentRepository) SearchBy(ctx context.Context, pagination dtos.PaginationInput, filter dtos.Filter) ([]*entities.Student, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "SearchBy", ctx, pagination, filter)
 	ret0, _ := ret[0].([]*entities.Student)
@@ -263,13 +263,13 @@ func (c *MockIStudentRepositorySearchByCall) Return(arg0 []*entities.Student, ar
 }
 
 // Do rewrite *gomock.Call.Do
-func (c *MockIStudentRepositorySearchByCall) Do(f func(context.Context, dtos.PaginationRequest, dtos.Filter) ([]*entities.Student, error)) *MockIStudentRepositorySearchByCall {
+func (c *MockIStudentRepositorySearchByCall) Do(f func(context.Context, dtos.PaginationInput, dtos.Filter) ([]*entities.Student, error)) *MockIStudentRepositorySearchByCall {
 	c.Call = c.Call.Do(f)
 	return c
 }
 
 // DoAndReturn rewrite *gomock.Call.DoAndReturn
-func (c *MockIStudentRepositorySearchByCall) DoAndReturn(f func(context.Context, dtos.PaginationRequest, dtos.Filter) ([]*entities.Student, error)) *MockIStudentRepositorySearchByCall {
+func (c *MockIStudentRepositorySearchByCall) DoAndReturn(f func(context.Context, dtos.PaginationInput, dtos.Filter) ([]*entities.Student, error)) *MockIStudentRepositorySearchByCall {
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }
