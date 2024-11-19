@@ -10,12 +10,12 @@ import (
 )
 
 type fakeValues struct {
-	fakeInputStudent              *dtos.StudentInput
-	fakeUpdateInputStudent        *dtos.StudentUpdateInput
-	fakeInvalidInputStudent       *dtos.StudentInput
-	fakeInvalidUpdateInputStudent *dtos.StudentUpdateInput
-	fakeStoredInputStudent        *dtos.StudentInput
-	fakeStoredUpdateInputStudent  *dtos.StudentUpdateInput
+	fakeStudentCreateInput        *dtos.StudentCreateInput
+	fakeStudentUpdateInput        *dtos.StudentUpdateInput
+	fakeStudentCreateInputInvalid *dtos.StudentCreateInput
+	fakeStudentUpdateInputInvalid *dtos.StudentUpdateInput
+	fakeStudentCreateInputStored  *dtos.StudentCreateInput
+	fakeStudentUpdateInputStored  *dtos.StudentUpdateInput
 	fakeStudent                   *entities.Student
 	fakeStudentToBeDeleted        string
 }
@@ -32,26 +32,26 @@ func TestMain(m *testing.M) {
 		StartTestServer()
 
 	f = &fakeValues{
-		fakeInputStudent: &dtos.StudentInput{
+		fakeStudentCreateInput: &dtos.StudentCreateInput{
 			Name: "john doe",
 		},
-		fakeInvalidInputStudent: &dtos.StudentInput{
+		fakeStudentCreateInputInvalid: &dtos.StudentCreateInput{
 			Name: "",
 		},
-		fakeStoredInputStudent: &dtos.StudentInput{
+		fakeStudentCreateInputStored: &dtos.StudentCreateInput{
 			Name: "alice",
 		},
 		fakeStudent: &entities.Student{
 			ID:   "06b2ec25-3fe0-475e-9077-e77a113f4727",
 			Name: "alice",
 		},
-		fakeUpdateInputStudent: &dtos.StudentUpdateInput{
+		fakeStudentUpdateInput: &dtos.StudentUpdateInput{
 			Name: "ashley updated",
 		},
-		fakeInvalidUpdateInputStudent: &dtos.StudentUpdateInput{
+		fakeStudentUpdateInputInvalid: &dtos.StudentUpdateInput{
 			Name: "",
 		},
-		fakeStoredUpdateInputStudent: &dtos.StudentUpdateInput{
+		fakeStudentUpdateInputStored: &dtos.StudentUpdateInput{
 			Name: "alice",
 		},
 		fakeStudentToBeDeleted: "8e99273f-e566-4476-836e-048b1ecd9c4d",

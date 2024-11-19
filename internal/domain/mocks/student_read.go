@@ -104,12 +104,11 @@ func (m *MockIStudentSearchUseCase) EXPECT() *MockIStudentSearchUseCaseMockRecor
 }
 
 // Execute mocks base method.
-func (m *MockIStudentSearchUseCase) Execute(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) (*dtos.PaginationResponse, error) {
+func (m *MockIStudentSearchUseCase) Execute(ctx context.Context, pagination dtos.PaginationRequest, filter dtos.Filter) *dtos.Result {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Execute", ctx, pagination, filter)
-	ret0, _ := ret[0].(*dtos.PaginationResponse)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret0, _ := ret[0].(*dtos.Result)
+	return ret0
 }
 
 // Execute indicates an expected call of Execute.
@@ -125,19 +124,19 @@ type MockIStudentSearchUseCaseExecuteCall struct {
 }
 
 // Return rewrite *gomock.Call.Return
-func (c *MockIStudentSearchUseCaseExecuteCall) Return(arg0 *dtos.PaginationResponse, arg1 error) *MockIStudentSearchUseCaseExecuteCall {
-	c.Call = c.Call.Return(arg0, arg1)
+func (c *MockIStudentSearchUseCaseExecuteCall) Return(arg0 *dtos.Result) *MockIStudentSearchUseCaseExecuteCall {
+	c.Call = c.Call.Return(arg0)
 	return c
 }
 
 // Do rewrite *gomock.Call.Do
-func (c *MockIStudentSearchUseCaseExecuteCall) Do(f func(context.Context, dtos.PaginationRequest, dtos.Filter) (*dtos.PaginationResponse, error)) *MockIStudentSearchUseCaseExecuteCall {
+func (c *MockIStudentSearchUseCaseExecuteCall) Do(f func(context.Context, dtos.PaginationRequest, dtos.Filter) *dtos.Result) *MockIStudentSearchUseCaseExecuteCall {
 	c.Call = c.Call.Do(f)
 	return c
 }
 
 // DoAndReturn rewrite *gomock.Call.DoAndReturn
-func (c *MockIStudentSearchUseCaseExecuteCall) DoAndReturn(f func(context.Context, dtos.PaginationRequest, dtos.Filter) (*dtos.PaginationResponse, error)) *MockIStudentSearchUseCaseExecuteCall {
+func (c *MockIStudentSearchUseCaseExecuteCall) DoAndReturn(f func(context.Context, dtos.PaginationRequest, dtos.Filter) *dtos.Result) *MockIStudentSearchUseCaseExecuteCall {
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }

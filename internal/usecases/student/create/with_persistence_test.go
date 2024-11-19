@@ -24,7 +24,7 @@ func TestStudentCreateWithPersistence_Execute_WhenRepositoryFailsToAddStudent(t 
 
 	sut := builder.BuildStudentCreateWithPersistence()
 
-	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
+	result := sut.Execute(builder.Ctx, f.fakeStudentCreateInput)
 
 	assert.EqualValues(t, dtos.NewInternalServerErrorResult(), result)
 }
@@ -43,7 +43,7 @@ func TestStudentCreateWithPersistence_Execute_WhenRepositoryAddsTheStudent(t *te
 
 	sut := builder.BuildStudentCreateWithPersistence()
 
-	result := sut.Execute(builder.Ctx, f.fakeStudentInput)
+	result := sut.Execute(builder.Ctx, f.fakeStudentCreateInput)
 
 	assert.EqualValues(t, dtos.NewCreatedResult(result.Data), result)
 }

@@ -25,11 +25,11 @@ func NewStudentCreateWithPersistence(tracer tracer.ITracer, logger logger.ILogge
 	}
 }
 
-func (uc *StudentCreateWithPersistence) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
+func (uc *StudentCreateWithPersistence) Execute(ctx context.Context, studentCreateInput dtos.StudentCreateInput) *dtos.Result {
 	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentCreateUseCasePersistenceExecute)
 	defer span.End()
 
-	student := entities.NewStudent(studentInput.Name)
+	student := entities.NewStudent(studentCreateInput.Name)
 
 	uc.Logger.Debug(ctx, "new student", "id", student.ID)
 

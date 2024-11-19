@@ -7,5 +7,5 @@ import (
 )
 
 type IStudentCreateUseCase interface {
-	Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result
+	Execute(ctx context.Context, studentCreateInput dtos.StudentCreateInput) *dtos.Result
 }

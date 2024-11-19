@@ -56,7 +56,7 @@ func TestStudentHandler_Create_WithErrorValidation(t *testing.T) {
 
 	response := e.POST("/students").
 		WithHeader("x-tenant", "sbrubles").
-		WithJSON(f.fakeInvalidInputStudent).
+		WithJSON(f.fakeStudentCreateInputInvalid).
 		Expect().
 		Status(http.StatusBadRequest).
 		JSON().
@@ -70,7 +70,7 @@ func TestStudentHandler_Create_WithStudentAlreadyExists(t *testing.T) {
 
 	response := e.POST("/students").
 		WithHeader("x-tenant", "sbrubles").
-		WithJSON(f.fakeStoredInputStudent).
+		WithJSON(f.fakeStudentCreateInputStored).
 		Expect().
 		Status(http.StatusConflict).
 		JSON().
@@ -84,7 +84,7 @@ func TestStudentHandler_Create_WhenTheStudentsIsCreated(t *testing.T) {
 
 	response := e.POST("/students").
 		WithHeader("x-tenant", "sbrubles").
-		WithJSON(f.fakeInputStudent).
+		WithJSON(f.fakeStudentCreateInput).
 		Expect().
 		Status(http.StatusCreated).
 		JSON().
@@ -92,7 +92,7 @@ func TestStudentHandler_Create_WhenTheStudentsIsCreated(t *testing.T) {
 
 	response.Value("message").IsEqual("The registration was completed successfully.")
 	response.Value("data").Object().Value("id").String().NotEmpty()
-	response.Value("data").Object().Value("name").IsEqual(f.fakeInputStudent.Name)
+	response.Value("data").Object().Value("name").IsEqual(f.fakeStudentCreateInput.Name)
 }
 
 func TestStudentHandler_Read_WithWrongMethod(t *testing.T) {
@@ -202,7 +202,7 @@ func TestStudentHandler_Update_WithErrorValidation(t *testing.T) {
 
 	response := e.PUT("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
 		WithHeader("x-tenant", "sbrubles").
-		WithJSON(f.fakeInvalidUpdateInputStudent).
+		WithJSON(f.fakeStudentUpdateInputInvalid).
 		Expect().
 		Status(http.StatusBadRequest).
 		JSON().
@@ -216,7 +216,7 @@ func TestStudentHandler_Update_WithStudentAlreadyExists(t *testing.T) {
 
 	response := e.PUT("/students/06b2ec25-3fe0-475e-9077-e77a113f4727").
 		WithHeader("x-tenant", "sbrubles").
-		WithJSON(f.fakeStoredUpdateInputStudent).
+		WithJSON(f.fakeStudentUpdateInputStored).
 		Expect().
 		Status(http.StatusConflict).
 		JSON().
@@ -230,7 +230,7 @@ func TestStudentHandler_Update_WhenTheStudentsIsUpdated(t *testing.T) {
 
 	response := e.PUT("/students/e6e84c46-6ddf-4d9a-b27a-ddb74b4d63bb").
 		WithHeader("x-tenant", "sbrubles").
-		WithJSON(f.fakeUpdateInputStudent).
+		WithJSON(f.fakeStudentUpdateInput).
 		Expect().
 		Status(http.StatusOK).
 		JSON().
@@ -238,7 +238,7 @@ func TestStudentHandler_Update_WhenTheStudentsIsUpdated(t *testing.T) {
 
 	response.Value("message").IsEqual("The operation was performed successfully.")
 	response.Value("data").Object().Value("id").String().NotEmpty()
-	response.Value("data").Object().Value("name").IsEqual(f.fakeUpdateInputStudent.Name)
+	response.Value("data").Object().Value("name").IsEqual(f.fakeStudentUpdateInput.Name)
 }
 
 func TestStudentHandler_Delete_WithWrongMethod(t *testing.T) {

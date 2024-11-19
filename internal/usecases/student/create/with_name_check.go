@@ -29,27 +29,27 @@ func NewStudentCreateWithNameCheck(tracer tracer.ITracer,
 	}
 }
 
-func (uc *StudentCreateWithNameCheck) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
+func (uc *StudentCreateWithNameCheck) Execute(ctx context.Context, studentCreateInput dtos.StudentCreateInput) *dtos.Result {
 	span, ctx := uc.Tracer.NewSpanContext(ctx, tracer.StudentCreateUseCaseValidationsExecute)
 	defer span.End()
 
 	uc.Tracer.AddAttributes(span, tracer.StudentCreateUseCaseValidationsExecute,
 		tracer.Attributes{
-			"Payload": studentInput,
+			"Payload": studentCreateInput,
 		})
 
-	exists, err := uc.StudentRepository.ExistsByName(ctx, studentInput.Name)
+	exists, err := uc.StudentRepository.ExistsByName(ctx, studentCreateInput.Name)
 	if err != nil {
-		uc.Logger.Error(ctx, "error checking if student exists", err, "name", studentInput.Name)
+		uc.Logger.Error(ctx, "error checking if student exists", err, "name", studentCreateInput.Name)
 
 		return dtos.NewInternalServerErrorResult()
 	}
 
 	if exists {
-		uc.Logger.Warn(ctx, "there is already a student with the same name", "name", studentInput.Name)
+		uc.Logger.Warn(ctx, "there is already a student with the same name", "name", studentCreateInput.Name)
 
 		return dtos.NewConflictResult()
 	}
 
-	return uc.Next.Execute(ctx, studentInput)
+	return uc.Next.Execute(ctx, studentCreateInput)
 }

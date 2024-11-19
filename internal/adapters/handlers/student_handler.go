@@ -63,8 +63,8 @@ func (h *StudentHandler) Create(ectx echo.Context) error {
 			"Tenant": ectx.Request().Header.Get(env.ProvideTenantHeaderName()),
 		})
 
-	var studentInput dtos.StudentInput
-	if err := ectx.Bind(&studentInput); err != nil {
+	var studentCreateInput dtos.StudentCreateInput
+	if err := ectx.Bind(&studentCreateInput); err != nil {
 		h.Logger.Warn(ctx, "invalid payload, check the data sent", "error", err.Error())
 
 		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
@@ -72,7 +72,7 @@ func (h *StudentHandler) Create(ectx echo.Context) error {
 
 	h.Logger.Debug(ctx, "echo bind ok")
 
-	if err := ectx.Validate(&studentInput); err != nil {
+	if err := ectx.Validate(&studentCreateInput); err != nil {
 		h.Logger.Warn(ctx, "invalid field", "error", err.Error())
 
 		return echo.NewHTTPError(http.StatusBadRequest, dtos.NewBadRequestResult().Message)
@@ -80,7 +80,7 @@ func (h *StudentHandler) Create(ectx echo.Context) error {
 
 	h.Logger.Debug(ctx, "echo validate ok")
 
-	return ReturnResult(ectx, h.StudentCreateUseCase.Execute(ctx, studentInput))
+	return ReturnResult(ectx, h.StudentCreateUseCase.Execute(ctx, studentCreateInput))
 }
 
 func (h *StudentHandler) Read(ectx echo.Context) error {

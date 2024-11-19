@@ -42,17 +42,17 @@ func (m *MockIStudentCreateUseCase) EXPECT() *MockIStudentCreateUseCaseMockRecor
 }
 
 // Execute mocks base method.
-func (m *MockIStudentCreateUseCase) Execute(ctx context.Context, studentInput dtos.StudentInput) *dtos.Result {
+func (m *MockIStudentCreateUseCase) Execute(ctx context.Context, studentCreateInput dtos.StudentCreateInput) *dtos.Result {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Execute", ctx, studentInput)
+	ret := m.ctrl.Call(m, "Execute", ctx, studentCreateInput)
 	ret0, _ := ret[0].(*dtos.Result)
 	return ret0
 }
 
 // Execute indicates an expected call of Execute.
-func (mr *MockIStudentCreateUseCaseMockRecorder) Execute(ctx, studentInput any) *MockIStudentCreateUseCaseExecuteCall {
+func (mr *MockIStudentCreateUseCaseMockRecorder) Execute(ctx, studentCreateInput any) *MockIStudentCreateUseCaseExecuteCall {
 	mr.mock.ctrl.T.Helper()
-	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockIStudentCreateUseCase)(nil).Execute), ctx, studentInput)
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Execute", reflect.TypeOf((*MockIStudentCreateUseCase)(nil).Execute), ctx, studentCreateInput)
 	return &MockIStudentCreateUseCaseExecuteCall{Call: call}
 }
 
@@ -68,13 +68,13 @@ func (c *MockIStudentCreateUseCaseExecuteCall) Return(arg0 *dtos.Result) *MockIS
 }
 
 // Do rewrite *gomock.Call.Do
-func (c *MockIStudentCreateUseCaseExecuteCall) Do(f func(context.Context, dtos.StudentInput) *dtos.Result) *MockIStudentCreateUseCaseExecuteCall {
+func (c *MockIStudentCreateUseCaseExecuteCall) Do(f func(context.Context, dtos.StudentCreateInput) *dtos.Result) *MockIStudentCreateUseCaseExecuteCall {
 	c.Call = c.Call.Do(f)
 	return c
 }
 
 // DoAndReturn rewrite *gomock.Call.DoAndReturn
-func (c *MockIStudentCreateUseCaseExecuteCall) DoAndReturn(f func(context.Context, dtos.StudentInput) *dtos.Result) *MockIStudentCreateUseCaseExecuteCall {
+func (c *MockIStudentCreateUseCaseExecuteCall) DoAndReturn(f func(context.Context, dtos.StudentCreateInput) *dtos.Result) *MockIStudentCreateUseCaseExecuteCall {
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }

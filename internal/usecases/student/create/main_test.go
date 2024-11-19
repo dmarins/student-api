@@ -9,8 +9,8 @@ import (
 )
 
 type fakeValues struct {
-	fakeStudentInput dtos.StudentInput
-	fakeError        error
+	fakeStudentCreateInput dtos.StudentCreateInput
+	fakeError              error
 }
 
 var f *fakeValues
@@ -18,13 +18,13 @@ var f *fakeValues
 // TestMain will run before all the tests in the package creation_test
 func TestMain(m *testing.M) {
 	// Setup: Creating fake values
-	fakeStudentInput := dtos.StudentInput{
+	fakeStudentCreateInput := dtos.StudentCreateInput{
 		Name: "John Doe",
 	}
 
 	f = &fakeValues{
-		fakeStudentInput: fakeStudentInput,
-		fakeError:        errors.New("fails"),
+		fakeStudentCreateInput: fakeStudentCreateInput,
+		fakeError:              errors.New("fails"),
 	}
 
 	// Run the all tests in the package creation_test

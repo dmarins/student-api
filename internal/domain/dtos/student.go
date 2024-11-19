@@ -1,7 +1,7 @@
 package dtos
 
 type (
-	StudentInput struct {
+	StudentCreateInput struct {
 		Name string `json:"name" validate:"required,max=200"`
 	}
 
