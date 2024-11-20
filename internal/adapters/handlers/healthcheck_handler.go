@@ -33,7 +33,7 @@ func RegisterHealthCheckRoute(s server.IServer, h *HealthCheckHandler) {
 //
 //	@Summary		Check if the API is available.
 //	@Description	Checks if the API has connectivity to your database.
-//	@Tags			health
+//	@Tags			healthcheck
 //	@Produce		json
 //	@Success		200	{object}	dtos.Result
 //	@Failure		500	{object}	dtos.Result
