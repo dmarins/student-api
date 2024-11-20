@@ -34,7 +34,7 @@ This microservice was developed in Go, implementing the best practices of the RE
 - Testcontainers (integration tests)
 - Httpexpect  (end-to-end tests)
 
-## 🤓 Main Code Patterns
+## 🤓 Main code patterns
 
 This project also incorporates the following key design and code patterns to ensure robustness and maintainability:
 
