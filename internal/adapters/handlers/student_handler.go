@@ -137,6 +137,23 @@ func (h *StudentHandler) Read(ectx echo.Context) error {
 	return ReturnResult(ectx, h.StudentReadUseCase.Execute(ctx, studentId))
 }
 
+// StudentUpdate godoc
+//
+//	@Summary		Allows you to update a student data.
+//	@Description	Allows you to update a student's data after finding them and validating if there are duplicate names.
+//	@Tags			students
+//	@Param			x-tenant	header	string					true	"To identify the tenant"
+//	@Param			x-cid		header	string					false	"To identify the request"
+//	@Param			id			path	string					true	"Student identifier"
+//	@Param			payload		body	dtos.StudentUpdateInput	true	"To update a student"
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{object}	dtos.Result
+//	@Failure		400	{object}	dtos.Result
+//	@Failure		404	{object}	dtos.Result
+//	@Failure		409	{object}	dtos.Result
+//	@Failure		500	{object}	dtos.Result
+//	@Router			/students/{id} [put]
 func (h *StudentHandler) Update(ectx echo.Context) error {
 	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerUpdate)
 	defer span.End()

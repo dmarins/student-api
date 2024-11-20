@@ -6,7 +6,7 @@ type (
 	}
 
 	StudentUpdateInput struct {
-		ID   string `json:"id" validate:"required,max=36"`
+		ID   string `json:"-"`
 		Name string `json:"name" validate:"required,max=200"`
 	}
 

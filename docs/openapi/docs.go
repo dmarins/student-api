@@ -240,6 +240,82 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "description": "Allows you to update a student's data after finding them and validating if there are duplicate names.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "students"
+                ],
+                "summary": "Allows you to update a student data.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "To identify the tenant",
+                        "name": "x-tenant",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "To identify the request",
+                        "name": "x-cid",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Student identifier",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "To update a student",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.StudentUpdateInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.Result"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.Result"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.Result"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.Result"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.Result"
+                        }
+                    }
+                }
             }
         }
     },
@@ -254,6 +330,18 @@ const docTemplate = `{
             }
         },
         "dtos.StudentCreateInput": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 200
+                }
+            }
+        },
+        "dtos.StudentUpdateInput": {
             "type": "object",
             "required": [
                 "name"

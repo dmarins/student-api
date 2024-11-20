@@ -14,6 +14,14 @@ definitions:
     required:
     - name
     type: object
+  dtos.StudentUpdateInput:
+    properties:
+      name:
+        maxLength: 200
+        type: string
+    required:
+    - name
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -169,6 +177,58 @@ paths:
           schema:
             $ref: '#/definitions/dtos.Result'
       summary: Allows you to get the details of a student.
+      tags:
+      - students
+    put:
+      consumes:
+      - application/json
+      description: Allows you to update a student's data after finding them and validating
+        if there are duplicate names.
+      parameters:
+      - description: To identify the tenant
+        in: header
+        name: x-tenant
+        required: true
+        type: string
+      - description: To identify the request
+        in: header
+        name: x-cid
+        type: string
+      - description: Student identifier
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: To update a student
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.StudentUpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.Result'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dtos.Result'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dtos.Result'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/dtos.Result'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dtos.Result'
+      summary: Allows you to update a student data.
       tags:
       - students
 schemes:
