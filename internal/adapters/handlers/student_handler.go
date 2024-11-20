@@ -54,6 +54,21 @@ func RegisterStudentRoutes(s server.IServer, h *StudentHandler) {
 	routesGroup.GET("", h.Search)
 }
 
+// Students godoc
+//
+//	@Summary		Allows you to create a student.
+//	@Description	Allows you to create a student after validating duplicate names.
+//	@Tags			students
+//	@Param			x-tenant	header	string					true	"To identify the tenant"
+//	@Param			x-cid		header	string					false	"To identify the request"
+//	@Param			payload		body	dtos.StudentCreateInput	true	"To create a student"
+//	@Accept			json
+//	@Produce		json
+//	@Success		201	{object}	dtos.Result
+//	@Failure		400	{object}	dtos.Result
+//	@Failure		409	{object}	dtos.Result
+//	@Failure		500	{object}	dtos.Result
+//	@Router			/students [post]
 func (h *StudentHandler) Create(ectx echo.Context) error {
 	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerCreate)
 	defer span.End()
