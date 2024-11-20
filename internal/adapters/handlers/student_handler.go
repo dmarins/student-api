@@ -196,6 +196,21 @@ func (h *StudentHandler) Update(ectx echo.Context) error {
 	return ReturnResult(ectx, h.StudentUpdateUseCase.Execute(ctx, studentUpdateInput))
 }
 
+// StudentDelete godoc
+//
+//	@Summary		Allows you to delete a student data.
+//	@Description	Allows you to delete a student's data after finding them.
+//	@Tags			students
+//	@Param			x-tenant	header	string	true	"To identify the tenant"
+//	@Param			x-cid		header	string	false	"To identify the request"
+//	@Param			id			path	string	true	"Student identifier"
+//	@Accept			json
+//	@Produce		json
+//	@Success		204
+//	@Failure		400	{object}	dtos.Result
+//	@Failure		404	{object}	dtos.Result
+//	@Failure		500	{object}	dtos.Result
+//	@Router			/students/{id} [delete]
 func (h *StudentHandler) Delete(ectx echo.Context) error {
 	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerDelete)
 	defer span.End()
