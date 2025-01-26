@@ -65,7 +65,7 @@ This project follows the principles of **Clean Architecture**, promoting a clear
 
 This organization ensures the independence of the domain from frameworks and technical details, providing greater flexibility and ease of maintenance.
 
-## C4 Model Architecture Documentation
+## 🏗️ C4 Model Architecture Documentation
 
 For more internal details, see the [C4 model](./c4-model.md).
 
