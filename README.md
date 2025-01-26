@@ -12,11 +12,8 @@ This microservice was developed in Go, implementing the best practices of the RE
 ## ✨ Features
 
 - Healthcheck
-- Create student
-- Read student
-- Update student
-- Delete student
-- Search student
+- CRUD operations for students
+- Search students (paging, sorting and filtering)
 
 ## ⚙️ Main technologies
 
@@ -67,6 +64,10 @@ This project follows the principles of **Clean Architecture**, promoting a clear
   Contains the application logic, orchestrating operations between entities, repositories, and other layers.  
 
 This organization ensures the independence of the domain from frameworks and technical details, providing greater flexibility and ease of maintenance.
+
+## C4 Model Architecture Documentation
+
+For more internal details, see the [C4 model](./c4-model.md).
 
 ## 🚀 How to run the project in local mode
 
