@@ -46,7 +46,7 @@ paths:
       summary: Check if the API is available.
       tags:
       - healthcheck
-  /students:
+  /v1/students:
     get:
       consumes:
       - application/json
@@ -137,7 +137,7 @@ paths:
       summary: Allows you to create a student.
       tags:
       - students
-  /students/{id}:
+  /v1/students/{id}:
     delete:
       consumes:
       - application/json

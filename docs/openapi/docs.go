@@ -41,7 +41,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/students": {
+        "/v1/students": {
             "get": {
                 "description": "Allows you to search for students by controlling pagination, sorting and filtering results.",
                 "consumes": [
@@ -179,7 +179,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/students/{id}": {
+        "/v1/students/{id}": {
             "get": {
                 "description": "Allows you to get the details of a student by ID.",
                 "consumes": [

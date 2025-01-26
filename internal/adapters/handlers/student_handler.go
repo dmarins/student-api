@@ -68,7 +68,7 @@ func RegisterStudentRoutes(s server.IServer, h *StudentHandler) {
 //	@Failure		400	{object}	dtos.Result
 //	@Failure		409	{object}	dtos.Result
 //	@Failure		500	{object}	dtos.Result
-//	@Router			/students [post]
+//	@Router			/v1/students [post]
 func (h *StudentHandler) Create(ectx echo.Context) error {
 	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerCreate)
 	defer span.End()
@@ -112,7 +112,7 @@ func (h *StudentHandler) Create(ectx echo.Context) error {
 //	@Failure		400	{object}	dtos.Result
 //	@Failure		404	{object}	dtos.Result
 //	@Failure		500	{object}	dtos.Result
-//	@Router			/students/{id} [get]
+//	@Router			/v1/students/{id} [get]
 func (h *StudentHandler) Read(ectx echo.Context) error {
 	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerRead)
 	defer span.End()
@@ -153,7 +153,7 @@ func (h *StudentHandler) Read(ectx echo.Context) error {
 //	@Failure		404	{object}	dtos.Result
 //	@Failure		409	{object}	dtos.Result
 //	@Failure		500	{object}	dtos.Result
-//	@Router			/students/{id} [put]
+//	@Router			/v1/students/{id} [put]
 func (h *StudentHandler) Update(ectx echo.Context) error {
 	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerUpdate)
 	defer span.End()
@@ -210,7 +210,7 @@ func (h *StudentHandler) Update(ectx echo.Context) error {
 //	@Failure		400	{object}	dtos.Result
 //	@Failure		404	{object}	dtos.Result
 //	@Failure		500	{object}	dtos.Result
-//	@Router			/students/{id} [delete]
+//	@Router			/v1/students/{id} [delete]
 func (h *StudentHandler) Delete(ectx echo.Context) error {
 	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerDelete)
 	defer span.End()
@@ -249,7 +249,7 @@ func (h *StudentHandler) Delete(ectx echo.Context) error {
 //	@Success		200	{object}	dtos.Result
 //	@Failure		400	{object}	dtos.Result
 //	@Failure		500	{object}	dtos.Result
-//	@Router			/students [get]
+//	@Router			/v1/students [get]
 func (h *StudentHandler) Search(ectx echo.Context) error {
 	span, ctx := h.Tracer.NewRootSpan(ectx.Request(), tracer.StudentHandlerSearch)
 	defer span.End()
