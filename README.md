@@ -38,7 +38,7 @@ This microservice was developed in Go, implementing the best practices of the RE
 
 This project also incorporates the following key design and code patterns to ensure robustness and maintainability:
 
-- **Graceful Shutdown:** Ensures the application handles termination signals properly, cleaning up resources like connections, goroutines, and processes.  
+- **Graceful Shutdown:** Ensures the application handles termination signals properly, cleaning up resources like connections, goroutines and processes.  
 - **Decorator:** Adds behavior to existing structures or functions dynamically without modifying their source code.  
 - **Builder:** Provides a clear and fluent way to construct complex objects step by step.  
 - **Repository:** Abstracts data access logic, separating it from business logic and enabling easier testing and extensibility.
