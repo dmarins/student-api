@@ -1,6 +1,6 @@
 ### missing header
 
-POST http://localhost:8080/students
+POST http://localhost:8080/v1/students
 Content-Type: application/json
 
 {
@@ -9,7 +9,7 @@ Content-Type: application/json
 
 ### success
 
-POST http://localhost:8080/students
+POST http://localhost:8080/v1/students
 x-tenant: {{$guid}}
 Content-Type: application/json
 
@@ -19,7 +19,7 @@ Content-Type: application/json
 
 ### invalid payload
 
-POST http://localhost:8080/students
+POST http://localhost:8080/v1/students
 x-tenant: {{$guid}}
 Content-Type: application/json
 
@@ -29,7 +29,7 @@ Content-Type: application/json
 
 ### required field
 
-POST http://localhost:8080/students
+POST http://localhost:8080/v1/students
 x-tenant: {{$guid}}
 Content-Type: application/json
 
@@ -39,7 +39,7 @@ Content-Type: application/json
 
 ### same name
 
-POST http://localhost:8080/students
+POST http://localhost:8080/v1/students
 x-tenant: {{$guid}}
 Content-Type: application/json
 

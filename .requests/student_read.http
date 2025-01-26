@@ -1,18 +1,18 @@
 ### missing header
 
-GET http://localhost:8080/students/06b2ec25-3fe0-475e-9077-e77a113f4727
+GET http://localhost:8080/v1/students/06b2ec25-3fe0-475e-9077-e77a113f4727
 
 ### success
 
-GET http://localhost:8080/students/06b2ec25-3fe0-475e-9077-e77a113f4727
+GET http://localhost:8080/v1/students/06b2ec25-3fe0-475e-9077-e77a113f4727
 x-tenant: {{$guid}}
 
 ### not found
 
-GET http://localhost:8080/students/06b2ec25-3fe0-475e-9077-e77a113f4999
+GET http://localhost:8080/v1/students/06b2ec25-3fe0-475e-9077-e77a113f4999
 x-tenant: {{$guid}}
 
 ### invalid id
 
-GET http://localhost:8080/students/1
+GET http://localhost:8080/v1/students/1
 x-tenant: {{$guid}}

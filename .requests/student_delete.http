@@ -1,18 +1,18 @@
 ### missing header
 
-DELETE http://localhost:8080/students/8e99273f-e566-4476-836e-048b1ecd9c4d
+DELETE http://localhost:8080/v1/students/8e99273f-e566-4476-836e-048b1ecd9c4d
 
 ### success
 
-DELETE http://localhost:8080/students/8e99273f-e566-4476-836e-048b1ecd9c4d
+DELETE http://localhost:8080/v1/students/8e99273f-e566-4476-836e-048b1ecd9c4d
 x-tenant: {{$guid}}
 
 ### invalid id
 
-DELETE http://localhost:8080/students/1
+DELETE http://localhost:8080/v1/students/1
 x-tenant: {{$guid}}
 
 ### not found
 
-DELETE http://localhost:8080/students/8e99273f-e566-4476-836e-048b1ecd9999
+DELETE http://localhost:8080/v1/students/8e99273f-e566-4476-836e-048b1ecd9999
 x-tenant: {{$guid}}

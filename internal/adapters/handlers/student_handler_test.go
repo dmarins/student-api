@@ -10,7 +10,7 @@ import (
 func TestStudentHandler_Create_WithWrongMethod(t *testing.T) {
 	e := builder.Build(t)
 
-	e.PATCH("/students").
+	e.PATCH("/v1/students").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusMethodNotAllowed)
@@ -19,7 +19,7 @@ func TestStudentHandler_Create_WithWrongMethod(t *testing.T) {
 func TestStudentHandler_Create_WithWrongPath(t *testing.T) {
 	e := builder.Build(t)
 
-	e.POST("/studentssss").
+	e.POST("/v1/studentssss").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusNotFound)
@@ -28,7 +28,7 @@ func TestStudentHandler_Create_WithWrongPath(t *testing.T) {
 func TestStudentHandler_Create_WhenTenantIsNotSent(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.POST("/students").
+	response := e.POST("/v1/students").
 		Expect().
 		Status(http.StatusBadRequest).
 		JSON().
@@ -40,7 +40,7 @@ func TestStudentHandler_Create_WhenTenantIsNotSent(t *testing.T) {
 func TestStudentHandler_Create_WithErrorBind(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.POST("/students").
+	response := e.POST("/v1/students").
 		WithHeader("x-tenant", "sbrubles").
 		WithJSON("/{}").
 		Expect().
@@ -54,7 +54,7 @@ func TestStudentHandler_Create_WithErrorBind(t *testing.T) {
 func TestStudentHandler_Create_WithErrorValidation(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.POST("/students").
+	response := e.POST("/v1/students").
 		WithHeader("x-tenant", "sbrubles").
 		WithJSON(f.fakeStudentCreateInputInvalid).
 		Expect().
@@ -68,7 +68,7 @@ func TestStudentHandler_Create_WithErrorValidation(t *testing.T) {
 func TestStudentHandler_Create_WithStudentAlreadyExists(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.POST("/students").
+	response := e.POST("/v1/students").
 		WithHeader("x-tenant", "sbrubles").
 		WithJSON(f.fakeStudentCreateInputStored).
 		Expect().
@@ -82,7 +82,7 @@ func TestStudentHandler_Create_WithStudentAlreadyExists(t *testing.T) {
 func TestStudentHandler_Create_WhenTheStudentsIsCreated(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.POST("/students").
+	response := e.POST("/v1/students").
 		WithHeader("x-tenant", "sbrubles").
 		WithJSON(f.fakeStudentCreateInput).
 		Expect().
@@ -98,7 +98,7 @@ func TestStudentHandler_Create_WhenTheStudentsIsCreated(t *testing.T) {
 func TestStudentHandler_Read_WithWrongMethod(t *testing.T) {
 	e := builder.Build(t)
 
-	e.PATCH("/students").
+	e.PATCH("/v1/students").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusMethodNotAllowed)
@@ -107,7 +107,7 @@ func TestStudentHandler_Read_WithWrongMethod(t *testing.T) {
 func TestStudentHandler_Read_WithWrongPath(t *testing.T) {
 	e := builder.Build(t)
 
-	e.GET("/studentssss").
+	e.GET("/v1/studentssss").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusNotFound)
@@ -116,7 +116,7 @@ func TestStudentHandler_Read_WithWrongPath(t *testing.T) {
 func TestStudentHandler_Read_WhenTenantIsNotSent(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		Expect().
 		Status(http.StatusBadRequest).
 		JSON().
@@ -128,7 +128,7 @@ func TestStudentHandler_Read_WhenTenantIsNotSent(t *testing.T) {
 func TestStudentHandler_Read_WhenStudentIsFound(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students/06b2ec25-3fe0-475e-9077-e77a113f4727").
+	response := e.GET("/v1/students/06b2ec25-3fe0-475e-9077-e77a113f4727").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusOK).
@@ -143,7 +143,7 @@ func TestStudentHandler_Read_WhenStudentIsFound(t *testing.T) {
 func TestStudentHandler_Read_WhenStudentIsNotFound(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students/58ecde02-18f6-4896-a716-64abf6724587").
+	response := e.GET("/v1/students/58ecde02-18f6-4896-a716-64abf6724587").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusNotFound).
@@ -156,7 +156,7 @@ func TestStudentHandler_Read_WhenStudentIsNotFound(t *testing.T) {
 func TestStudentHandler_Update_WithWrongMethod(t *testing.T) {
 	e := builder.Build(t)
 
-	e.PATCH("/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
+	e.PATCH("/v1/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusMethodNotAllowed)
@@ -165,7 +165,7 @@ func TestStudentHandler_Update_WithWrongMethod(t *testing.T) {
 func TestStudentHandler_Update_WithWrongPath(t *testing.T) {
 	e := builder.Build(t)
 
-	e.PUT("/studentssss/dbf54856-9a98-4672-9c90-e9da71a1f893").
+	e.PUT("/v1/studentssss/dbf54856-9a98-4672-9c90-e9da71a1f893").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusNotFound)
@@ -174,7 +174,7 @@ func TestStudentHandler_Update_WithWrongPath(t *testing.T) {
 func TestStudentHandler_Update_WhenTenantIsNotSent(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.PUT("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
+	response := e.PUT("/v1/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
 		Expect().
 		Status(http.StatusBadRequest).
 		JSON().
@@ -186,7 +186,7 @@ func TestStudentHandler_Update_WhenTenantIsNotSent(t *testing.T) {
 func TestStudentHandler_Update_WithErrorBind(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.PUT("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
+	response := e.PUT("/v1/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
 		WithHeader("x-tenant", "sbrubles").
 		WithJSON("/{}").
 		Expect().
@@ -200,7 +200,7 @@ func TestStudentHandler_Update_WithErrorBind(t *testing.T) {
 func TestStudentHandler_Update_WithErrorValidation(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.PUT("/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
+	response := e.PUT("/v1/students/dbf54856-9a98-4672-9c90-e9da71a1f893").
 		WithHeader("x-tenant", "sbrubles").
 		WithJSON(f.fakeStudentUpdateInputInvalid).
 		Expect().
@@ -214,7 +214,7 @@ func TestStudentHandler_Update_WithErrorValidation(t *testing.T) {
 func TestStudentHandler_Update_WithStudentAlreadyExists(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.PUT("/students/06b2ec25-3fe0-475e-9077-e77a113f4727").
+	response := e.PUT("/v1/students/06b2ec25-3fe0-475e-9077-e77a113f4727").
 		WithHeader("x-tenant", "sbrubles").
 		WithJSON(f.fakeStudentUpdateInputStored).
 		Expect().
@@ -228,7 +228,7 @@ func TestStudentHandler_Update_WithStudentAlreadyExists(t *testing.T) {
 func TestStudentHandler_Update_WhenTheStudentsIsUpdated(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.PUT("/students/e6e84c46-6ddf-4d9a-b27a-ddb74b4d63bb").
+	response := e.PUT("/v1/students/e6e84c46-6ddf-4d9a-b27a-ddb74b4d63bb").
 		WithHeader("x-tenant", "sbrubles").
 		WithJSON(f.fakeStudentUpdateInput).
 		Expect().
@@ -244,7 +244,7 @@ func TestStudentHandler_Update_WhenTheStudentsIsUpdated(t *testing.T) {
 func TestStudentHandler_Delete_WithWrongMethod(t *testing.T) {
 	e := builder.Build(t)
 
-	e.PATCH("/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
+	e.PATCH("/v1/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusMethodNotAllowed)
@@ -253,7 +253,7 @@ func TestStudentHandler_Delete_WithWrongMethod(t *testing.T) {
 func TestStudentHandler_Delete_WithWrongPath(t *testing.T) {
 	e := builder.Build(t)
 
-	e.DELETE("/studentssss/8e99273f-e566-4476-836e-048b1ecd9c4d").
+	e.DELETE("/v1/studentssss/8e99273f-e566-4476-836e-048b1ecd9c4d").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusNotFound)
@@ -262,7 +262,7 @@ func TestStudentHandler_Delete_WithWrongPath(t *testing.T) {
 func TestStudentHandler_Delete_WhenTenantIsNotSent(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.DELETE("/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
+	response := e.DELETE("/v1/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
 		Expect().
 		Status(http.StatusBadRequest).
 		JSON().
@@ -274,7 +274,7 @@ func TestStudentHandler_Delete_WhenTenantIsNotSent(t *testing.T) {
 func TestStudentHandler_Delete_WithErrorValidation(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.DELETE("/students/1").
+	response := e.DELETE("/v1/students/1").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusBadRequest).
@@ -287,7 +287,7 @@ func TestStudentHandler_Delete_WithErrorValidation(t *testing.T) {
 func TestStudentHandler_Delete_WhenTheStudentsIsDeleted(t *testing.T) {
 	e := builder.Build(t)
 
-	e.DELETE("/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
+	e.DELETE("/v1/students/8e99273f-e566-4476-836e-048b1ecd9c4d").
 		WithHeader("x-tenant", "sbrubles").
 		WithJSON(f.fakeStudentToBeDeleted).
 		Expect().
@@ -297,7 +297,7 @@ func TestStudentHandler_Delete_WhenTheStudentsIsDeleted(t *testing.T) {
 func TestStudentHandler_Search_WithWrongMethod(t *testing.T) {
 	e := builder.Build(t)
 
-	e.PATCH("/students").
+	e.PATCH("/v1/students").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusMethodNotAllowed)
@@ -306,7 +306,7 @@ func TestStudentHandler_Search_WithWrongMethod(t *testing.T) {
 func TestStudentHandler_Search_WithWrongPath(t *testing.T) {
 	e := builder.Build(t)
 
-	e.GET("/studentssss").
+	e.GET("/v1/studentssss").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusNotFound)
@@ -315,7 +315,7 @@ func TestStudentHandler_Search_WithWrongPath(t *testing.T) {
 func TestStudentHandler_Search_WhenTenantIsNotSent(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		Expect().
 		Status(http.StatusBadRequest).
 		JSON().
@@ -327,7 +327,7 @@ func TestStudentHandler_Search_WhenTenantIsNotSent(t *testing.T) {
 func TestStudentHandler_Search_NoPaginationAndNoFilters(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
 		Status(http.StatusOK).
@@ -344,7 +344,7 @@ func TestStudentHandler_Search_NoPaginationAndNoFilters(t *testing.T) {
 func TestStudentHandler_Search_WithPageOnly(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithQuery("page", 1).
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
@@ -362,7 +362,7 @@ func TestStudentHandler_Search_WithPageOnly(t *testing.T) {
 func TestStudentHandler_Search_WithPageSizeOnly(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithQuery("pageSize", 10).
 		WithHeader("x-tenant", "sbrubles").
 		Expect().
@@ -380,7 +380,7 @@ func TestStudentHandler_Search_WithPageSizeOnly(t *testing.T) {
 func TestStudentHandler_Search_WithPageAndPageSize(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithQuery("page", 1).
 		WithQuery("pageSize", 10).
 		WithHeader("x-tenant", "sbrubles").
@@ -399,7 +399,7 @@ func TestStudentHandler_Search_WithPageAndPageSize(t *testing.T) {
 func TestStudentHandler_Search_WithPaginationErrorBind(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithQuery("page", "abc").
 		WithQuery("pageSize", "def").
 		WithHeader("x-tenant", "sbrubles").
@@ -414,7 +414,7 @@ func TestStudentHandler_Search_WithPaginationErrorBind(t *testing.T) {
 func TestStudentHandler_Search_IncreasingPagination(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithQuery("page", 1).
 		WithQuery("pageSize", 3).
 		WithHeader("x-tenant", "sbrubles").
@@ -433,7 +433,7 @@ func TestStudentHandler_Search_IncreasingPagination(t *testing.T) {
 func TestStudentHandler_Search_WithPageAndPageSizeEqualToZero(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithQuery("page", 0).
 		WithQuery("pageSize", 0).
 		WithHeader("x-tenant", "sbrubles").
@@ -452,7 +452,7 @@ func TestStudentHandler_Search_WithPageAndPageSizeEqualToZero(t *testing.T) {
 func TestStudentHandler_Search_WithPageAndPageSizeNegatives(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithQuery("page", -1).
 		WithQuery("pageSize", -1).
 		WithHeader("x-tenant", "sbrubles").
@@ -471,7 +471,7 @@ func TestStudentHandler_Search_WithPageAndPageSizeNegatives(t *testing.T) {
 func TestStudentHandler_Search_WithPaginationAndSortOrderOnly(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithQuery("page", 1).
 		WithQuery("pageSize", 10).
 		WithQuery("sortOrder", "desc").
@@ -491,7 +491,7 @@ func TestStudentHandler_Search_WithPaginationAndSortOrderOnly(t *testing.T) {
 func TestStudentHandler_Search_WithPaginationAndSortFieldOnly(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithQuery("page", 1).
 		WithQuery("pageSize", 10).
 		WithQuery("sortField", "name").
@@ -511,7 +511,7 @@ func TestStudentHandler_Search_WithPaginationAndSortFieldOnly(t *testing.T) {
 func TestStudentHandler_Search_WithPaginationAndOrdination(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithQuery("page", 1).
 		WithQuery("pageSize", 10).
 		WithQuery("sortOrder", "desc").
@@ -532,7 +532,7 @@ func TestStudentHandler_Search_WithPaginationAndOrdination(t *testing.T) {
 func TestStudentHandler_Search_WithPaginationAndOrdinationAndFilterByName(t *testing.T) {
 	e := builder.Build(t)
 
-	response := e.GET("/students").
+	response := e.GET("/v1/students").
 		WithQuery("page", 1).
 		WithQuery("pageSize", 10).
 		WithQuery("sortOrder", "desc").

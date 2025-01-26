@@ -45,7 +45,7 @@ func NewStudentHandler(
 }
 
 func RegisterStudentRoutes(s server.IServer, h *StudentHandler) {
-	routesGroup := s.GetEcho().Group("/students")
+	routesGroup := s.GetEcho().Group("/v1/students")
 
 	routesGroup.POST("", h.Create)
 	routesGroup.GET("/:id", h.Read)
